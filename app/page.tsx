@@ -68,7 +68,7 @@ export default async function Home() {
   <div className="flex flex-col md:flex-row justify-between mx-6">
     <div className="flex flex-row md:flex-col lg:flex-row mb-12 md:mb-0">
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
-        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/letter-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
+        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/letter-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
       <div>
       <h2 className="font-semibold text-xl mb-5.5 leading-tight tracking-tight">Kontakt mig</h2>
       <Link href="mailto:info@synnesdyreklinik.dk">
@@ -81,7 +81,7 @@ export default async function Home() {
     </div>
     <div className="flex flex-row md:flex-col lg:flex-row mb-12 md:mb-0">
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
-        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/clock-icon.svg" alt="Åbningstider" width={80} height={78} /></div>
+        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/clock-icon.svg" alt="Åbningstider" width={80} height={78} /></div>
       <div>
       <h2 className="font-semibold text-xl mb-5.5 leading-tight tracking-tight">Åbningstider</h2>
       <p className="text-lg font-semibold text-muted-foreground leading-6"><span className="text-secondary-foreground">Konsultation:</span><br />
@@ -90,7 +90,7 @@ export default async function Home() {
     </div>
     <div className="flex flex-row md:flex-col lg:flex-row mb-0">
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
-        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/map-pin-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
+        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/map-pin-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
       <div>
       <h2 className="font-semibold text-xl mb-5.5 leading-tight tracking-tight">Lokation</h2>
       <p className="text-lg font-semibold text-muted-foreground leading-6">Gammel Skolevej 5, Ejby<br />
@@ -103,7 +103,7 @@ export default async function Home() {
       <section className="py-25 px-6 bg-[#fffaf6]">
         <div className="flex flex-col lg:flex-row items-center justify-center">
           <div className="order-2 lg:order-1">
-            <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/synneanddog.jpg"} width={488} height={574} alt="Synne og hund" className="rounded-4xl -rotate-4"/>
+            <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"} width={488} height={574} alt="Synne og hund" className="rounded-4xl -rotate-4"/>
           </div>
           <div className="order-1 lg:order-2 mb-16 ml-8 w-full md:w-[611px] lg:max-w-[45%]">
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-2.5 lg:mb-6">
@@ -205,7 +205,7 @@ export default async function Home() {
         <div className="max-w-[310px]">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/logo.svg"} alt="Synnes dyreklinik" width={120} height={50} className="mb-4"/>
+              <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"} alt="Synnes dyreklinik" width={120} height={50} className="mb-4"/>
                 <p className="leading-6 text-base font-semibold">Jeg glæder mig til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
       </p>
             </div>

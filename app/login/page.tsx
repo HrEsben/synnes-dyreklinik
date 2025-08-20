@@ -8,7 +8,7 @@ export default function LoginPage() {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <Image
-              src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/logo.svg"
+              src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
               alt="Synnes Dyreklinik"
               width={200}
               height={80}
