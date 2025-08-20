@@ -76,7 +76,7 @@ export default function Navigation() {
   return (
     <nav>
       <div 
-        className="lg:px-6 z-50 fixed top-0 right-0 left-0 transition-all duration-300"
+        className="px-0 md:px-6 z-50 fixed top-0 right-0 left-0 transition-all duration-300"
         style={{
           backgroundColor: `rgba(255, 255, 255, ${backgroundOpacity})`,
           boxShadow: `10px 10px 42px 0 rgba(8, 15, 52, ${backgroundOpacity * 0.06})`

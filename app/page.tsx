@@ -3,7 +3,7 @@ import Image from "next/image";
 import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
-import { Facebook } from "lucide-react";
+import { Facebook, LetterText, LucidePhone, Mail, MapPin, Phone, PhoneIcon } from "lucide-react";
 import { Instagram } from "lucide-react";
 import { Linkedin } from "lucide-react";
 
@@ -64,8 +64,8 @@ export default async function Home() {
         </div>
       </section>
  {/* Contact info */}
- <section className="lg:pt-35.5 pt-24 border-b-1 border-[#e0dbdb] pb-25 lg:pb-24">
-  <div className="flex flex-col md:flex-row justify-between mx-6">
+ <section className="lg:pt-35.5 pt-24 border-b-1 border-[#e0dbdb] pb-25 lg:pb-24 max-w-[1257px] mx-auto">
+  <div className="flex flex-col md:flex-row justify-between mx-6 lg:mx-0">
     <div className="flex flex-row md:flex-col lg:flex-row mb-12 md:mb-0">
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
         <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/letter-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
@@ -201,10 +201,10 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white text-muted-foreground py-15 px-6">
-        <div className="px-0 md:px-16">
+      <footer className="bg-white text-muted-foreground py-15 lg:px-0 px-6 max-w-[1257px] mx-auto">
+        <div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="col-span-3 md:col-span-1">
+            <div className="col-span-3 lg:col-span-1">
               <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"} alt="Synnes dyreklinik" width={120} height={50} className="mb-4"/>
                 <p className="leading-6 text-base font-semibold max-w-[310px] mb-8">Jeg glæder mig til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
       </p>
@@ -241,9 +241,21 @@ export default async function Home() {
                  </li>
                </ul>
                 </div>
-          <div className="col-span-3 md:col-span-1">
-            <div className="bg-[#fbfbfb] rounded-3xl p-11 lg:py-14 lg:px-10">
+          <div className="col-span-3 md:col-span-2 lg:col-span-1">
+            <div className="bg-[#fbfbfb] rounded-3xl p-11 lg:py-14 lg:px-10 space-y-4.5">
              <h4 className="text-[22px] text-accent-foreground font-extrabold leading-6">Kontakt mig</h4>
+              <div className="flex items-start space-x-3">
+                <MapPin color="#f97561" size={24} className="flex-shrink-0 mt-1" />
+                <div className="font-semibold text-lg">Gammel Skolevej 5, Ejby<br />4070 Kirke Hyllinge</div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Mail color="#f97561" size={24} className="flex-shrink-0 mt-0.5" />
+                <div className="font-semibold text-lg">info@synnesdyreklinik.dk</div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Phone color="#f97561" size={24} className="flex-shrink-0 mt-0.5" />
+                <div className="font-semibold text-lg">49400599</div>
+              </div>
             </div>
             </div>
           </div>
