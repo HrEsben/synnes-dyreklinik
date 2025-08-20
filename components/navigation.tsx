@@ -57,7 +57,7 @@ export default function Navigation() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Image
-                src="/logo.svg"
+                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/logo.svg"
                 alt="Synnes Dyreklinik"
                 width={160}
                 height={66}
@@ -86,7 +86,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex justify-between items-center">
               <Image
-                src="/logo.svg"
+                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/logo.svg"
                 alt="Synnes Dyreklinik"
                 width={160}
                 height={66}
