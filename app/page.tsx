@@ -202,13 +202,12 @@ export default async function Home() {
 
       {/* Footer */}
       <footer className="bg-white text-muted-foreground py-15 px-6">
-        <div className="max-w-[310px]">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
+        <div className="px-0 md:px-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="col-span-3 md:col-span-1">
               <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"} alt="Synnes dyreklinik" width={120} height={50} className="mb-4"/>
-                <p className="leading-6 text-base font-semibold">Jeg glæder mig til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
+                <p className="leading-6 text-base font-semibold max-w-[310px] mb-8">Jeg glæder mig til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
       </p>
-            </div>
             
             
             <div>
@@ -223,6 +222,29 @@ export default async function Home() {
                   <Linkedin size={16} />
                 </a>
               </div>
+            </div>
+            </div>
+              <div className="col-span-3 md:col-span-1 text-base font-semibold">
+               <ul className="space-y-6 leading-5">
+                 <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">
+                  <Link href="/">Forside</Link>
+                 </li>
+                   <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">
+                  <Link href="/" >
+                  Om klinikken</Link>
+                 </li>
+                   <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">
+                  <Link href="/">GDPR</Link>
+                 </li>
+                   <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">
+                  <Link href="/">Kontakt</Link>
+                 </li>
+               </ul>
+                </div>
+          <div className="col-span-3 md:col-span-1">
+            <div className="bg-[#fbfbfb] rounded-3xl p-11 lg:py-14 lg:px-10">
+             <h4 className="text-[22px] text-accent-foreground font-extrabold leading-6">Kontakt mig</h4>
+            </div>
             </div>
           </div>
         </div>
