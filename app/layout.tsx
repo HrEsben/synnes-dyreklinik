@@ -12,6 +12,17 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Synnes Dyreklinik",
   description: "Erfaren dyrlæge med passion for familiens dyr og dyrenes familier",
+  icons: {
+    icon: [
+      { url: '/favicon-transparent-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-transparent-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-transparent-48.png', sizes: '48x48', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/favicon-transparent-180.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
