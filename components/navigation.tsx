@@ -269,7 +269,7 @@ export default function Navigation() {
           </nav>
 
           {/* Mobile CTA Button - Fixed at bottom */}
-          <div className="flex-shrink-0 border-t border-gray-200 pt-4 pb-safe">
+          <div className="flex-shrink-0 border-t border-gray-200 pt-4 pb-safe mb-8">
             {user ? (
               <div className="space-y-3">
                 <div className="text-sm text-gray-600 px-4">
