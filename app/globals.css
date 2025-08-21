@@ -156,3 +156,12 @@
   border-radius: 0 0 60% 60% / 0 0 80px 80px;
 }
 
+/* Safe area utilities for mobile devices */
+.pb-safe {
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+}
+
+.mb-safe {
+  margin-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
