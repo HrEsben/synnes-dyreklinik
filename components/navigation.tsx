@@ -81,13 +81,24 @@ export default function Navigation() {
         <div className="mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <Image
-                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
-                alt="Synnes Dyreklinik"
-                width={160}
-                height={66}
-                className="h-12 w-auto"
-              />
+              <div className="relative">
+                {/* Background illustration - covers last 10% of text logo */}
+                <Image
+                  src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="absolute -right-2 top-1/2 transform -translate-y-1/2 h-10 w-auto z-0"
+                />
+                {/* Main text logo */}
+                <Image
+                  src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
+                  alt="Synnes Dyreklinik"
+                  width={160}
+                  height={66}
+                  className="h-12 w-auto relative z-10"
+                />
+              </div>
             </div>
             <div className="flex items-center">
               <div className="animate-pulse h-8 w-16 bg-gray-200 rounded"></div>
@@ -109,13 +120,22 @@ export default function Navigation() {
       >
         <div className="max-w-[1257px] mx-auto px-6 md:px-0 py-5 lg:py-7 flex justify-between items-center">
           <div className="flex items-center">
-            <Link href="/" className="flex justify-between items-center">
+            <Link href="/" className="flex justify-between items-center relative">
+              {/* Background illustration - covers last 10% of text logo */}
+              <Image
+                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
+                alt=""
+                width={180}
+                height={180}
+                className="absolute -right-18 top-[45%] transform -translate-y-1/2 h-17 w-auto z-0"
+              />
+              {/* Main text logo */}
               <Image
                 src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
                 alt="Synnes Dyreklinik"
                 width={160}
                 height={66}
-                className="h-15 w-auto"
+                className="h-15 w-auto relative z-10"
               />
             </Link>
           </div>
