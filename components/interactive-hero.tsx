@@ -39,57 +39,66 @@ export default function InteractiveHero() {
           }}
         >
           {/* Shape 1 - Top Left */}
-          <div className="absolute top-40 left-12 animate-spin-slow">
+          <div 
+            className="absolute top-40 left-12 animate-spin-slow"
+            style={{
+              transform: `translate(${mousePosition.x * -0.3}px, 0px)`
+            }}
+          >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d1_shape-1-home-hero-veterinary-x-template.svg"
               alt=""
-              width={100}
-              height={100}
-              style={{
-                transform: `translate(${mousePosition.x * -0.3}px, 0px)`
-              }}
+              width={0}
+              height={0}
+              style={{ width: '100px', height: 'auto' }}
             />
           </div>
 
           {/* Shape 2 - Top Right */}
-          <div className="absolute top-20 right-[-80] animate-spin-slow">
+          <div 
+            className="absolute top-20 right-[-80] animate-spin-slow"
+            style={{
+              transform: `translate(${mousePosition.x * 0.2}px, 0px)`
+            }}
+          >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d3_shape-2-home-hero-veterinary-x-template.svg"
               alt=""
-              width={160}
-              height={160}
-        
-              style={{
-                transform: `translate(${mousePosition.x * 0.2}px, 0px)`
-              }}
+              width={0}
+              height={0}
+              style={{ width: '160px', height: 'auto' }}
             />
           </div>
 
           {/* Shape 3 - Bottom Left */}
-          <div className="absolute bottom-0 left-0 animate-spin-slow">
+          <div 
+            className="absolute bottom-0 left-0 animate-spin-slow"
+            style={{
+              transform: `translate(${mousePosition.x * -0.1}px, 0px)`
+            }}
+          >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d2_shape-3-home-hero-veterinary-x-template.svg"
               alt=""
-              width={240}
-              height={240}
-            
-              style={{
-                transform: `translate(${mousePosition.x * -0.1}px, 0px)`
-              }}
+              width={0}
+              height={0}
+              style={{ width: '240px', height: 'auto' }}
             />
           </div>
 
           {/* Shape 4 - Bottom Right */}
-          <div className="absolute bottom-[-50] right-[-140] animate-spin-slow">
+          <div 
+            className="absolute bottom-[-50] right-[-140] animate-spin-slow"
+            style={{
+              transform: `translate(${mousePosition.x * 0.1}px, 0px)`
+            }}
+          >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d0_shape-4-home-hero-veterinary-x-template.svg"
               alt=""
-              width={220}
-              height={220}
-       
-              style={{
-                transform: `translate(${mousePosition.x * 0.1}px, 0px)`
-              }}
+              width={0}
+              height={0}
+              style={{ width: '220px', height: 'auto' }}
             />
           </div>
 

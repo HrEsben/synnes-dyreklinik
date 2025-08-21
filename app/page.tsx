@@ -3,7 +3,7 @@ import Image from "next/image";
 import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
-import { Facebook, LetterText, LucidePhone, Mail, MapPin, Phone, PhoneIcon } from "lucide-react";
+import { Facebook, Mail, MapPin, Phone } from "lucide-react";
 import { Instagram } from "lucide-react";
 import { Linkedin } from "lucide-react";
 
@@ -169,15 +169,15 @@ export default async function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="pt-15 px-4 bg-[#611471] text-white">
-         <div className="flex flex-col lg:flex-row items-center justify-center">
-           <div className="mx-auto text-center">
-             <h2 className="text-3xl md:text-3xl lg:text-4xl font-extrabold mb-6">
+      <section className="pt-15 bg-[#611471] text-white">
+         <div className="flex flex-col max-w-[1257px] mx-auto lg:flex-row items-center justify-between">
+           <div className="">
+             <h2 className="text-3xl md:text-3xl lg:text-5xl leading-10 font-extrabold mb-6">
                Book en aftale<br />allerede i dag
              </h2>
 
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4  mb-12">
             <Link
               href="/kontakt"
             >
@@ -241,7 +241,7 @@ export default async function Home() {
                  </li>
                </ul>
                 </div>
-          <div className="col-span-3 md:col-span-2 lg:col-span-1">
+          <div className="col-span-3 md:col-span-1 lg:col-span-1 min-w-[300px]">
             <div className="bg-[#fbfbfb] rounded-3xl p-11 lg:py-14 lg:px-10 space-y-4.5">
              <h4 className="text-[22px] text-accent-foreground font-extrabold leading-6">Kontakt mig</h4>
               <div className="flex items-start space-x-3">
