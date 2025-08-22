@@ -3,46 +3,51 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Footer from "@/components/footer";
 import { createClient } from "@/lib/supabase/server";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
-
-interface Employee {
-  id: number;
-  name: string | null;
-  position: string | null;
-  img_url: string | null;
-  short_link: string | null;
-  bio: string | null;
-}
 
 interface TeamMemberPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
+  const { slug } = await params;
   const supabase = await createClient();
   
   // Fetch the employee by short_link
   const { data: employee, error } = await supabase
     .from('employees')
     .select('*')
-    .eq('short_link', params.slug)
+    .eq('short_link', slug)
     .single();
 
   if (error || !employee) {
     notFound();
   }
 
-  // Parse bio as JSON array if it's stored as JSON, otherwise split by newlines
-  let bioParagraphs: string[] = [];
+  // Use bio as HTML content, with fallback for legacy JSON format
+  let bioContent: string = '';
   if (employee.bio) {
     try {
-      // Try to parse as JSON first
-      bioParagraphs = JSON.parse(employee.bio);
+      // Check if it's JSON (legacy format) - convert to HTML
+      const jsonArray = JSON.parse(employee.bio);
+      if (Array.isArray(jsonArray)) {
+        bioContent = jsonArray.map(paragraph => `<p>${paragraph}</p>`).join('');
+      } else {
+        bioContent = employee.bio; // Already HTML
+      }
     } catch {
-      // If not JSON, split by double newlines or use as single paragraph
-      bioParagraphs = employee.bio.split('\n\n').filter((p: string) => p.trim().length > 0);
+      // Not JSON - check if it contains HTML tags
+      if (employee.bio.includes('<') && employee.bio.includes('>')) {
+        bioContent = employee.bio; // Already HTML
+      } else {
+        // Plain text - convert to HTML paragraphs
+        bioContent = employee.bio
+          .split('\n\n')
+          .filter((p: string) => p.trim().length > 0)
+          .map((p: string) => `<p>${p.trim()}</p>`)
+          .join('');
+      }
     }
   }
 
@@ -111,23 +116,18 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
               Om mig
             </h2>
             
-            <div className="space-y-6">
-              {bioParagraphs.map((paragraph: string, index: number) => (
-                <p 
-                  key={index}
-                  className="text-lg leading-[1.9]" 
-                  style={{
-                    fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                    fontWeight: 500,
-                    fontSize: '18px',
-                    lineHeight: '1.89em',
-                    color: '#817d7d'
-                  }}
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+                      <div className="space-y-4 text-base leading-relaxed text-gray-600">
+            {bioContent ? (
+              <div 
+                className="prose prose-gray max-w-none"
+                dangerouslySetInnerHTML={{ __html: bioContent }}
+              />
+            ) : (
+              <p className="text-gray-500 italic">
+                Ingen biografiinformation tilgængelig.
+              </p>
+            )}
+          </div>
           </div>
         </div>
       </section>

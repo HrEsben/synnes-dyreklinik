@@ -1,20 +1,8 @@
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import Footer from "@/components/footer";
 import TeamMember from "@/components/team-member";
 import { createClient } from "@/lib/supabase/server";
-import { Facebook, Instagram, Linkedin, MapPin, Mail, Phone } from "lucide-react";
 import Divider from "@/components/divider";
-
-interface Employee {
-  id: number;
-  name: string | null;
-  position: string | null;
-  img_url: string | null;
-  short_link: string | null;
-  bio: string | null;
-}
 
 export default async function OmPage() {
   const supabase = await createClient();

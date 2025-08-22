@@ -4,9 +4,6 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
 import Footer from "@/components/footer";
-import { Facebook, Mail, MapPin, Phone } from "lucide-react";
-import { Instagram } from "lucide-react";
-import { Linkedin } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient()
