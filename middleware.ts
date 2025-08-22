@@ -1,11 +1,34 @@
-import { type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
   const { supabase, supabaseResponse } = createClient(request)
 
+  // Skip auth checks for auth callback routes
+  if (request.nextUrl.pathname.startsWith('/auth/')) {
+    return supabaseResponse
+  }
+
   // Refresh session if expired - required for Server Components
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Protected routes that require authentication
+  const protectedRoutes = ['/dashboard']
+  const isProtectedRoute = protectedRoutes.some(route => 
+    request.nextUrl.pathname.startsWith(route)
+  )
+
+  // Redirect to login if accessing protected route without authentication
+  if (isProtectedRoute && !user) {
+    const redirectUrl = new URL('/login', request.url)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Redirect to dashboard if already logged in and trying to access login
+  if (request.nextUrl.pathname === '/login' && user) {
+    const redirectUrl = new URL('/dashboard', request.url)
+    return NextResponse.redirect(redirectUrl)
+  }
 
   return supabaseResponse
 }

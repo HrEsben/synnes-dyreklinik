@@ -1,26 +1,40 @@
 import AuthForm from '@/components/auth/auth-form'
-import Image from 'next/image'
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <Image
-              src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
-              alt="Synnes Dyreklinik"
-              width={200}
-              height={80}
-              className="h-12 w-auto"
-            />
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative py-16 lg:py-24 px-4 md:px-6 bg-[#fffaf6] overflow-hidden">
+        <div className="mx-auto max-w-[1257px]">
+          <div className="flex flex-col items-center justify-center min-h-[60vh]">
+            <div className="text-center mb-8">
+              
+              <h1 className="mb-4" style={{ 
+                fontWeight: 800, 
+                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                fontSize: 'clamp(28px, 4vw, 42px)',
+                lineHeight: '1.51em',
+                color: '#2c2524'
+              }}>
+                Log ind
+              </h1>
+              <p className="text-lg text-muted-foreground leading-[1.9] max-w-md mx-auto" style={{
+                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                fontWeight: 500,
+                fontSize: '16px',
+                lineHeight: '1.89em',
+                color: '#817d7d'
+              }}>
+                Log ind for at få redigere hjemmesiden
+              </p>
+            </div>
+            
+            <div className="w-full max-w-md">
+              <AuthForm />
+            </div>
           </div>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Log ind for at få adgang til dine veterinærtjenester
-          </p>
         </div>
-        <AuthForm />
-      </div>
+      </section>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import { createClient } from './client'
 
 const supabase = createClient()
 
-export const BUCKET_NAME = 'clinic-images'
+export const BUCKET_NAME = 'media'
 
 export async function uploadImage(file: File, path: string) {
   const { data, error } = await supabase.storage
@@ -39,6 +39,30 @@ export async function listImages() {
   }
 
   return data
+}
+
+export async function deleteImage(path: string) {
+  const { error } = await supabase.storage
+    .from(BUCKET_NAME)
+    .remove([path])
+
+  if (error) {
+    console.error('Error deleting image:', error)
+    return false
+  }
+
+  return true
+}
+
+// Helper function to extract file path from URL
+export function getPathFromUrl(url: string): string | null {
+  try {
+    const urlObj = new URL(url)
+    const pathMatch = urlObj.pathname.match(/\/storage\/v1\/object\/public\/[^\/]+\/(.+)/)
+    return pathMatch ? pathMatch[1] : null
+  } catch {
+    return null
+  }
 }
 
 // Helper function to get optimized image URL with transformations

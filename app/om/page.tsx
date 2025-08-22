@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Footer from "@/components/footer";
 import TeamMember from "@/components/team-member";
 import { createClient } from "@/lib/supabase/server";
 import Divider from "@/components/divider";
+import EditableText from "@/components/editable-text";
 
 export default async function OmPage() {
   const supabase = await createClient();
@@ -22,24 +22,32 @@ export default async function OmPage() {
       <section className="relative pb-6 lg:pt-40 px-4 md:px-6 bg-[#fffaf6] overflow-hidden">
         <div className="mx-auto max-w-[1257px]">
           <div className="text-center">
-            <h1 className="mb-6" style={{ 
-              fontWeight: 800, 
-              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-              fontSize: 'clamp(32px, 5vw, 49px)',
-              lineHeight: '1.51em',
-              color: '#2c2524'
-            }}>
-              Mød vores team
-            </h1>
-            <p className="text-lg mb-8 text-muted-foreground leading-[1.9] max-w-2xl mx-auto" style={{
-              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-              fontWeight: 500,
-              fontSize: '18px',
-              lineHeight: '1.89em',
-              color: '#817d7d'
-            }}>
-              Vi er et dedikeret team med forkærlighed for dyr og tryghed.
-            </p>
+            <EditableText
+              contentKey="team_page_title"
+              defaultValue="Mød vores team"
+              tag="h1"
+              className="mb-6"
+              style={{ 
+                fontWeight: 800, 
+                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                fontSize: 'clamp(32px, 5vw, 49px)',
+                lineHeight: '1.51em',
+                color: '#2c2524'
+              }}
+            />
+            <EditableText
+              contentKey="team_page_subtitle"
+              defaultValue="Vi er et dedikeret team med forkærlighed for dyr og tryghed."
+              tag="p"
+              className="text-lg mb-8 text-muted-foreground leading-[1.9] max-w-2xl mx-auto"
+              style={{
+                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                fontWeight: 500,
+                fontSize: '18px',
+                lineHeight: '1.89em',
+                color: '#817d7d'
+              }}
+            />
           </div>
         </div>
       </section>
@@ -72,24 +80,34 @@ export default async function OmPage() {
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="mb-6" style={{ 
-                fontWeight: 800, 
-                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: 'clamp(28px, 4vw, 42px)',
-                lineHeight: '1.51em',
-                color: '#2c2524'
-              }}>
-                Klinikken
-              </h2>
-              <div className="space-y-6">
-                <p className="text-lg leading-[1.9]" style={{
+              <EditableText
+                contentKey="clinic_section_heading"
+                defaultValue="Klinikken"
+                tag="h2"
+                className="mb-6"
+                style={{ 
+                  fontWeight: 800, 
                   fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                  fontWeight: 500,
-                  fontSize: '18px',
-                  lineHeight: '1.89em',
-                  color: '#817d7d'
-                }}>
-                 Siden jeg blev færdig dyrlæge, har jeg haft et ønske om at skabe min egen klinik. I årene 2015-2018 arbejdede jeg som vagtdyrlæge på konsulentbasis og fik snuset lidt til livet som selvstændig. Nu har jeg taget springet og er igen selvstændig dyrlæge. </p>
+                  fontSize: 'clamp(28px, 4vw, 42px)',
+                  lineHeight: '1.51em',
+                  color: '#2c2524'
+                }}
+              />
+              <div className="space-y-6">
+                <EditableText
+                  contentKey="about_clinic_description"
+                  defaultValue="Siden jeg blev færdig dyrlæge, har jeg haft et ønske om at skabe min egen klinik. I årene 2015-2018 arbejdede jeg som vagtdyrlæge på konsulentbasis og fik snuset lidt til livet som selvstændig. Nu har jeg taget springet og er igen selvstændig dyrlæge."
+                  tag="p"
+                  multiline={true}
+                  className="text-lg leading-[1.9]"
+                  style={{
+                    fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                    fontWeight: 500,
+                    fontSize: '18px',
+                    lineHeight: '1.89em',
+                    color: '#817d7d'
+                  }}
+                />
               </div>
             </div>
             
@@ -121,36 +139,43 @@ export default async function OmPage() {
             </div>
             
             <div className="order-1 lg:order-2">
-              <h2 className="mb-6" style={{ 
-                fontWeight: 800, 
-                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: 'clamp(28px, 4vw, 42px)',
-                lineHeight: '1.51em',
-                color: '#2c2524'
-              }}>
-                Om os
-              </h2>
-              <div className="space-y-6">
-                <p className="text-lg leading-[1.9]" style={{
+              <EditableText
+                contentKey="about_us_section_heading"
+                defaultValue="Om os"
+                tag="h2"
+                className="mb-6"
+                style={{ 
+                  fontWeight: 800, 
                   fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                  fontWeight: 500,
-                  fontSize: '18px',
-                  lineHeight: '1.89em',
-                  color: '#817d7d'
-                }}>
-                  Jeg ønsker at skabe en klinik, hvor der er tid og ro til at gennemføre undersøgelser og behandlinger uden unødig stress for dyret.
+                  fontSize: 'clamp(28px, 4vw, 42px)',
+                  lineHeight: '1.51em',
+                  color: '#2c2524'
+                }}
+              />
+              <div className="space-y-6">
+                <EditableText
+                  contentKey="about_us_description"
+                  defaultValue="Jeg ønsker at skabe en klinik, hvor der er tid og ro til at gennemføre undersøgelser og behandlinger uden unødig stress for dyret.
 
-Hvor der er tid til grundig gennemgang af behandlingsplan og vejledning og hvor humor og latter går hånd i hånd med høj faglighed.
-                </p>
+Hvor der er tid til grundig gennemgang af behandlingsplan og vejledning og hvor humor og latter går hånd i hånd med høj faglighed."
+                  tag="p"
+                  multiline={true}
+                  allowHtml={true}
+                  className="text-lg leading-[1.9]"
+                  style={{
+                    fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                    fontWeight: 500,
+                    fontSize: '18px',
+                    lineHeight: '1.89em',
+                    color: '#817d7d'
+                  }}
+                />
                 
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

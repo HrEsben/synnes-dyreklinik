@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import Footer from "@/components/footer";
 import { createClient } from "@/lib/supabase/server";
 
 interface TeamMemberPageProps {
@@ -37,15 +36,19 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         bioContent = employee.bio; // Already HTML
       }
     } catch {
-      // Not JSON - check if it contains HTML tags
+      // Not JSON - treat as plain text and convert line breaks to HTML
       if (employee.bio.includes('<') && employee.bio.includes('>')) {
         bioContent = employee.bio; // Already HTML
       } else {
-        // Plain text - convert to HTML paragraphs
+        // Plain text - convert line breaks to HTML
         bioContent = employee.bio
-          .split('\n\n')
+          .split('\n\n') // Split on double line breaks for paragraphs
           .filter((p: string) => p.trim().length > 0)
-          .map((p: string) => `<p>${p.trim()}</p>`)
+          .map((p: string) => {
+            // Convert single line breaks within paragraphs to <br> tags
+            const withBreaks = p.trim().replace(/\n/g, '<br>');
+            return `<p>${withBreaks}</p>`;
+          })
           .join('');
       }
     }
@@ -116,11 +119,14 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
               Om mig
             </h2>
             
-                      <div className="space-y-4 text-base leading-relaxed text-gray-600">
+            <div className="space-y-4 text-base leading-relaxed text-gray-600">
             {bioContent ? (
               <div 
-                className="prose prose-gray max-w-none"
+                className="prose prose-gray max-w-none [&>p]:mb-4 [&>p:last-child]:mb-0"
                 dangerouslySetInnerHTML={{ __html: bioContent }}
+                style={{
+                  lineHeight: '1.6'
+                }}
               />
             ) : (
               <p className="text-gray-500 italic">
@@ -131,9 +137,6 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

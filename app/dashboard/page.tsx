@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import UserProfile from '@/components/auth/user-profile'
+import TeamManagement from '@/components/team-management'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -11,54 +12,62 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
+  // Fetch team members
+  const { data: employees, error } = await supabase
+    .from('employees')
+    .select('*')
+    .order('id', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching employees:', error)
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Velkommen til Synnes Dyreklinik
+    <div className="min-h-screen pt-30 bg-[#fffaf6]">
+      {/* Hero Section */}
+      <section className="relative px-4 md:px-6 overflow-hidden">
+        <div className="mx-auto max-w-[1257px]">
+          <div className="">
+            <h1 className="" style={{ 
+              fontWeight: 800, 
+              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+              fontSize: 'clamp(32px, 5vw, 49px)',
+              lineHeight: '1.51em',
+              color: '#2c2524'
+            }}>
+              Administration
             </h1>
-            <p className="mt-2 text-gray-600">
-              Administrer dine aftaler og dit dyrs sundhedsoplysninger
+            <p className="text-lg text-muted-foreground leading-[1.9] max-w-2xl" style={{
+              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '1.89em',
+              color: '#817d7d'
+            }}>
+            Her kan du redigere indholdet på hjemmesiden.<br /> Hvis du har spørgsmål eller der er noget galt, skal du bare ringe til din lillebror.
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Content */}
+      <section className="py-6 px-4 md:px-6">
+        <div className="mx-auto max-w-[1257px]">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* User Profile */}
             <div className="lg:col-span-1">
-              <UserProfile />
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                <UserProfile />
+              </div>
             </div>
 
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                  Mine aftaler
-                </h2>
-                <div className="text-center py-8 text-gray-500">
-                  <p>Ingen kommende aftaler fundet.</p>
-                  <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    Book ny tid
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                  Mine dyr
-                </h2>
-                <div className="text-center py-8 text-gray-500">
-                  <p>Ingen dyr registreret endnu.</p>
-                  <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                    Registrer dyr
-                  </button>
-                </div>
-              </div>
+              <TeamManagement initialEmployees={employees || []} />
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
 }

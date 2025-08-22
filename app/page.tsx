@@ -3,7 +3,7 @@ import Image from "next/image";
 import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
-import Footer from "@/components/footer";
+import EditableText from "@/components/editable-text";
 
 export default async function Home() {
   const supabase = await createClient()
@@ -16,26 +16,33 @@ export default async function Home() {
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12 items-center relative text-center lg:text-left">
             <div className="pt-35 order-1 lg:order-1">
-              <h1 className="mb-4" style={{ 
-                fontWeight: 800, 
-                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: '49px',
-                lineHeight: '1.51em',
-                color: '#2c2524'
-              }}>
-                Velkommen hos<br />
-               Synnes Dyreklinik
-              </h1>
-              <p className="text-lg mb-8 text-muted-foreground leading-[1.9]" style={{
-                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontWeight: 500,
-                fontSize: '18px',
-                lineHeight: '1.89em',
-                color: '#817d7d'
-              }}>
-                Jeg er en erfaren dyrlæge med passion for familiens dyr og dyrenes familier. 
-                Med fokus på faglighed, fleksibilitet og tryghed hjælper jeg dig og dine dyr.
-              </p>
+              <EditableText
+                contentKey="homepage_hero_title"
+                defaultValue="Velkommen hos Synnes Dyreklinik"
+                tag="h1"
+                className="mb-4"
+                style={{ 
+                  fontWeight: 800, 
+                  fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                  fontSize: '49px',
+                  lineHeight: '1.51em',
+                  color: '#2c2524'
+                }}
+              />
+              <EditableText
+                contentKey="homepage_hero_description"
+                defaultValue="Jeg er en erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Med fokus på faglighed, fleksibilitet og tryghed hjælper jeg dig og dine dyr."
+                tag="p"
+                multiline={true}
+                className="text-lg mb-8 text-muted-foreground leading-[1.9]"
+                style={{
+                  fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                  fontWeight: 500,
+                  fontSize: '18px',
+                  lineHeight: '1.89em',
+                  color: '#817d7d'
+                }}
+              />
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
                   href="/kontakt">
@@ -68,7 +75,12 @@ export default async function Home() {
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
         <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/letter-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
       <div>
-      <h2 className="font-semibold text-xl mb-5.5 leading-tight tracking-tight">Kontakt mig</h2>
+      <EditableText 
+        contentKey="contact_heading" 
+        defaultValue="Kontakt mig"
+        tag="h2"
+        className="font-semibold text-xl mb-5.5 leading-tight tracking-tight"
+      />
       <Link href="mailto:info@synnesdyreklinik.dk">
       <p className="text-lg font-semibold text-muted-foreground hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300 leading-0 underline">info@synnesdyreklinik.dk</p>
       </Link><br />
@@ -81,18 +93,39 @@ export default async function Home() {
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
         <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/clock-icon.svg" alt="Åbningstider" width={80} height={78} /></div>
       <div>
-      <h2 className="font-semibold text-xl mb-5.5 leading-tight tracking-tight">Åbningstider</h2>
-      <p className="text-lg font-semibold text-muted-foreground leading-6"><span className="text-secondary-foreground">Konsultation:</span><br />
-     Hverdage kl. 8-16</p>
+      <EditableText 
+        contentKey="opening_hours_heading" 
+        defaultValue="Åbningstider"
+        tag="h2"
+        className="font-semibold text-xl mb-5.5 leading-tight tracking-tight"
+      />
+      <div className="text-lg font-semibold text-muted-foreground leading-6">
+        <span className="text-secondary-foreground">Konsultation:</span><br />
+        <EditableText 
+          contentKey="opening_hours" 
+          defaultValue="Hverdage kl. 8-16"
+          className="text-lg font-semibold text-muted-foreground leading-6"
+        />
+      </div>
       </div>
     </div>
     <div className="flex flex-row md:flex-col lg:flex-row mb-0">
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
         <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/map-pin-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
       <div>
-      <h2 className="font-semibold text-xl mb-5.5 leading-tight tracking-tight">Lokation</h2>
-      <p className="text-lg font-semibold text-muted-foreground leading-6">Gammel Skolevej 5, Ejby<br />
-      4070 Kirke Hyllinge</p>
+      <EditableText 
+        contentKey="location_heading" 
+        defaultValue="Lokation"
+        tag="h2"
+        className="font-semibold text-xl mb-5.5 leading-tight tracking-tight"
+      />
+      <EditableText 
+        contentKey="location" 
+        defaultValue="Gammel Skolevej 5, Ejby<br />4070 Kirke Hyllinge"
+        className="text-lg font-semibold text-muted-foreground leading-6"
+        multiline={true}
+        allowHtml={true}
+      />
       </div>
     </div>
   </div>
@@ -101,18 +134,30 @@ export default async function Home() {
       <section className="py-25 px-6 bg-[#fffaf6]">
         <div className="flex flex-col lg:flex-row items-center justify-center">
           <div className="order-2 lg:order-1">
-            <Image src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"} width={488} height={574} alt="Synne og hund" className="rounded-4xl -rotate-4"/>
+            <Image 
+              src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"} 
+              width={488} 
+              height={574} 
+              alt="Synne og hund" 
+              className="rounded-4xl -rotate-4"
+              style={{ width: 'auto', height: 'auto' }}
+            />
           </div>
           <div className="order-1 lg:order-2 mb-16 ml-8 w-full md:w-[611px] lg:max-w-[45%]">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-2.5 lg:mb-6">
-              Kort om mig...
-            </h2>
+            <EditableText 
+              contentKey="about_me_heading" 
+              defaultValue="Kort om mig..."
+              tag="h2"
+              className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-2.5 lg:mb-6"
+            />
             <div className="mb-5 lg:mb-6">
-              <p className="text-muted-foreground text-lg font-semibold leading-8">
-                Mit navn er Synne Fyhn Stephansen. Jeg blev uddannet dyrlæge i 2009. Min erfaring spænder bredt. 
-                Jeg varetager både medicinske udredninger, kirurgiske indgreb samt tandbehandlinger. 
-                Jeg tilser de fleste typer patienter.
-              </p>
+              <EditableText 
+                contentKey="about_me_intro" 
+                defaultValue="Mit navn er Synne Fyhn Stephansen. Jeg blev uddannet dyrlæge i 2009. Min erfaring spænder bredt. Jeg varetager både medicinske udredninger, kirurgiske indgreb samt tandbehandlinger. Jeg tilser de fleste typer patienter."
+                className="text-muted-foreground text-lg font-semibold leading-8"
+                multiline={true}
+                tag="p"
+              />
             </div>
           
           
@@ -170,9 +215,14 @@ export default async function Home() {
       <section className="pt-15 bg-[#611471] text-white">
          <div className="flex flex-col max-w-[1257px] mx-auto lg:flex-row items-center justify-between">
            <div className="">
-             <h2 className="text-3xl md:text-3xl lg:text-5xl leading-10 font-extrabold mb-6">
-               Book en aftale<br />allerede i dag
-             </h2>
+             <EditableText 
+               contentKey="cta_title" 
+               defaultValue="Book en aftale<br />allerede i dag"
+               className="text-3xl md:text-3xl lg:text-5xl leading-10 font-extrabold mb-6 text-white"
+               multiline={true}
+               tag="h2"
+               allowHtml={true}
+             />
 
           
           <div className="flex flex-col sm:flex-row gap-4  mb-12">
@@ -192,14 +242,12 @@ export default async function Home() {
                width={550}
                height={600}
                className=""
+               style={{ width: 'auto', height: 'auto' }}
              />
            
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 
 export default function UserProfile() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+  const router = useRouter()
 
   useEffect(() => {
     const getUser = async () => {
@@ -22,11 +24,15 @@ export default function UserProfile() {
       (event, session) => {
         setUser(session?.user ?? null)
         setLoading(false)
+        // Redirect to front page when signed out
+        if (event === 'SIGNED_OUT') {
+          router.push('/')
+        }
       }
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [supabase.auth, router])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -45,7 +51,7 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-800">Min profil</h2>
         <button
