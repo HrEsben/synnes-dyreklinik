@@ -19,7 +19,7 @@ export default async function OmPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative pb-6 lg:pt-40 px-4 md:px-6 bg-[#fffaf6] overflow-hidden">
+      <section className="relative pb-6 pt-30 px-4 md:px-6 bg-[#fffaf6] overflow-hidden">
         <div className="mx-auto max-w-[1257px]">
           <div className="text-center">
             <EditableText

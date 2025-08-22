@@ -184,9 +184,6 @@ export default function Navigation() {
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-600 hidden sm:block">
-                  {user.email}
-                </span>
                 <BookingPopover>
                   <Button>
                     Book tid
@@ -272,9 +269,6 @@ export default function Navigation() {
           <div className="flex-shrink-0 border-t border-gray-200 pt-4 pb-safe mb-8">
             {user ? (
               <div className="space-y-3">
-                <div className="text-sm text-gray-600 px-4">
-                  {user.email}
-                </div>
                 <Button 
                   onClick={() => {
                     supabase.auth.signOut()

@@ -264,10 +264,10 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full overflow-hidden">
       {/* Team Members Management */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-        <div className="flex justify-between items-center mb-6">
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 lg:p-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 className="text-2xl font-bold" style={{
             fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
             fontWeight: 800,
@@ -275,7 +275,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
           }}>
             Teammedlemmer
           </h2>
-          <Button size="lg" onClick={handleCreate}>
+          <Button size="lg" onClick={handleCreate} className="w-full sm:w-auto">
             Tilføj ny medarbejder
           </Button>
         </div>
@@ -285,16 +285,16 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
             {employees.map((employee) => (
               <div 
                 key={employee.id} 
-                className={`border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all duration-200 ${
+                className={`border border-gray-200 rounded-xl p-4 sm:p-6 hover:shadow-md transition-all duration-200 overflow-hidden ${
                   recentlyUpdatedId === employee.id 
                     ? 'bg-green-50 border-green-200 animate-pulse' 
                     : ''
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center space-x-4 min-w-0 flex-1 max-w-full">
                     {employee.img_url && (
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
                         <Image 
                           src={employee.img_url} 
                           alt={employee.name || 'Team member'}
@@ -304,14 +304,14 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                         />
                       </div>
                     )}
-                    <div>
-                      <h3 className="font-semibold text-lg" style={{
+                    <div className="min-w-0 flex-1 max-w-xs">
+                      <h3 className="font-semibold text-lg truncate overflow-hidden text-ellipsis whitespace-nowrap" style={{
                         fontFamily: 'Poppins, sans-serif',
                         color: '#2c2524'
-                      }}>
+                      }} title={employee.name || 'Unavngivet'}>
                         {employee.name || 'Unavngivet'}
                       </h3>
-                      <p className="text-sm" style={{ color: '#817d7d' }}>
+                      <p className="text-sm truncate overflow-hidden text-ellipsis whitespace-nowrap" style={{ color: '#817d7d' }} title={employee.position || 'Ingen stilling'}>
                         {employee.position || 'Ingen stilling'}
                       </p>
                       {employee.short_link ? (
@@ -332,19 +332,20 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                       )}
                     </div>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mt-4 sm:mt-0">
                     <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={() => handleEdit(employee)}
                       disabled={loading}
+                      className="w-full sm:w-auto"
                     >
                       Rediger
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 w-full sm:w-auto"
                       onClick={() => handleDelete(employee)}
                       disabled={loading}
                     >
@@ -363,48 +364,11 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
             }}>
               Ingen teammedlemmer fundet.
             </p>
-            <Button size="lg" onClick={handleCreate}>
+            <Button size="lg" onClick={handleCreate} className="w-full sm:w-auto">
               Tilføj første medlem
             </Button>
           </div>
         )}
-      </div>
-
-      {/* Website Management */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-        <h2 className="text-2xl font-bold mb-6" style={{
-          fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-          fontWeight: 800,
-          color: '#2c2524'
-        }}>
-          Hjemmeside administration
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Link href="/om">
-            <div className="p-6 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 cursor-pointer group">
-              <h3 className="font-semibold text-lg mb-2 group-hover:text-[#2c2524] transition-colors" style={{
-                fontFamily: 'Poppins, sans-serif'
-              }}>
-                Se Om-siden
-              </h3>
-              <p className="text-sm" style={{ color: '#817d7d' }}>
-                Få et overblik over hvordan teamet præsenteres
-              </p>
-            </div>
-          </Link>
-          <Link href="/">
-            <div className="p-6 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 cursor-pointer group">
-              <h3 className="font-semibold text-lg mb-2 group-hover:text-[#2c2524] transition-colors" style={{
-                fontFamily: 'Poppins, sans-serif'
-              }}>
-                Se forsiden
-              </h3>
-              <p className="text-sm" style={{ color: '#817d7d' }}>
-                Gå til hjemmesidens forside
-              </p>
-            </div>
-          </Link>
-        </div>
       </div>
 
       {/* Modal for Create/Edit */}
@@ -583,11 +547,11 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                 />
               </div>
 
-              <div className="flex space-x-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button
                   type="submit"
                   disabled={loading || uploading || converting}
-                  className="flex-1"
+                  className="flex-1 order-2 sm:order-1"
                 >
                   {converting ? 'Konverterer...' : uploading ? 'Uploader billede...' : loading ? 'Gemmer...' : (editingEmployee ? 'Opdater' : 'Tilføj')}
                 </Button>
@@ -596,7 +560,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                   variant="outline"
                   onClick={() => setIsModalOpen(false)}
                   disabled={loading || uploading || converting}
-                  className="flex-1"
+                  className="flex-1 order-1 sm:order-2"
                 >
                   Annuller
                 </Button>
