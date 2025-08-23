@@ -140,10 +140,10 @@ export default function EditableText({
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleSave}
-          className={`${className} border-2 border-blue-300 rounded px-2 py-1 bg-blue-50 focus:outline-none focus:border-blue-500`}
+          className={`${className} border-2 border-blue-300 rounded px-3 py-2 bg-blue-50 focus:outline-none focus:border-blue-500 w-full`}
           placeholder={placeholder}
           disabled={loading}
-          style={multiline ? { minHeight: '100px', resize: 'vertical' } : {}}
+          style={multiline ? { minHeight: '150px', resize: 'both', minWidth: '300px' } : {}}
         />
         {loading && (
           <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">

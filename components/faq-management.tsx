@@ -233,9 +233,10 @@ export default function FAQManagement() {
                 id="answer"
                 value={formData.answer}
                 onChange={(e) => setFormData(prev => ({ ...prev, answer: e.target.value }))}
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none resize-both"
                 placeholder="Indtast svaret..."
-                rows={3}
+                rows={5}
+                style={{ minHeight: '120px', minWidth: '100%' }}
                 required
               />
             </div>
