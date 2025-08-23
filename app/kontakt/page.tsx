@@ -1,15 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import EditableText from "@/components/editable-text";
 import { Button } from "@/components/ui/button";
 import { FAQSection } from "@/components/faq-section";
 import { defaultFAQItems } from "@/lib/faq-data";
 import { Mail, MapPin, Phone } from "lucide-react";
 
-export default async function KontaktPage() {
-  const supabase = await createClient();
-  
+export default function KontaktPage() {
   return (
     <div className="min-h-screen bg-white">
 

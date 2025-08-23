@@ -74,7 +74,7 @@ export function FAQSection({
         )}
 
         <Accordion type="single" collapsible className="space-y-4">
-          {sortedItems.map((item, index) => (
+          {sortedItems.map((item) => (
             <AccordionItem 
               key={item.id} 
               value={`item-${item.id}`} 

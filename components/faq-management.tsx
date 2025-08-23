@@ -163,7 +163,7 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
       <div className="space-y-3">
         {faqs.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">
-            Ingen spørgsmål endnu. Klik "Tilføj spørgsmål" for at komme i gang.
+            Ingen spørgsmål endnu. Klik &quot;Tilføj spørgsmål&quot; for at komme i gang.
           </p>
         ) : (
           faqs.map((faq, index) => (
