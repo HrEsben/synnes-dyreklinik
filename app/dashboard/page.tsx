@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation'
 import UserProfile from '@/components/auth/user-profile'
 import TeamManagement from '@/components/team-management'
 import FAQManagement from '@/components/faq-management'
-import { defaultFAQItems } from '@/lib/faq-data'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -68,7 +67,7 @@ export default async function DashboardPage() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               <TeamManagement initialEmployees={employees || []} />
-              <FAQManagement initialFAQs={defaultFAQItems} />
+              <FAQManagement />
             </div>
           </div>
         </div>

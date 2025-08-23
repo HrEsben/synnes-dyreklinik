@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { FAQItem } from "@/components/faq-section"
 import { Button } from "@/components/ui/button"
 
@@ -9,15 +9,33 @@ interface FAQFormData {
   answer: string
 }
 
-interface FAQManagementProps {
-  initialFAQs?: FAQItem[]
-}
+// No props needed for this component currently
+// interface FAQManagementProps {}
 
-export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) {
-  const [faqs, setFaqs] = useState<FAQItem[]>(initialFAQs)
+export default function FAQManagement() {
+  const [faqs, setFaqs] = useState<FAQItem[]>([])
+  const [loading, setLoading] = useState(false)
   const [editingFaq, setEditingFaq] = useState<FAQItem | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [formData, setFormData] = useState<FAQFormData>({ question: "", answer: "" })
+
+  // Fetch FAQs from API
+  const fetchFaqs = async () => {
+    try {
+      const response = await fetch('/api/faqs')
+      if (response.ok) {
+        const data = await response.json()
+        setFaqs(data.faqs || [])
+      }
+    } catch (error) {
+      console.error('Error fetching FAQs:', error)
+    }
+  }
+
+  // Load FAQs on component mount
+  useEffect(() => {
+    fetchFaqs()
+  }, [])
 
   const handleAdd = () => {
     setEditingFaq(null)
@@ -31,13 +49,30 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
     setIsFormOpen(true)
   }
 
-  const handleDelete = (id: string) => {
-    const newFaqs = faqs.filter(faq => faq.id !== id)
-    setFaqs(newFaqs)
-    console.log('Saving FAQ items:', newFaqs)
+    const handleDelete = async (id: number) => {
+    if (!confirm("Er du sikker på at du vil slette dette spørgsmål?")) return
+
+    setLoading(true)
+
+    try {
+      const response = await fetch(`/api/faqs/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setFaqs(faqs.filter(faq => faq.id !== id))
+      } else {
+        alert('Fejl ved sletning af spørgsmål')
+      }
+    } catch (error) {
+      console.error('Error deleting FAQ:', error)
+      alert('Fejl ved sletning af spørgsmål')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!formData.question.trim() || !formData.answer.trim()) {
@@ -45,31 +80,62 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
       return
     }
 
-    let newFaqs: FAQItem[]
+    setLoading(true)
 
-    if (editingFaq) {
-      // Update existing FAQ
-      newFaqs = faqs.map(faq => 
-        faq.id === editingFaq.id 
-          ? { ...faq, question: formData.question, answer: formData.answer }
-          : faq
-      )
-    } else {
-      // Add new FAQ
-      const newFaq: FAQItem = {
-        id: Date.now().toString(),
-        question: formData.question,
-        answer: formData.answer,
-        order: faqs.length + 1
+    try {
+      if (editingFaq) {
+        // Update existing FAQ
+        const response = await fetch(`/api/faqs/${editingFaq.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: formData.question.trim(),
+            answer: formData.answer.trim(),
+          }),
+        })
+
+        if (response.ok) {
+          const { faq: updatedFaq } = await response.json()
+          setFaqs(faqs.map(faq => 
+            faq.id === editingFaq.id ? updatedFaq : faq
+          ))
+        } else {
+          alert('Fejl ved opdatering af spørgsmål')
+          return
+        }
+      } else {
+        // Add new FAQ
+        const response = await fetch('/api/faqs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: formData.question.trim(),
+            answer: formData.answer.trim(),
+          }),
+        })
+
+        if (response.ok) {
+          const { faq: newFaq } = await response.json()
+          setFaqs([...faqs, newFaq])
+        } else {
+          alert('Fejl ved oprettelse af spørgsmål')
+          return
+        }
       }
-      newFaqs = [...faqs, newFaq]
-    }
 
-    setFaqs(newFaqs)
-    console.log('Saving FAQ items:', newFaqs)
-    setIsFormOpen(false)
-    setFormData({ question: "", answer: "" })
-    setEditingFaq(null)
+      setIsFormOpen(false)
+      setFormData({ question: "", answer: "" })
+      setEditingFaq(null)
+    } catch (error) {
+      console.error('Error saving FAQ:', error)
+      alert('Fejl ved gemning af spørgsmål')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleCancel = () => {
@@ -78,7 +144,7 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
     setEditingFaq(null)
   }
 
-  const moveItem = (id: string, direction: 'up' | 'down') => {
+  const moveItem = async (id: number, direction: 'up' | 'down') => {
     const currentIndex = faqs.findIndex(faq => faq.id === id)
     if (currentIndex === -1) return
 
@@ -89,16 +155,44 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
 
     [newFaqs[currentIndex], newFaqs[targetIndex]] = [newFaqs[targetIndex], newFaqs[currentIndex]]
     
-    newFaqs.forEach((faq, index) => {
-      faq.order = index + 1
-    })
+    // Update display_order for all items
+    const updatedFaqs = newFaqs.map((faq, index) => ({
+      ...faq,
+      display_order: index + 1
+    }))
 
-    setFaqs(newFaqs)
-    console.log('Saving FAQ items:', newFaqs)
+    setFaqs(updatedFaqs)
+
+    // Update order in database
+    try {
+      const orderUpdates = updatedFaqs.map((faq, index) => ({
+        id: faq.id,
+        display_order: index + 1
+      }))
+
+      const response = await fetch('/api/faqs/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items: orderUpdates }),
+      })
+
+      if (!response.ok) {
+        // Revert on error
+        setFaqs(faqs)
+        alert('Fejl ved opdatering af rækkefølge')
+      }
+    } catch (error) {
+      console.error('Error reordering FAQs:', error)
+      // Revert on error
+      setFaqs(faqs)
+      alert('Fejl ved opdatering af rækkefølge')
+    }
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+    <div className="bg-white rounded-2xl border border-gray-100 p-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold" style={{
           fontFamily: 'Poppins, sans-serif',
@@ -106,10 +200,7 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
         }}>
           Ofte stillede spørgsmål
         </h2>
-        <Button 
-          onClick={handleAdd}
-          className="bg-[#f97561] hover:bg-[#e86850]"
-        >
+        <Button size="default" onClick={handleAdd} className="w-full sm:w-auto">
           Tilføj spørgsmål
         </Button>
       </div>
@@ -149,10 +240,10 @@ export default function FAQManagement({ initialFAQs = [] }: FAQManagementProps) 
               />
             </div>
             <div className="flex gap-3">
-              <Button type="submit" className="bg-[#f97561] hover:bg-[#e86850]">
-                {editingFaq ? "Gem ændringer" : "Tilføj spørgsmål"}
+              <Button type="submit" className="bg-[#f97561] hover:bg-[#e86850]" disabled={loading}>
+                {loading ? "Gemmer..." : (editingFaq ? "Gem ændringer" : "Tilføj spørgsmål")}
               </Button>
-              <Button type="button" variant="outline" onClick={handleCancel}>
+              <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
                 Annuller
               </Button>
             </div>

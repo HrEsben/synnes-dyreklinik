@@ -250,7 +250,10 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
         if (error) throw error
 
         setEmployees(prev => [...prev, data])
-        alert('Nyt teammedlem tilføjet!')
+        
+        // Trigger pulse animation for the new employee
+        setRecentlyUpdatedId(data.id)
+        setTimeout(() => setRecentlyUpdatedId(null), 2000) // Clear after 2 seconds
       }
 
       setIsModalOpen(false)
@@ -275,7 +278,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
           }}>
             Teammedlemmer
           </h2>
-          <Button size="lg" onClick={handleCreate} className="w-full sm:w-auto">
+          <Button size="default" onClick={handleCreate} className="w-full sm:w-auto">
             Tilføj ny medarbejder
           </Button>
         </div>

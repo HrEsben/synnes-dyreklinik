@@ -1,11 +1,12 @@
-import Image from "next/image";
 import TeamMember from "@/components/team-member";
 import { createClient } from "@/lib/supabase/server";
 import Divider from "@/components/divider";
 import EditableText from "@/components/editable-text";
+import EditableImage from "@/components/editable-image";
 
 export default async function OmPage() {
-  const supabase = await createClient();
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
   
   // Fetch all employees from the database
   const { data: employees, error } = await supabase
@@ -112,12 +113,15 @@ export default async function OmPage() {
             </div>
             
             <div className="relative">
-              <Image
-                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/katkigger.jpg"
+              <EditableImage
+                imageKey="about-cat"
+                fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/katkigger.jpg"
                 alt="Kat kigger"
                 width={600}
                 height={500}
                 className="w-full h-96 object-cover rounded-4xl rotate-z-3"
+                isAuthenticated={!!user}
+                editable={true}
               />
             </div>
           </div>
@@ -129,12 +133,15 @@ export default async function OmPage() {
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
-              <Image
-                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/hundligger.jpg"
-                alt="Synne working at the clinic"
+              <EditableImage
+                imageKey="about-dog"
+                fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/hundligger.jpg"
+                alt="Hund ligger"
                 width={600}
                 height={500}
                 className="w-full h-96 object-cover rounded-4xl -rotate-z-3"
+                isAuthenticated={!!user}
+                editable={true}
               />
             </div>
             

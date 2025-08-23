@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
 import EditableText from "@/components/editable-text";
+import EditableImage from "@/components/editable-image";
 
 export default async function Home() {
   const supabase = await createClient()
@@ -134,13 +135,16 @@ export default async function Home() {
       <section className="py-25 px-6 bg-[#fffaf6]">
         <div className="flex flex-col lg:flex-row items-center justify-center">
           <div className="order-2 lg:order-1">
-            <Image 
-              src={"https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"} 
-              width={488} 
-              height={574} 
-              alt="Synne og hund" 
+            <EditableImage
+              imageKey="hero-synne-dog"
+              fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"
+              alt="Synne og hund"
+              width={488}
+              height={574}
               className="rounded-4xl -rotate-4"
               style={{ width: 'auto', height: 'auto' }}
+              isAuthenticated={!!user}
+              editable={true}
             />
           </div>
           <div className="order-1 lg:order-2 mb-16 ml-8 w-full md:w-[611px] lg:max-w-[45%]">
@@ -236,15 +240,17 @@ export default async function Home() {
           </div>
           </div>
           <div className="flex-shrink-0 mt-[-30px] lg:mt-[-157px]">
-             <Image
-               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/sideeye_synne.webp"
+             <EditableImage
+               imageKey="hero-synne-portrait"
+               fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/sideeye_synne.webp"
                alt="Synne dyrlæge"
                width={550}
                height={600}
                className=""
                style={{ width: 'auto', height: 'auto' }}
+               isAuthenticated={!!user}
+               editable={false}
              />
-           
           </div>
         </div>
       </section>

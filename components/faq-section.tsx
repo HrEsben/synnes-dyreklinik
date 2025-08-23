@@ -9,10 +9,13 @@ import {
 } from "@/components/ui/accordion"
 
 export interface FAQItem {
-  id: string
+  id: number
   question: string
   answer: string
-  order?: number
+  display_order: number
+  is_active?: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 interface FAQSectionProps {
@@ -23,7 +26,7 @@ interface FAQSectionProps {
   showTitle?: boolean
   editable?: boolean
   onEdit?: (item: FAQItem) => void
-  onDelete?: (id: string) => void
+  onDelete?: (id: number) => void
   onAdd?: () => void
 }
 
@@ -38,7 +41,7 @@ export function FAQSection({
   onDelete,
   onAdd
 }: FAQSectionProps) {
-  const sortedItems = items.sort((a, b) => (a.order || 0) - (b.order || 0))
+  const sortedItems = items.sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
 
   return (
     <section className={`py-15 px-4 md:px-6 bg-[#fbfbfb] ${className}`}>
