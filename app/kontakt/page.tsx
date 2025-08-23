@@ -3,6 +3,9 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import EditableText from "@/components/editable-text";
 import { Button } from "@/components/ui/button";
+import { FAQSection } from "@/components/faq-section";
+import { defaultFAQItems } from "@/lib/faq-data";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 export default async function KontaktPage() {
   const supabase = await createClient();
@@ -11,7 +14,7 @@ export default async function KontaktPage() {
     <div className="min-h-screen bg-white">
 
       {/* Contact Section */}
-      <section className="pt-30 lg:pt-40 px-4 md:px-6 bg-[#fffaf6]">
+      <section className="pt-30 pb-15 lg:pt-40 px-4 md:px-6 bg-[#fffaf6] curved-bottom">
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Contact Info */}
@@ -37,64 +40,37 @@ export default async function KontaktPage() {
 
               <div className="space-y-6">
                 {/* Phone */}
-                <Link href="tel:49400599" className="flex items-center space-x-4 group">
-                  <div className="w-12 h-12 bg-[#ffca0e] rounded-full flex items-center justify-center flex-shrink-0">
-                    <Image 
-                      src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/phone-icon.svg" 
-                      alt="Phone" 
-                      width={24} 
-                      height={24}
-                      className="w-6 h-6"
-                    />
+                <Link href="tel:49400599" className="flex items-center space-x-4 hover:text-[#f97561] transition-all hover:translate-x-1 ease-in duration-300">
+                  <div className="w-10 h-10 bg-[#f97561] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone color="#fff" size={20} />
                   </div>
-                  <span className="text-lg font-semibold group-hover:text-[#f97561] transition-colors" style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    color: '#2c2524'
-                  }}>
+                  <span className="text-lg font-semibold">
                     49400599
                   </span>
                 </Link>
 
                 {/* Email */}
-                <Link href="mailto:info@synnesdyreklinik.dk" className="flex items-center space-x-4 group">
-                  <div className="w-12 h-12 bg-[#ffca0e] rounded-full flex items-center justify-center flex-shrink-0">
-                    <Image 
-                      src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/letter-icon.svg" 
-                      alt="Email" 
-                      width={24} 
-                      height={24}
-                      className="w-6 h-6"
-                    />
+                <Link href="mailto:info@synnesdyreklinik.dk" className="flex items-center space-x-4 hover:text-[#f97561] transition-all hover:translate-x-1 ease-in duration-300">
+                  <div className="w-10 h-10 bg-[#f97561] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail color="#fff" size={20} />
                   </div>
-                  <span className="text-lg font-semibold group-hover:text-[#f97561] transition-colors" style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    color: '#2c2524'
-                  }}>
+                  <span className="text-lg font-semibold transition-colors">
                     info@synnesdyreklinik.dk
                   </span>
                 </Link>
 
                 {/* Location */}
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-[#ffca0e] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Image 
-                      src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/map-pin-icon.svg" 
-                      alt="Location" 
-                      width={24} 
-                      height={24}
-                      className="w-6 h-6"
-                    />
+                <Link href="https://www.google.com/maps?q=Gammel+Skolevej+5,+Ejby,+4070+Kirke+Hyllinge" className="flex items-center space-x-4 hover:text-[#f97561] transition-all hover:translate-x-1 ease-in duration-300">
+                  <div className="w-10 h-10 bg-[#f97561] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <MapPin color="#fff" size={20} />
                   </div>
                   <div>
-                    <p className="text-lg font-semibold leading-relaxed" style={{
-                      fontFamily: 'Poppins, sans-serif',
-                      color: '#2c2524'
-                    }}>
+                    <p className="text-lg font-semibold leading-relaxed">
                       Gammel Skolevej 5, Ejby<br />
                       4070 Kirke Hyllinge
                     </p>
                   </div>
-                </div>
+                </Link>
               </div>
             </div>
 
@@ -218,97 +194,7 @@ export default async function KontaktPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 lg:py-24 px-4 md:px-6 bg-white">
-        <div className="mx-auto max-w-[1257px]">
-          <div className="text-center mb-12">
-            <h2 className="mb-4" style={{ 
-              fontWeight: 800, 
-              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-              fontSize: 'clamp(28px, 4vw, 42px)',
-              lineHeight: '1.51em',
-              color: '#2c2524'
-            }}>
-              Ofte stillede spørgsmål
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto" style={{
-              fontFamily: 'Poppins, sans-serif',
-              color: '#817d7d'
-            }}>
-              Nedenfor har jeg besvaret nogle de spørgsmål jeg oftest får, når I booker en konsultation.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {/* FAQ Item 1 */}
-            <div className="border border-gray-200 rounded-xl p-6 bg-[#fffaf6]">
-              <h3 className="font-semibold text-lg mb-3 flex items-center" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#2c2524'
-              }}>
-                <span className="w-8 h-8 bg-[#ffca0e] rounded-full flex items-center justify-center text-black text-sm font-bold mr-3">?</span>
-                Hvordan booker jeg en tid?
-              </h3>
-              <p className="text-muted-foreground ml-11" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#817d7d'
-              }}>
-                Du kan ringe til mig på telefon 49 40 05 99 eller sende en email til info@synnesdyreklinik.dk. Jeg vender tilbage hurtigst muligt med ledige tider.
-              </p>
-            </div>
-
-            {/* FAQ Item 2 */}
-            <div className="border border-gray-200 rounded-xl p-6 bg-[#fffaf6]">
-              <h3 className="font-semibold text-lg mb-3 flex items-center" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#2c2524'
-              }}>
-                <span className="w-8 h-8 bg-[#ffca0e] rounded-full flex items-center justify-center text-black text-sm font-bold mr-3">?</span>
-                Hvilke typer behandlinger tilbydes?
-              </h3>
-              <p className="text-muted-foreground ml-11" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#817d7d'
-              }}>
-                Jeg tilbyder medicinske udredninger, kirurgiske indgreb, tandbehandlinger og konsultationer for de fleste typer kæledyr.
-              </p>
-            </div>
-
-            {/* FAQ Item 3 */}
-            <div className="border border-gray-200 rounded-xl p-6 bg-[#fffaf6]">
-              <h3 className="font-semibold text-lg mb-3 flex items-center" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#2c2524'
-              }}>
-                <span className="w-8 h-8 bg-[#ffca0e] rounded-full flex items-center justify-center text-black text-sm font-bold mr-3">?</span>
-                Hvad koster det – er der en prisliste?
-              </h3>
-              <p className="text-muted-foreground ml-11" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#817d7d'
-              }}>
-                Priserne varierer efter behandlingstype. Jeg giver altid et estimat før behandlingen påbegyndes, så der ikke er nogle overraskelser.
-              </p>
-            </div>
-
-            {/* FAQ Item 4 */}
-            <div className="border border-gray-200 rounded-xl p-6 bg-[#fffaf6]">
-              <h3 className="font-semibold text-lg mb-3 flex items-center" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#2c2524'
-              }}>
-                <span className="w-8 h-8 bg-[#ffca0e] rounded-full flex items-center justify-center text-black text-sm font-bold mr-3">?</span>
-                Kommer du på hjemmebesøg?
-              </h3>
-              <p className="text-muted-foreground ml-11" style={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#817d7d'
-              }}>
-                Ja, i nogle tilfælde giver det mening at komme på hjemmebesøg. Og afhængigt af behandlingen eller andre udfordringer kommer jeg gerne på hjemmebesøg. Ring og hør om det giver mening, at jeg kommer forbi hjemme hos dig.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <FAQSection items={defaultFAQItems} />
 
      
     </div>

@@ -1,7 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import UserProfile from '@/components/auth/user-profile'
 import TeamManagement from '@/components/team-management'
+import FAQManagement from '@/components/faq-management'
+import { defaultFAQItems } from '@/lib/faq-data'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -46,6 +49,16 @@ export default async function DashboardPage() {
             }}>
             Her kan du redigere indholdet på hjemmesiden.<br /> Hvis du har spørgsmål eller der er noget galt, skal du bare ringe til din lillebror.
             </p>
+            
+            {/* Quick Actions */}
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                href="/kontakt"
+                className="bg-[#f97561] text-white px-6 py-3 rounded-lg hover:bg-[#e86850] transition-colors font-medium"
+              >
+                Se kontaktside
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -62,8 +75,9 @@ export default async function DashboardPage() {
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-8">
               <TeamManagement initialEmployees={employees || []} />
+              <FAQManagement initialFAQs={defaultFAQItems} />
             </div>
           </div>
         </div>
