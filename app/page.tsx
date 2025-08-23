@@ -18,7 +18,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-10 lg:py-32 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom">
+      <section className="relative py-10 lg:py-32 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom min-h-[600px] lg:min-h-[700px]">
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12 items-center relative text-center lg:text-left">
             <div className="pt-35 order-1 lg:order-1">
@@ -78,8 +78,15 @@ export default async function Home() {
  <section className="lg:pt-35.5 pt-24 border-b-1 border-[#e0dbdb] pb-25 lg:pb-24 max-w-[1257px] mx-auto">
   <div className="flex flex-col md:flex-row justify-between mx-6 lg:mx-0">
     <div className="flex flex-row md:flex-col lg:flex-row mb-12 md:mb-0">
-      <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
-        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/letter-icon.svg" alt="Kontakt klinikken" width={80} height={78} /></div>
+      <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0 w-[80px] h-[78px] flex-shrink-0">
+        <Image 
+          src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/letter-icon.svg" 
+          alt="Kontakt klinikken" 
+          width={80} 
+          height={78}
+          priority
+        />
+      </div>
       <div>
       <EditableText 
         contentKey="contact_heading" 
@@ -96,8 +103,15 @@ export default async function Home() {
       </div>
     </div>
     <div className="flex flex-row md:flex-col lg:flex-row mb-12 md:mb-0">
-      <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0">
-        <Image src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/clock-icon.svg" alt="Åbningstider" width={80} height={78} /></div>
+      <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0 w-[80px] h-[78px] flex-shrink-0">
+        <Image 
+          src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/icons/clock-icon.svg" 
+          alt="Åbningstider" 
+          width={80} 
+          height={78}
+          priority
+        />
+      </div>
       <div>
       <EditableText 
         contentKey="opening_hours_heading" 

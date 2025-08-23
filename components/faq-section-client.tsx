@@ -30,15 +30,12 @@ export function FAQSectionClient({
             setFaqs(data.faqs)
           } else {
             // Fallback to default FAQs if no server data
-            console.log('No FAQs found on server, using defaults')
             setFaqs(defaultFAQItems)
           }
         } else {
-          console.log('Failed to fetch FAQs from server, using defaults')
           setFaqs(defaultFAQItems)
         }
-      } catch (error) {
-        console.log('Error fetching FAQs, using defaults:', error)
+      } catch {
         setFaqs(defaultFAQItems)
       } finally {
         setLoading(false)

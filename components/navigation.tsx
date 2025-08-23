@@ -36,14 +36,22 @@ export default function Navigation() {
   }, [supabase.auth])
 
   useEffect(() => {
+    let ticking = false
+
     const handleScroll = () => {
-      setScrollY(window.scrollY)
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrollY(window.scrollY)
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
     // Set initial scroll position on mount
     setScrollY(window.scrollY)
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -83,22 +91,28 @@ export default function Navigation() {
             <div className="flex items-center">
               {/* Combined logo with icon and text */}
               <div className="flex items-center space-x-3 transform transition-transform duration-300 ease-in-out hover:scale-105">
-                <Image
-                  src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
-                  alt="Synnes Dyreklinik Icon"
-                  width={60}
-                  height={60}
-                  className="h-15 w-auto"
-                  style={{ height: '60px' }}
-                />
-                <Image
-                  src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
-                  alt="Synnes Dyreklinik Text"
-                  width={180}
-                  height={60}
-                  className="h-12 w-auto"
-                  style={{ height: '48px' }}
-                />
+                <div className="w-[60px] h-[60px] flex-shrink-0">
+                  <Image
+                    src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
+                    alt="Synnes Dyreklinik Icon"
+                    width={60}
+                    height={60}
+                    className="h-15 w-auto"
+                    style={{ height: '60px' }}
+                    priority
+                  />
+                </div>
+                <div className="w-[180px] h-[48px] flex-shrink-0">
+                  <Image
+                    src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
+                    alt="Synnes Dyreklinik Text"
+                    width={180}
+                    height={60}
+                    className="h-12 w-auto"
+                    style={{ height: '48px' }}
+                    priority
+                  />
+                </div>
               </div>
             </div>
             <div className="flex items-center">
@@ -124,22 +138,28 @@ export default function Navigation() {
             <Link href="/" className="flex items-center">
               {/* Combined logo with icon and text */}
               <div className="flex items-center space-x-4 transform transition-transform duration-300 ease-in-out hover:scale-105">
-                <Image
-                  src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
-                  alt="Synnes Dyreklinik Icon"
-                  width={60}
-                  height={60}
-                  className="w-auto"
-                  style={{ height: '60px' }}
-                />
-                <Image
-                  src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
-                  alt="Synnes Dyreklinik Text"
-                  width={200}
-                  height={60}
-                  className="w-auto"
-                  style={{ height: '50px' }}
-                />
+                <div className="w-[60px] h-[60px] flex-shrink-0">
+                  <Image
+                    src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
+                    alt="Synnes Dyreklinik Icon"
+                    width={60}
+                    height={60}
+                    className="w-auto"
+                    style={{ height: '60px' }}
+                    priority
+                  />
+                </div>
+                <div className="w-[180px] h-[48px] flex-shrink-0">
+                  <Image
+                    src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
+                    alt="Synnes Dyreklinik Text"
+                    width={200}
+                    height={60}
+                    className="w-auto"
+                    style={{ height: '50px' }}
+                    priority
+                  />
+                </div>
               </div>
             </Link>
           </div>

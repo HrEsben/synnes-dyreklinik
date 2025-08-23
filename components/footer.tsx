@@ -8,13 +8,15 @@ export default function Footer() {
       <div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="col-span-3 lg:col-span-1">
-            <Image 
-              src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg" 
-              alt="Synnes dyreklinik" 
-              width={120} 
-              height={50} 
-              className="mb-4"
-            />
+            <div className="w-[120px] h-[50px] mb-4">
+              <Image 
+                src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg" 
+                alt="Synnes dyreklinik" 
+                width={120} 
+                height={50} 
+                className="mb-4"
+              />
+            </div>
             <p className="leading-6 text-base font-semibold max-w-[310px] mb-8">
               Vi glæder os til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
             </p>

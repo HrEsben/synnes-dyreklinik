@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 
 interface MousePosition {
@@ -10,27 +10,73 @@ interface MousePosition {
 
 export default function InteractiveHero() {
   const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: 0 })
+  const [viewportCenter, setViewportCenter] = useState({ x: 0, y: 0 })
+  const frameRef = useRef<number | undefined>(undefined)
+  const lastMousePos = useRef({ x: 0, y: 0 })
+
+  // Cache viewport dimensions to avoid reflows
+  useEffect(() => {
+    const updateViewportCenter = () => {
+      setViewportCenter({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+      })
+    }
+
+    // Set initial values
+    updateViewportCenter()
+
+    // Update on resize, but throttled
+    const handleResize = () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+      frameRef.current = requestAnimationFrame(updateViewportCenter)
+    }
+
+    window.addEventListener('resize', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Calculate position relative to viewport center
-      setMousePosition({
-        x: (e.clientX - window.innerWidth / 2) / 30,
-        y: (e.clientY - window.innerHeight / 2) / 30
+      // Store mouse position to avoid multiple calculations
+      lastMousePos.current = { x: e.clientX, y: e.clientY }
+      
+      // Use requestAnimationFrame to throttle updates and avoid reflows
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+      
+      frameRef.current = requestAnimationFrame(() => {
+        // Use cached viewport center to avoid layout reflows
+        setMousePosition({
+          x: (lastMousePos.current.x - viewportCenter.x) / 30,
+          y: (lastMousePos.current.y - viewportCenter.y) / 30
+        })
       })
     }
 
     // Listen to mouse movement on entire document
-    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mousemove', handleMouseMove, { passive: true })
     
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
     }
-  }, [])
+  }, [viewportCenter])
 
   return (
     <div id="hero-container" className="order-first lg:order-last flex justify-center lg:justify-end relative">
-      <div className="relative w-[500px] h-[600px]">
+      <div className="relative w-[500px] h-[600px] min-h-[600px]">
         {/* Background Shapes */}
         <div 
           className="absolute inset-0 pointer-events-none"

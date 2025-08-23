@@ -94,7 +94,7 @@ export default function EditableText({
         })
         alert(`Error saving content: ${error.message}`)
       } else {
-        console.log('Content saved successfully:', data)
+        // Content saved successfully
         setIsEditing(false)
       }
     } catch (err) {
