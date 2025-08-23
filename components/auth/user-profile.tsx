@@ -36,6 +36,8 @@ export default function UserProfile() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
+    // Refresh the page to clear any editable overlays or cached state
+    window.location.reload()
   }
 
   if (loading) {

@@ -190,7 +190,10 @@ export default function Navigation() {
                   </Button>
                 </BookingPopover>
                 <Button 
-                  onClick={() => supabase.auth.signOut()}
+                  onClick={async () => {
+                    await supabase.auth.signOut()
+                    window.location.reload()
+                  }}
                   variant="outline"
                 >
                   Log ud
@@ -270,9 +273,10 @@ export default function Navigation() {
             {user ? (
               <div className="space-y-3">
                 <Button 
-                  onClick={() => {
-                    supabase.auth.signOut()
+                  onClick={async () => {
+                    await supabase.auth.signOut()
                     setIsMenuOpen(false)
+                    window.location.reload()
                   }}
                   variant="outline"
                   className="w-full"
