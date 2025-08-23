@@ -19,6 +19,8 @@ interface EditableImageProps {
   containerClassName?: string
   isAuthenticated?: boolean
   editable?: boolean // New prop to control if image can be edited
+  priority?: boolean // For LCP optimization
+  fetchPriority?: "high" | "low" | "auto" // For fetch priority
 }
 
 export default function EditableImage({
@@ -31,7 +33,9 @@ export default function EditableImage({
   style = {},
   containerClassName = '',
   isAuthenticated = false,
-  editable = true // Default to true for backwards compatibility
+  editable = true, // Default to true for backwards compatibility
+  priority = false,
+  fetchPriority = "auto"
 }: EditableImageProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
@@ -198,6 +202,8 @@ export default function EditableImage({
           height={height}
           className={className}
           style={style}
+          priority={priority}
+          fetchPriority={fetchPriority}
         />
       </div>
     )
@@ -212,6 +218,8 @@ export default function EditableImage({
         height={height}
         className={className}
         style={style}
+        priority={priority}
+        fetchPriority={fetchPriority}
       />
       
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none group-hover:pointer-events-auto">

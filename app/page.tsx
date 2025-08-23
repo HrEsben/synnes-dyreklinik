@@ -6,6 +6,11 @@ import InteractiveHero from "@/components/interactive-hero";
 import EditableText from "@/components/editable-text";
 import EditableImage from "@/components/editable-image";
 
+export const metadata = {
+  title: 'Synnes Dyreklinik - Velkommen',
+  description: 'Erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Med fokus på faglighed, fleksibilitet og tryghed hjælper jeg dig og dine dyr.',
+}
+
 export default async function Home() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -145,6 +150,8 @@ export default async function Home() {
               style={{ width: 'auto', height: 'auto' }}
               isAuthenticated={!!user}
               editable={true}
+              priority={true}
+              fetchPriority="high"
             />
           </div>
           <div className="order-1 lg:order-2 mb-16 ml-8 w-full md:w-[611px] lg:max-w-[45%]">

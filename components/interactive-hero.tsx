@@ -120,6 +120,7 @@ export default function InteractiveHero() {
               height={750}
               className="scale-100 lg:scale-125"
               priority
+              fetchPriority="high"
             />
             {/* Rounded mask at the bottom */}
             {/* <div className="absolute bottom-0 left-0 right-0 h-32 bg-[#fffaf6] rounded-t-[50px]"></div> */}
