@@ -97,7 +97,7 @@ export default function KontaktPage() {
                       id="name"
                       name="name"
                       placeholder="Indtast dit navn"
-                      className="w-full border border-[var(--neutral-500)] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-1 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
+                      className="w-full border-1 border-[#e0dbdb] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-0.5 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
                     />
                   </div>
 
@@ -116,7 +116,7 @@ export default function KontaktPage() {
                       id="email"
                       name="email"
                       placeholder="Indtast din e-mail"
-                      className="w-full border border-[var(--neutral-500)] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-1 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
+                      className="w-full border-1 border-[#e0dbdb] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-0.5 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
                     />
                   </div>
                 </div>
@@ -137,7 +137,7 @@ export default function KontaktPage() {
                       id="phone"
                       name="phone"
                       placeholder="Indtast dit nummer"
-                      className="w-full border border-[var(--neutral-500)] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-1 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
+                      className="w-full border-1 border-[#e0dbdb] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-0.5 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
                     />
                   </div>
 
@@ -181,7 +181,7 @@ export default function KontaktPage() {
                     name="message"
                     rows={6}
                     placeholder="Skriv din besked her..."
-                    className="w-full border border-[var(--neutral-500)] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] mb-0 px-[19px] py-4 text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] resize-vertical focus:ring-1 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
+                    className="w-full border border-[#e0dbdb] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] mb-0 px-[19px] py-4 text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] resize-vertical focus:ring-0.5 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold placeholder:font-semibold"
                   ></textarea>
                 </div>
 
