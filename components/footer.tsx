@@ -16,7 +16,7 @@ export default function Footer() {
               className="mb-4"
             />
             <p className="leading-6 text-base font-semibold max-w-[310px] mb-8">
-              Jeg glæder mig til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
+              Vi glæder os til at møde dig og dit dyr. Besøg også Synnes Dyreklinik på de sociale medier.
             </p>
             
             <div>

@@ -1,9 +1,17 @@
+"use client"
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FAQSection } from "@/components/faq-section";
-import { defaultFAQItems } from "@/lib/faq-data";
+import { FAQSectionClient } from "@/components/faq-section-client";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Divider from "@/components/divider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function KontaktPage() {
   return (
@@ -31,7 +39,7 @@ export default function KontaktPage() {
                 color: '#817d7d'
               }}>
                 Du er velkommen til at kontakte klinikken.<br />
-                Jeg ser frem til at høre fra dig.
+                Vi ser frem til at høre fra dig.
               </p>
 
               <div className="space-y-6">
@@ -143,18 +151,18 @@ export default function KontaktPage() {
                     }}>
                       Behandling
                     </label>
-                    <select
-                      id="treatment"
-                      name="treatment"
-                      className="w-full border border-[var(--neutral-500)] bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-1 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold"
-                    >
-                      <option value="">Vælg behandling</option>
-                      <option value="konsultation">Konsultation</option>
-                      <option value="vaccination">Vaccination</option>
-                      <option value="operation">Operation</option>
-                      <option value="akut">Akut behandling</option>
-                      <option value="andet">Andet</option>
-                    </select>
+                    <Select name="treatment">
+                      <SelectTrigger className="w-full border focus:border-0 bg-[var(--neutral-100)] text-[var(--primary-1)] rounded-[14px] min-h-[65px] mb-0 px-[19px] text-base leading-[1.375em] transition-[color_.3s,border-color_.3s] focus:ring-1 focus:ring-[#f97561] focus:border-[#f97561] outline-none font-semibold hover:border-[#f97561] data-[state=open]:ring-1 data-[state=open]:ring-[#f97561]">
+                        <SelectValue placeholder="Vælg behandling" className="font-semibold" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200 rounded-[14px] shadow-lg">
+                        <SelectItem value="konsultation" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Konsultation</SelectItem>
+                        <SelectItem value="vaccination" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Vaccination</SelectItem>
+                        <SelectItem value="operation" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Operation</SelectItem>
+                        <SelectItem value="akut" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Akut behandling</SelectItem>
+                        <SelectItem value="andet" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Andet</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -190,7 +198,7 @@ export default function KontaktPage() {
       </section>
       <Divider />
       {/* FAQ Section */}
-      <FAQSection items={defaultFAQItems} />
+      <FAQSectionClient />
 
      
     </div>
