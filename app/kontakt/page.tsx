@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { FAQSection } from "@/components/faq-section";
 import { defaultFAQItems } from "@/lib/faq-data";
 import { Mail, MapPin, Phone } from "lucide-react";
+import Divider from "@/components/divider";
 
 export default function KontaktPage() {
   return (
     <div className="min-h-screen bg-white">
 
       {/* Contact Section */}
-      <section className="pt-30 pb-15 lg:pt-40 px-4 md:px-6 bg-[#fffaf6] curved-bottom">
+      <section className="pt-30 pb-15 lg:pt-40 px-4 md:px-6 bg-[#fffaf6]">
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Contact Info */}
@@ -187,7 +188,7 @@ export default function KontaktPage() {
           </div>
         </div>
       </section>
-
+      <Divider />
       {/* FAQ Section */}
       <FAQSection items={defaultFAQItems} />
 

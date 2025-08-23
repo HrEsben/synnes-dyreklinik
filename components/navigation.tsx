@@ -82,7 +82,7 @@ export default function Navigation() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               {/* Combined logo with icon and text */}
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 transform transition-transform duration-300 ease-in-out hover:scale-105">
                 <Image
                   src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
                   alt="Synnes Dyreklinik Icon"
@@ -123,7 +123,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               {/* Combined logo with icon and text */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 transform transition-transform duration-300 ease-in-out hover:scale-105">
                 <Image
                   src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/favicon-transparent-1024.png"
                   alt="Synnes Dyreklinik Icon"
