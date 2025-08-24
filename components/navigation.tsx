@@ -108,7 +108,7 @@ export default function Navigation() {
                     src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
                     alt="Synnes Dyreklinik"
                     width={180}
-                    height={60}
+                    height={48}
                     className="h-12 w-auto"
                     style={{ height: '48px' }}
                     priority
@@ -154,11 +154,10 @@ export default function Navigation() {
                   <Image
                     src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
                     alt="Synnes Dyreklinik Text"
-                    width={200}
-                    height={60}
-                    className="w-auto"
-                    // style={{ height: '50px' }}
-                    // priority
+                    width={180}
+                    height={48}
+                    className="h-12 w-auto"
+                    style={{ height: '48px' }}
                   />
                 </div>
               </div>
