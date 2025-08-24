@@ -4,8 +4,8 @@ import { Facebook, Instagram, Linkedin, MapPin, Mail, Phone } from "lucide-react
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t-1 text-muted-foreground py-15 lg:px-0 px-6 max-w-[1257px] mx-auto">
-      <div>
+    <footer className="bg-white border-t-1 text-muted-foreground py-15 w-full">
+      <div className="max-w-[1257px] mx-auto lg:px-0 px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="col-span-3 lg:col-span-1">
             <div className="w-[120px] h-[50px] mb-4">

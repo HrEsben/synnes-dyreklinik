@@ -2,7 +2,7 @@ export default function GDPRPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-30 pb-15 lg:pt-40 px-4 md:px-6 bg-[#fffaf6] curved-bottom">
+      <section className="pt-20 pb-15 lg:pt-20 px-4 md:px-6 bg-[#fffaf6] curved-bottom">
         <div className="mx-auto max-w-[1257px]">
           <div className="text-center">
             <h1 className="mb-6" style={{ 

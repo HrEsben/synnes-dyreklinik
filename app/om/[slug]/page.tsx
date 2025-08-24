@@ -60,7 +60,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative pt-30 lg:pt-40 lg:py-24 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom">
+      <section className="relative pt-20 lg:py-24 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom">
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">

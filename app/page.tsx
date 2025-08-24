@@ -18,10 +18,10 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative py-10 lg:py-32 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom min-h-[600px] lg:min-h-[700px]">
+      <section className="relative py-10 lg:py-20 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom min-h-[600px] lg:min-h-[700px]">
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12 items-center relative text-center lg:text-left">
-            <div className="pt-35 order-1 lg:order-1">
+            <div className="order-1 lg:order-1">
               <EditableText
                 contentKey="homepage_hero_title"
                 defaultValue="Velkommen hos Synnes Dyreklinik"

@@ -80,12 +80,13 @@ export default function Navigation() {
     }
   }, [isMenuOpen])
 
-  // Calculate opacity based on scroll position (0 to 0.95)
+  // Calculate opacity based on scroll position (0 to 0.98)
   const backgroundOpacity = Math.min(scrollY / 20, 0.98)
+  const showBackground = scrollY > 5
 
   if (loading) {
     return (
-      <nav className="bg-white">
+      <nav className="bg-transparent">
         <div className="mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
@@ -105,7 +106,7 @@ export default function Navigation() {
                 <div className="w-[180px] h-[48px] flex-shrink-0">
                   <Image
                     src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/logo.svg"
-                    alt="Synnes Dyreklinik Text"
+                    alt="Synnes Dyreklinik"
                     width={180}
                     height={60}
                     className="h-12 w-auto"
@@ -127,10 +128,10 @@ export default function Navigation() {
   return (
     <nav>
       <div 
-        className="px-0 md:px-6 z-50 fixed top-0 right-0 left-0 transition-all duration-300"
+        className={`px-0 md:px-6 z-50 fixed top-0 left-0 right-0 w-full transition-all duration-300 ${showBackground ? 'backdrop-blur-sm' : ''}`}
         style={{
-          backgroundColor: `rgba(255, 255, 255, ${backgroundOpacity})`,
-          boxShadow: `10px 10px 42px 0 rgba(8, 15, 52, ${backgroundOpacity * 0.06})`
+          backgroundColor: showBackground ? `rgba(255, 255, 255, ${backgroundOpacity})` : 'rgba(255, 255, 255, 0)',
+          boxShadow: showBackground ? `10px 10px 42px 0 rgba(8, 15, 52, ${backgroundOpacity * 0.06})` : 'none'
         }}
       >
         <div className="max-w-[1257px] mx-auto px-6 md:px-0 py-5 lg:py-7 flex justify-between items-center">
@@ -145,8 +146,8 @@ export default function Navigation() {
                     width={60}
                     height={60}
                     className="w-auto"
-                    style={{ height: '60px' }}
-                    priority
+                    // style={{ height: '60px' }}
+                    // priority
                   />
                 </div>
                 <div className="w-[180px] h-[48px] flex-shrink-0">
@@ -156,8 +157,8 @@ export default function Navigation() {
                     width={200}
                     height={60}
                     className="w-auto"
-                    style={{ height: '50px' }}
-                    priority
+                    // style={{ height: '50px' }}
+                    // priority
                   />
                 </div>
               </div>

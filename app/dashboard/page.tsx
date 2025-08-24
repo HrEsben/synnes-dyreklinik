@@ -24,7 +24,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen pt-30 bg-[#fffaf6]">
+    <div className="min-h-screen pt-20 bg-[#fffaf6]">
       {/* Hero Section */}
       <section className="relative px-4 md:px-6 overflow-hidden">
         <div className="mx-auto max-w-[1257px]">

@@ -34,10 +34,11 @@ export default function RootLayout({
   return (
     <html lang="da">
       <body
-        className={`${poppins.variable} font-sans antialiased bg-white`}
+        className={`${poppins.variable} font-sans antialiased bg-[#fffaf6]`}
       >
         <div className="mx-auto">
         <Navigation />
+        <div className="h-[78px] lg:h-[88px]" aria-hidden="true" />
           {children}
           <Footer />
         </div>
