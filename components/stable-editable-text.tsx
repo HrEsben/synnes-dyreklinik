@@ -53,7 +53,7 @@ export default function StableEditableText({
     setLoading(true)
     
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('site_content')
         .upsert({
           content_key: contentKey,

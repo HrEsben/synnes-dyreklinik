@@ -73,7 +73,7 @@ export default function EditableText({
     
     try {
       // Upsert content to database with proper conflict resolution
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('site_content')
         .upsert({
           content_key: contentKey,
