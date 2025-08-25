@@ -70,7 +70,7 @@ export default function Footer() {
           
           <div className="col-span-3 md:col-span-1 lg:col-span-1 min-w-[300px]">
             <div className="bg-[#fbfbfb] rounded-3xl p-11 lg:py-14 lg:px-10 space-y-4.5">
-              <h4 className="text-[22px] text-accent-foreground font-extrabold leading-6">Kontakt mig</h4>
+              <h4 className="text-[22px] text-accent-foreground font-extrabold leading-6">Kontakt os</h4>
               <div className="flex items-start space-x-3">
                 <MapPin color="#f97561" size={24} className="flex-shrink-0 mt-1" />
                 <div className="font-semibold text-lg">
