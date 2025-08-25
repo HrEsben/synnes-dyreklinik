@@ -131,7 +131,7 @@ export default function InstagramPolaroidFeed({
                     href={post.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 hover:bg-opacity-100 transition-colors"
+                    className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 hover:bg-[#ed6e21] hover:text-white [transition:color_.3s,transform_.3s,background-color_.3s] hover:[transform:translate3d(0,-4px,.01px)]"
                   >
                     <Instagram size={20} />
                   </a>
@@ -185,7 +185,7 @@ export default function InstagramPolaroidFeed({
                         href={post.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 hover:bg-opacity-100 transition-colors"
+                        className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 hover:bg-[#ed6e21] hover:text-white [transition:color_.3s,transform_.3s,background-color_.3s] hover:[transform:translate3d(0,-4px,.01px)]"
                       >
                         <Instagram size={20} />
                       </a>
