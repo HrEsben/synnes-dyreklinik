@@ -17,6 +17,25 @@ export default async function OmPage() {
   if (error) {
     console.error('Error fetching employees:', error);
   }
+
+  // Fetch site content server-side
+  const { data: siteContent } = await supabase
+    .from('site_content')
+    .select('content_key, content')
+    .in('content_key', [
+      'team_page_title',
+      'team_page_subtitle'
+    ])
+
+  // Create a content map for easy lookup
+  const contentMap = (siteContent || []).reduce((acc, item) => {
+    acc[item.content_key] = item.content
+    return acc
+  }, {} as Record<string, string>)
+
+  // Helper function to get content with fallback
+  const getContent = (key: string, fallback: string) => contentMap[key] || fallback
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -25,7 +44,7 @@ export default async function OmPage() {
           <div className="text-center">
             <EditableText
               contentKey="team_page_title"
-              defaultValue="Mød vores team"
+              defaultValue={getContent('team_page_title', 'Mød vores team')}
               tag="h1"
               className="mb-6"
               style={{ 
@@ -38,7 +57,7 @@ export default async function OmPage() {
             />
             <EditableText
               contentKey="team_page_subtitle"
-              defaultValue="Vi er et dedikeret team med forkærlighed for dyr og tryghed."
+              defaultValue={getContent('team_page_subtitle', 'Vi er et dedikeret team med forkærlighed for dyr og tryghed.')}
               tag="p"
               className="text-lg mb-8 text-muted-foreground leading-[1.9] max-w-2xl mx-auto"
               style={{

@@ -15,6 +15,35 @@ export default async function Home() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Fetch site content server-side
+  const { data: siteContent } = await supabase
+    .from('site_content')
+    .select('content_key, content')
+    .in('content_key', [
+      'homepage_hero_title',
+      'homepage_hero_description',
+      'homepage_about_title',
+      'homepage_about_description',
+      'homepage_services_title',
+      'homepage_services_description',
+      'contact_heading',
+      'opening_hours_heading',
+      'opening_hours',
+      'location_heading',
+      'location',
+      'about_me_heading',
+      'about_me_intro'
+    ])
+
+  // Create a content map for easy lookup
+  const contentMap = (siteContent || []).reduce((acc, item) => {
+    acc[item.content_key] = item.content
+    return acc
+  }, {} as Record<string, string>)
+
+  // Helper function to get content with fallback
+  const getContent = (key: string, fallback: string) => contentMap[key] || fallback
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -24,7 +53,7 @@ export default async function Home() {
             <div className="order-1 lg:order-1">
               <EditableText
                 contentKey="homepage_hero_title"
-                defaultValue="Velkommen hos Synnes Dyreklinik"
+                defaultValue={getContent('homepage_hero_title', 'Velkommen hos Synnes Dyreklinik')}
                 tag="h1"
                 className="mb-4"
                 style={{ 
@@ -37,7 +66,7 @@ export default async function Home() {
               />
               <EditableText
                 contentKey="homepage_hero_description"
-                defaultValue="Jeg er en erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Med fokus på faglighed, fleksibilitet og tryghed hjælper jeg dig og dine dyr."
+                defaultValue={getContent('homepage_hero_description', 'Jeg er en erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Med fokus på faglighed, fleksibilitet og tryghed hjælper jeg dig og dine dyr.')}
                 tag="p"
                 multiline={true}
                 className="text-lg mb-8 text-muted-foreground leading-[1.9]"
@@ -90,7 +119,7 @@ export default async function Home() {
       <div>
       <EditableText 
         contentKey="contact_heading" 
-        defaultValue="Kontakt mig"
+        defaultValue={getContent('contact_heading', 'Kontakt os')}
         tag="h2"
         className="font-semibold text-xl mb-5.5 leading-tight tracking-tight"
       />
@@ -115,7 +144,7 @@ export default async function Home() {
       <div>
       <EditableText 
         contentKey="opening_hours_heading" 
-        defaultValue="Åbningstider"
+        defaultValue={getContent('opening_hours_heading', 'Åbningstider')}
         tag="h2"
         className="font-semibold text-xl mb-5.5 leading-tight tracking-tight"
       />
@@ -123,7 +152,7 @@ export default async function Home() {
         <span className="text-secondary-foreground">Konsultation:</span><br />
         <EditableText 
           contentKey="opening_hours" 
-          defaultValue="Hverdage kl. 8-16"
+          defaultValue={getContent('opening_hours', 'Hverdage kl. 8-16')}
           className="text-lg font-semibold text-muted-foreground leading-6"
         />
       </div>
@@ -135,13 +164,13 @@ export default async function Home() {
       <div>
       <EditableText 
         contentKey="location_heading" 
-        defaultValue="Lokation"
+        defaultValue={getContent('location_heading', 'Lokation')}
         tag="h2"
         className="font-semibold text-xl mb-5.5 leading-tight tracking-tight"
       />
       <EditableText 
         contentKey="location" 
-        defaultValue="Gammel Skolevej 5, Ejby<br />4070 Kirke Hyllinge"
+        defaultValue={getContent('location', 'Gammel Skolevej 5, Ejby<br />4070 Kirke Hyllinge')}
         className="text-lg font-semibold text-muted-foreground leading-6"
         multiline={true}
         allowHtml={true}
@@ -171,14 +200,14 @@ export default async function Home() {
           <div className="order-1 lg:order-2 mb-16 ml-8 w-full md:w-[611px] lg:max-w-[45%]">
             <EditableText 
               contentKey="about_me_heading" 
-              defaultValue="Kort om mig..."
+              defaultValue={getContent('about_me_heading', 'Kort om os...')}
               tag="h2"
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-2.5 lg:mb-6"
             />
             <div className="mb-5 lg:mb-6">
               <EditableText 
                 contentKey="about_me_intro" 
-                defaultValue="Mit navn er Synne Fyhn Stephansen. Jeg blev uddannet dyrlæge i 2009. Min erfaring spænder bredt. Jeg varetager både medicinske udredninger, kirurgiske indgreb samt tandbehandlinger. Jeg tilser de fleste typer patienter."
+                defaultValue={getContent('about_me_intro', 'Mit navn er Synne Fyhn Stephansen. Jeg blev uddannet dyrlæge i 2009. Min erfaring spænder bredt. Jeg varetager både medicinske udredninger, kirurgiske indgreb samt tandbehandlinger. Jeg tilser de fleste typer patienter.')}
                 className="text-muted-foreground text-lg font-semibold leading-8"
                 multiline={true}
                 tag="p"
@@ -228,7 +257,7 @@ export default async function Home() {
               href="/om"
             >
               <Button size={"lg"}>
-                Mere om mig
+                Mere om os
               </Button>
             </Link>
           </div>
@@ -255,7 +284,7 @@ export default async function Home() {
               href="/kontakt"
             >
               <Button className="py-5.5 px-5 text-lg font-bold w-full">
-                Kontakt mig
+                Kontakt os
               </Button>
             </Link>
           </div>

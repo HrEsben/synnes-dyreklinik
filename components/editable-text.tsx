@@ -48,23 +48,10 @@ export default function EditableText({
     return () => subscription.unsubscribe()
   }, [supabase])
 
-  // Load content from database
+  // Update content when defaultValue changes (for server-side updates)
   useEffect(() => {
-    const loadContent = async () => {
-      const { data, error } = await supabase
-        .from('site_content')
-        .select('content')
-        .eq('content_key', contentKey)
-        .single()
-
-      if (data) {
-        setContent(data.content)
-      } else if (error && error.code !== 'PGRST116') {
-        console.error('Error loading content:', error)
-      }
-    }
-    loadContent()
-  }, [contentKey, supabase])
+    setContent(defaultValue)
+  }, [defaultValue])
 
   const handleSave = async () => {
     if (!user) return
