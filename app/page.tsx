@@ -5,6 +5,12 @@ import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
 import EditableText from "@/components/editable-text";
 import EditableImage from "@/components/editable-image";
+// import InstagramFeed from "@/components/instagram-feed"; // Use this for Instagram API integration
+// import InstagramFeed from "@/components/instagram-feed-simple"; // Using simple static version
+// import InstagramFeed from "@/components/instagram-curated-feed"; // Using oEmbed version
+// import InstagramFeed from "@/components/instagram-mock-feed"; // Using mockup to show how it would look
+import InstagramFeed from "@/components/instagram-polaroid-feed"; // Using polaroid style
+import Divider from "@/components/divider";
 
 export const metadata = {
   title: 'Synnes Dyreklinik - Velkommen',
@@ -104,7 +110,7 @@ export default async function Home() {
         </div>
       </section>
  {/* Contact info */}
- <section className="lg:pt-35.5 pt-24 border-b-1 border-[#e0dbdb] pb-25 lg:pb-24 max-w-[1257px] mx-auto">
+ <section className="lg:pt-35.5 pt-24 pb-25 lg:pb-24 max-w-[1257px] mx-auto">
   <div className="flex flex-col md:flex-row justify-between mx-6 lg:mx-0">
     <div className="flex flex-row md:flex-col lg:flex-row mb-12 md:mb-0">
       <div className="mr-9 lg:mr-6 mb-0 md:mb-5 lg:mb-0 w-[80px] h-[78px] flex-shrink-0">
@@ -179,6 +185,7 @@ export default async function Home() {
     </div>
   </div>
  </section>
+ <Divider />
       {/* About Section */}
       <section className="py-25 px-6 bg-[#fffaf6]">
         <div className="flex flex-col lg:flex-row items-center justify-center">
@@ -264,7 +271,22 @@ export default async function Home() {
         </div>
         </div>
       </section>
-
+      <Divider />
+      {/* Instagram Section */}
+      <section className="py-25 px-6 bg-white">
+        <div className="max-w-[1257px] mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-4">
+              Følg os på Instagram
+            </h2>
+            <p className="text-lg font-semibold text-muted-foreground max-w-2xl mx-auto">
+              Få et kig ind i klinikkens hverdag og mød nogle af vores pelsede venner.
+            </p>
+          </div>
+          <InstagramFeed limit={6} />
+        </div>
+      </section>
+      <Divider />
       {/* CTA Section */}
       <section className="pt-15 bg-[#611471] text-white">
          <div className="flex flex-col max-w-[1257px] mx-auto lg:flex-row items-center justify-between">
@@ -304,6 +326,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      <Divider />
     </div>
   );
 }
