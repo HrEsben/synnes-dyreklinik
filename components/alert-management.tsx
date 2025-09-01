@@ -61,7 +61,6 @@ export default function AlertManagement({ initialAlert }: AlertManagementProps) 
         setAlertData(data)
       }
 
-      window.alert('Alert gemt!')
     } catch (error) {
       console.error('Error saving alert:', error)
       window.alert('Fejl ved gemning af alert')
@@ -83,9 +82,9 @@ export default function AlertManagement({ initialAlert }: AlertManagementProps) 
         {/* Active Toggle */}
         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
           <div>
-            <h3 className="font-medium text-gray-900">Alert Status</h3>
+            <h3 className="font-medium text-gray-900">Sluk/Aktiver</h3>
             <p className="text-sm text-gray-500">
-              {isActive ? 'Alert er synlig på hjemmesiden' : 'Alert er skjult'}
+              Vis advarsel på hjemmeside?
             </p>
           </div>
           <button
@@ -105,7 +104,7 @@ export default function AlertManagement({ initialAlert }: AlertManagementProps) 
         {/* Alert Type */}
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: '#2c2524' }}>
-            Alert Type
+            Type
           </label>
           <select
             value={alertType}
@@ -122,17 +121,17 @@ export default function AlertManagement({ initialAlert }: AlertManagementProps) 
         {/* Message */}
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: '#2c2524' }}>
-            Alert Besked
+            Besked
           </label>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2c2524] focus:border-transparent"
-            placeholder="Skriv din alert besked her... (f.eks. 'Telefonerne virker ikke. Ring på 20 12 34 56 i stedet.')"
+            placeholder="Skriv din besked her... (f.eks. 'Telefonerne virker ikke. Ring på 20 12 34 56 i stedet.')"
           />
           <p className="text-xs text-gray-500 mt-1">
-            Lad feltet være tomt for at skjule alert beskeden
+            Lad feltet være tomt for at skjule advarslen
           </p>
         </div>
 
@@ -159,7 +158,7 @@ export default function AlertManagement({ initialAlert }: AlertManagementProps) 
           disabled={loading}
           className="w-full"
         >
-          {loading ? 'Gemmer...' : 'Gem Alert'}
+          {loading ? 'Gemmer...' : 'Gem Advarsel'}
         </Button>
       </div>
     </div>
