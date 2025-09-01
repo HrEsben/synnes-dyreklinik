@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import UserProfile from '@/components/auth/user-profile'
 import TeamManagement from '@/components/team-management'
 import FAQManagement from '@/components/faq-management'
+import AlertManagement from '@/components/alert-management'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -22,6 +23,14 @@ export default async function DashboardPage() {
   if (error) {
     console.error('Error fetching employees:', error)
   }
+
+  // Fetch current alert
+  const { data: currentAlert } = await supabase
+    .from('site_alerts')
+    .select('*')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .single()
 
   return (
     <div className="min-h-screen pt-20 bg-[#fffaf6]">
@@ -57,11 +66,12 @@ export default async function DashboardPage() {
       <section className="py-6 px-4 md:px-6">
         <div className="mx-auto max-w-[1257px]">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* User Profile */}
-            <div className="lg:col-span-1">
+            {/* User Profile and Alert Management */}
+            <div className="lg:col-span-1 space-y-8">
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                 <UserProfile />
               </div>
+              <AlertManagement initialAlert={currentAlert || null} />
             </div>
 
             {/* Main Content */}

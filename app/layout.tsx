@@ -3,6 +3,9 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import AlertBanner from "@/components/alert-banner";
+import DynamicSpacer from "@/components/dynamic-spacer";
+import { AlertProvider } from "@/components/alert-context";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -36,12 +39,15 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} font-sans antialiased bg-[#fffaf6]`}
       >
-        <div className="mx-auto">
-        <Navigation />
-        <div className="h-[78px] lg:h-[88px]" aria-hidden="true" />
-          {children}
-          <Footer />
-        </div>
+        <AlertProvider>
+          <div className="mx-auto">
+            <Navigation />
+            <AlertBanner />
+            <DynamicSpacer />
+            {children}
+            <Footer />
+          </div>
+        </AlertProvider>
       </body>
     </html>
   );
