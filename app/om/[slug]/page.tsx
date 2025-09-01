@@ -60,22 +60,22 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative pt-20 lg:py-24 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom">
+      <section className="relative pt-12 lg:pt-16 pb-6 lg:pb-8 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom">
         <div className="mx-auto max-w-[1257px]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
             <div className="order-2 lg:order-1">
-              <h1 className="mb-4" style={{ 
+              <h1 className="mb-2" style={{ 
                 fontWeight: 800, 
                 fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: 'clamp(32px, 5vw, 49px)',
-                lineHeight: '1.51em',
+                fontSize: 'clamp(24px, 4vw, 36px)',
+                lineHeight: '1.3em',
                 color: '#2c2524'
               }}>
                 {employee.name}
               </h1>
-              <p className="text-xl mb-8 font-medium" style={{
+              <p className="text-base mb-4 font-medium" style={{
                 fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: '20px',
+                fontSize: '16px',
                 color: '#f97561'
               }}>
                 {employee.position}
@@ -91,13 +91,13 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
             </div>
             
             <div className="order-1 lg:order-2">
-              <div className="relative">
+              <div className="relative max-w-xs mx-auto lg:mx-0">
                 <Image
                   src={displayImageUrl}
                   alt={employee.name || 'Team member'}
-                  width={500}
-                  height={600}
-                  className="w-full h-96 lg:h-[500px] object-cover rounded-2xl shadow-lg"
+                  width={250}
+                  height={320}
+                  className="w-full h-64 lg:h-72 object-cover rounded-2xl shadow-lg"
                 />
               </div>
             </div>
@@ -106,34 +106,91 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
       </section>
 
       {/* About Section */}
-      <section className="py-16 lg:py-24 px-4 md:px-6">
+      <section className="py-8 lg:py-12 px-4 md:px-6">
         <div className="mx-auto max-w-[1257px]">
-          <div className="max-w-4xl">
-            <h2 className="mb-8" style={{ 
-              fontWeight: 800, 
-              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-              fontSize: 'clamp(28px, 4vw, 42px)',
-              lineHeight: '1.51em',
-              color: '#2c2524'
-            }}>
-              Om mig
-            </h2>
-            
-            <div className="space-y-4 text-base leading-relaxed text-gray-600">
-            {bioContent ? (
-              <div 
-                className="prose prose-gray max-w-none [&>p]:mb-4 [&>p:last-child]:mb-0"
-                dangerouslySetInnerHTML={{ __html: bioContent }}
-                style={{
-                  lineHeight: '1.6'
-                }}
-              />
-            ) : (
-              <p className="text-gray-500 italic">
-                Ingen biografiinformation tilgængelig.
-              </p>
-            )}
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+            {/* Bio Content */}
+            <div className="lg:col-span-2">
+              <h2 className="mb-6" style={{ 
+                fontWeight: 800, 
+                fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+                fontSize: 'clamp(24px, 3.5vw, 36px)',
+                lineHeight: '1.4em',
+                color: '#2c2524'
+              }}>
+                Om mig
+              </h2>
+              
+              <div className="space-y-4 text-base leading-relaxed text-gray-600">
+              {bioContent ? (
+                <div 
+                  className="prose prose-gray max-w-none [&>p]:mb-4 [&>p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: bioContent }}
+                  style={{
+                    lineHeight: '1.6'
+                  }}
+                />
+              ) : (
+                <p className="text-gray-500 italic">
+                  Ingen biografiinformation tilgængelig.
+                </p>
+              )}
+            </div>
+            </div>
+
+            {/* Facts Box */}
+            <div className="lg:col-span-1">
+              <div className="bg-[#fffaf6] rounded-2xl p-6 shadow-sm border border-[#f0e8e0]">
+                <h3 className="mb-4" style={{ 
+                  fontWeight: 700, 
+                  fontFamily: 'Poppins Bold, Poppins, sans-serif',
+                  fontSize: '18px',
+                  lineHeight: '1.4em',
+                  color: '#2c2524'
+                }}>
+                  Fakta
+                </h3>
+                
+                <div className="space-y-3">
+                  {employee.education && (
+                    <div>
+                      <p className="text-sm font-medium text-[#f97561] mb-1">Uddannelse</p>
+                      <p className="text-sm text-gray-600">{employee.education}</p>
+                    </div>
+                  )}
+                  
+                  {employee.location && (
+                    <div>
+                      <p className="text-sm font-medium text-[#f97561] mb-1">Bor i</p>
+                      <p className="text-sm text-gray-600">{employee.location}</p>
+                    </div>
+                  )}
+                  
+                  {employee.hobby && (
+                    <div>
+                      <p className="text-sm font-medium text-[#f97561] mb-1">Fritid</p>
+                      <p className="text-sm text-gray-600">{employee.hobby}</p>
+                    </div>
+                  )}
+                  
+                  {employee.specialties && (
+                    <div>
+                      <p className="text-sm font-medium text-[#f97561] mb-1">Specialer</p>
+                      <p className="text-sm text-gray-600">{employee.specialties}</p>
+                    </div>
+                  )}
+                  
+                  {employee.years_experience && (
+                    <div>
+                      <p className="text-sm font-medium text-[#f97561] mb-1">Uddannet</p>
+                      <p className="text-sm text-gray-600">
+                        {employee.years_experience} ({new Date().getFullYear() - parseInt(employee.years_experience)} års erfaring)
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

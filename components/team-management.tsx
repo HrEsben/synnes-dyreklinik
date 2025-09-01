@@ -15,6 +15,11 @@ interface Employee {
   img_url: string | null
   short_link: string | null
   bio: string | null
+  education: string | null
+  location: string | null
+  hobby: string | null
+  specialties: string | null
+  years_experience: string | null
 }
 
 interface TeamManagementProps {
@@ -30,7 +35,12 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
     position: '',
     img_url: '',
     short_link: '',
-    bio: ''
+    bio: '',
+    education: '',
+    location: '',
+    hobby: '',
+    specialties: '',
+    years_experience: ''
   })
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -99,7 +109,12 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
       position: '',
       img_url: '',
       short_link: '',
-      bio: ''
+      bio: '',
+      education: '',
+      location: '',
+      hobby: '',
+      specialties: '',
+      years_experience: ''
     })
     setSelectedFile(null)
     setEditingEmployee(null)
@@ -120,7 +135,12 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
       position: employee.position || '',
       img_url: employee.img_url || '',
       short_link: shortLink,
-      bio: employee.bio || ''
+      bio: employee.bio || '',
+      education: employee.education || '',
+      location: employee.location || '',
+      hobby: employee.hobby || '',
+      specialties: employee.specialties || '',
+      years_experience: employee.years_experience || ''
     })
     setIsModalOpen(true)
   }
@@ -219,7 +239,12 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
         position: formData.position || null,
         img_url: imageUrl,
         short_link: formData.short_link || null,
-        bio: bioText
+        bio: bioText,
+        education: formData.education || null,
+        location: formData.location || null,
+        hobby: formData.hobby || null,
+        specialties: formData.specialties || null,
+        years_experience: formData.years_experience || null
       }
       if (editingEmployee) {
         // Update existing employee
@@ -542,6 +567,97 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                       </p>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* Fakta felter */}
+              <div className="border-t pt-4">
+                <h3 className="text-sm font-medium mb-3" style={{ color: '#2c2524' }}>
+                  Faktaboks (vises på personlig side)
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium mb-1 text-gray-600">
+                      Uddannelse
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.education}
+                      onChange={(e) => setFormData(prev => ({ ...prev, education: e.target.value }))}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2c2524] focus:border-transparent"
+                      placeholder="f.eks. Uddannet dyrlæge i 2009"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium mb-1 text-gray-600">
+                      Bor i
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.location}
+                      onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2c2524] focus:border-transparent"
+                      placeholder="f.eks. Kirke Hyllinge"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium mb-1 text-gray-600">
+                      Fritid/Interesser
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.hobby}
+                      onChange={(e) => setFormData(prev => ({ ...prev, hobby: e.target.value }))}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2c2524] focus:border-transparent"
+                      placeholder="f.eks. Spejderleder i Skibby"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium mb-1 text-gray-600">
+                      Specialer
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.specialties}
+                      onChange={(e) => setFormData(prev => ({ ...prev, specialties: e.target.value }))}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2c2524] focus:border-transparent"
+                      placeholder="f.eks. Kirurgi, ortopædi"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium mb-1 text-gray-600">
+                      Uddannet år (beregner automatisk års erfaring)
+                    </label>
+                    <select
+                      value={formData.years_experience}
+                      onChange={(e) => {
+                        const graduationYear = e.target.value
+                        setFormData(prev => ({ ...prev, years_experience: graduationYear }))
+                      }}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2c2524] focus:border-transparent"
+                    >
+                      <option value="">Vælg uddannelsesår</option>
+                      {Array.from({ length: 50 }, (_, i) => {
+                        const year = new Date().getFullYear() - i
+                        const experience = new Date().getFullYear() - year
+                        return (
+                          <option key={year} value={year.toString()}>
+                            {year} ({experience} års erfaring)
+                          </option>
+                        )
+                      })}
+                    </select>
+                    {formData.years_experience && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Erfaring: {new Date().getFullYear() - parseInt(formData.years_experience)} år
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
 
