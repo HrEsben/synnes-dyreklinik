@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { ReactNode } from 'react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface StickyAnchorNavProps {
   services: Array<{
@@ -16,6 +23,28 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
   const [isSticky, setIsSticky] = useState(false)
   const [topOffset, setTopOffset] = useState(88) // Default header height
   const [isMobile, setIsMobile] = useState(false)
+  const [currentService, setCurrentService] = useState<string>('')
+
+  const handleSelectChange = (serviceId: string) => {
+    setCurrentService(serviceId)
+    // Trigger the same scroll behavior as anchor clicks
+    const targetElement = document.getElementById(serviceId)
+    if (targetElement) {
+      const navHeight = 80 // Approximate height of main navigation
+      const stickyNavHeight = 64 // Height of this sticky nav
+      const alertBanner = document.querySelector('[data-alert-banner]')
+      const alertHeight = alertBanner ? alertBanner.getBoundingClientRect().height : 0
+      
+      const totalOffset = navHeight + stickyNavHeight + alertHeight + 60 // Increased from 20px to 60px for more offset
+      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementPosition - totalOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+  }
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault()
@@ -167,24 +196,50 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
           top: isSticky && !isMobile ? `${topOffset}px` : 'auto' 
         }}
       >
-        <div className="flex justify-center">
-          <nav className="flex gap-4 flex-wrap">
-            {services.map((service) => (
-              <a
-                key={service.id}
-                href={`#${service.id}`}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#f97561] transition-colors duration-200 whitespace-nowrap"
-                onClick={(e) => handleAnchorClick(e, service.id)}
-              >
-                {service.icon && (
-                  <span className="text-[#f97561] flex-shrink-0">
-                    {service.icon}
-                  </span>
-                )}
-                <span>{service.label}</span>
-              </a>
-            ))}
-          </nav>
+        <div className="px-4 md:px-6">
+          {/* Mobile Select Dropdown */}
+          <div className="md:hidden">
+            <Select value={currentService} onValueChange={handleSelectChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Vælg en ydelse" />
+              </SelectTrigger>
+              <SelectContent>
+                {services.map((service) => (
+                  <SelectItem key={service.id} value={service.id}>
+                    <div className="flex items-center gap-2">
+                      {service.icon && (
+                        <span className="text-[#f97561] flex-shrink-0">
+                          {service.icon}
+                        </span>
+                      )}
+                      <span>{service.label}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex justify-center">
+            <nav className="flex gap-4 flex-wrap">
+              {services.map((service) => (
+                <a
+                  key={service.id}
+                  href={`#${service.id}`}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#f97561] transition-colors duration-200 whitespace-nowrap"
+                  onClick={(e) => handleAnchorClick(e, service.id)}
+                >
+                  {service.icon && (
+                    <span className="text-[#f97561] flex-shrink-0">
+                      {service.icon}
+                    </span>
+                  )}
+                  <span>{service.label}</span>
+                </a>
+              ))}
+            </nav>
+          </div>
         </div>
       </section>
     </>
