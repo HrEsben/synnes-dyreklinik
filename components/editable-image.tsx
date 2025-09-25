@@ -4,9 +4,10 @@ import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { uploadImage, getImageUrl, deleteImage, getPathFromUrl } from '@/lib/supabase/storage'
-import { Upload, Loader2 } from 'lucide-react'
+import { Upload, Loader2, ImageIcon, FolderOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSiteImage } from '@/hooks/use-site-image'
+import MediaBrowser from '@/components/media-browser'
 
 interface EditableImageProps {
   imageKey: string
@@ -29,23 +30,25 @@ export default function EditableImage({
   alt,
   width,
   height,
-  className = '',
-  style = {},
-  containerClassName = '',
+  className,
+  style,
+  containerClassName,
   isAuthenticated = false,
-  editable = true, // Default to true for backwards compatibility
-  priority = false,
-  fetchPriority = "auto"
+  editable = true,
+  priority,
+  fetchPriority
 }: EditableImageProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Use the basic site image hook
+  const { imageUrl, loading } = useSiteImage(imageKey, fallbackSrc);
+
   const supabase = createClient()
-  
-  // Use the hook to get current image URL
-  const { imageUrl, loading } = useSiteImage(imageKey, fallbackSrc)
 
   // Convert HEIC/HEIF files to JPEG
   const convertHeicToJpeg = async (file: File): Promise<File> => {
@@ -182,6 +185,49 @@ export default function EditableImage({
     }
   }
 
+  const handleMediaSelection = async (imagePath: string) => {
+    try {
+      const supabase = createClient()
+      const newImageUrl = getImageUrl(imagePath)
+      
+      // Update the image in database (site_images table)
+      const { data: updateData, error: updateError } = await supabase
+        .from('site_images')
+        .update({
+          image_url: newImageUrl,
+          alt_text: alt
+        })
+        .eq('image_key', imageKey)
+        .select()
+
+      if (updateError) {
+        console.error('Update error:', updateError)
+        throw new Error('Failed to update image in database')
+      }
+
+      // If no rows were updated, insert new record
+      if (!updateData || updateData.length === 0) {
+        const { error: insertError } = await supabase
+          .from('site_images')
+          .insert({
+            image_key: imageKey,
+            image_url: newImageUrl,
+            alt_text: alt
+          })
+
+        if (insertError) {
+          console.error('Insert error:', insertError)
+          throw new Error('Failed to insert image in database')
+        }
+      }
+
+      setShowMediaBrowser(false)
+    } catch (error) {
+      console.error('Error selecting media:', error)
+      alert('Fejl ved valg af billede')
+    }
+  }
+
   const displaySrc = previewUrl || imageUrl
 
   if (loading) {
@@ -211,27 +257,67 @@ export default function EditableImage({
 
   return (
     <div className={`relative group ${containerClassName}`}>
-      <Image
-        src={displaySrc}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
-        style={style}
-        priority={priority}
-        fetchPriority={fetchPriority}
-      />
-      
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none group-hover:pointer-events-auto">
-        <Button
-          size="default"
-          onClick={() => fileInputRef.current?.click()}
-          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-black hover:bg-accent hover:text-white pointer-events-auto"
+      {displaySrc !== fallbackSrc ? (
+        <>
+          <Image
+            src={displaySrc}
+            alt={alt}
+            width={width}
+            height={height}
+            className={className}
+            style={style}
+            priority={priority}
+            fetchPriority={fetchPriority}
+          />
+          
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto">
+            <Button
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-black hover:bg-accent hover:text-white pointer-events-auto"
+            >
+              <Upload size={16} className="mr-2" />
+              Upload
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setShowMediaBrowser(true)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-black hover:bg-accent hover:text-white pointer-events-auto"
+            >
+              <FolderOpen size={16} className="mr-2" />
+              Gennemse
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div 
+          className="flex items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors rounded-lg"
+          style={{ width, height }}
         >
-          <Upload size={16} className="mr-2" />
-          Skift billede
-        </Button>
-      </div>
+          <div className="text-center">
+            <ImageIcon size={48} className="mx-auto mb-4 text-gray-400" />
+            <p className="text-sm text-gray-500 mb-4">Intet billede valgt</p>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-white text-black hover:bg-accent hover:text-white"
+              >
+                <Upload size={16} className="mr-2" />
+                Upload
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => setShowMediaBrowser(true)}
+                className="bg-white text-black hover:bg-accent hover:text-white"
+              >
+                <FolderOpen size={16} className="mr-2" />
+                Gennemse
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hidden file input that opens directly */}
       <input
@@ -241,6 +327,15 @@ export default function EditableImage({
         onChange={handleFileSelect}
         className="hidden"
       />
+
+      {/* Media Browser Modal */}
+      {showMediaBrowser && (
+        <MediaBrowser
+          isOpen={showMediaBrowser}
+          onClose={() => setShowMediaBrowser(false)}
+          onSelect={handleMediaSelection}
+        />
+      )}
 
       {/* Upload progress overlay */}
       {(isUploading || isConverting) && (

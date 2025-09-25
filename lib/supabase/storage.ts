@@ -64,21 +64,3 @@ export function getPathFromUrl(url: string): string | null {
     return null
   }
 }
-
-// Helper function to get optimized image URL with transformations
-export function getOptimizedImageUrl(path: string, options?: {
-  width?: number
-  height?: number
-  quality?: number
-}) {
-  const baseUrl = getImageUrl(path)
-  
-  if (!options) return baseUrl
-  
-  const params = new URLSearchParams()
-  if (options.width) params.append('width', options.width.toString())
-  if (options.height) params.append('height', options.height.toString())
-  if (options.quality) params.append('quality', options.quality.toString())
-  
-  return `${baseUrl}${params.toString() ? `?${params.toString()}` : ''}`
-}

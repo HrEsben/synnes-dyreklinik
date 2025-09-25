@@ -29,8 +29,14 @@ export default function EditableText({
   const [isEditing, setIsEditing] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
   const supabase = createClient()
+
+  // Handle hydration
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   // Check if user is logged in
   useEffect(() => {
@@ -150,9 +156,13 @@ export default function EditableText({
     title: user ? 'Click to edit' : undefined
   }
 
+  // Prevent hydration mismatch by not rendering HTML content until hydrated
   const renderContent = () => {
-    if (allowHtml) {
+    if (allowHtml && isHydrated) {
       return { dangerouslySetInnerHTML: { __html: displayContent } }
+    } else if (!isHydrated && allowHtml) {
+      // During SSR, render a simple placeholder to prevent hydration mismatch
+      return { children: '' }
     } else {
       return { children: displayContent }
     }
