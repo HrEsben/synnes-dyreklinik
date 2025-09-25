@@ -59,14 +59,14 @@ export default function ServiceCard({
       <div className="prose prose-lg max-w-none text-muted-foreground relative">
         {/* Inline image floating on the right with tilt effect */}
         {imageKey && fallbackImageSrc && (
-          <div className={`float-right ml-6 mb-4 w-64 lg:w-72 transform ${rotationClass}`}>
+          <div className={`float-right ml-6 mb-4 w-80 lg:w-96 xl:w-[28rem] transform ${rotationClass}`}>
             <EditableImage
               imageKey={imageKey}
               fallbackSrc={fallbackImageSrc}
               alt={title}
-              width={288}
-              height={216}
-              className="w-full h-40 lg:h-48 object-cover rounded-xl"
+              width={448}
+              height={336}
+              className="w-full h-52 lg:h-64 xl:h-72 object-cover rounded-xl"
               isAuthenticated={isAuthenticated}
             />
           </div>

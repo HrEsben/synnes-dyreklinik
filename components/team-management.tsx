@@ -402,7 +402,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
       {/* Modal for Create/Edit */}
       {isModalOpen && (
         <div 
-          className="fixed inset-0 bg-[#00000080] flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-[#00000080] flex items-center justify-center z-[70] p-4"
           onClick={() => setIsModalOpen(false)}
         >
           <div 

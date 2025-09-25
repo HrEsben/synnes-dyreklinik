@@ -60,7 +60,7 @@ export default function BookingPopover({ children, onOpen }: BookingPopoverProps
       
       {/* Full screen modal overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#00000050]">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-[#00000050]">
           <div className="relative bg-white w-full h-full sm:w-[95vw] sm:h-[90vh] sm:max-w-6xl sm:rounded-lg overflow-hidden shadow-2xl">
             {/* Header with close button */}
             <div className="flex items-center justify-between p-3 sm:p-4 border-b bg-gray-50">

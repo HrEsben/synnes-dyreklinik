@@ -284,7 +284,7 @@ export default function EditableImage({
               className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-black hover:bg-accent hover:text-white pointer-events-auto"
             >
               <FolderOpen size={16} className="mr-2" />
-              Gennemse
+              Vælg billede
             </Button>
           </div>
         </>
@@ -311,7 +311,7 @@ export default function EditableImage({
                 className="bg-white text-black hover:bg-accent hover:text-white"
               >
                 <FolderOpen size={16} className="mr-2" />
-                Gennemse
+                Vælg billede
               </Button>
             </div>
           </div>
