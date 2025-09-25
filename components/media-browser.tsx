@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { getImageUrl } from '@/lib/supabase/storage'
@@ -29,7 +30,13 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
   const [currentFolder, setCurrentFolder] = useState('images/image-browser')
   const [searchTerm, setSearchTerm] = useState('')
   const [folderPath, setFolderPath] = useState(['images', 'image-browser'])
+  const [mounted, setMounted] = useState(false)
   const supabase = createClient()
+
+  // Handle client-side mounting for portal
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const loadImages = useCallback(async () => {
     setLoading(true)
@@ -99,11 +106,11 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
     folder.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
-  return (
+  const dialogContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col shadow-2xl transform-none">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-2xl font-semibold">Vælg billede</h2>
@@ -148,17 +155,17 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f97561]"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
               {/* Folders */}
               {filteredFolders.map((folder) => (
                 <div
                   key={folder.name}
-                  className="border rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => navigateToFolder(folder.name)}
                 >
                   <div className="flex flex-col items-center">
-                    <Folder className="w-8 h-8 text-blue-500 mb-2" />
-                    <span className="text-xs text-center truncate w-full">{folder.name}</span>
+                    <Folder className="w-12 h-12 text-blue-500 mb-3" />
+                    <span className="text-sm text-center truncate w-full font-medium">{folder.name}</span>
                   </div>
                 </div>
               ))}
@@ -167,20 +174,20 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
               {filteredImages.map((image) => (
                 <div
                   key={image.name}
-                  className="border rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  className="border rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow transform-none"
                   onClick={() => handleImageSelect(image.name)}
                 >
-                  <div className="aspect-square relative bg-gray-100">
+                  <div className="aspect-[4/3] relative bg-gray-100">
                     <Image
                       src={getImageUrl(`${currentFolder}/${image.name}`)}
                       alt={image.name}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                     />
                   </div>
-                  <div className="p-2">
-                    <span className="text-xs truncate block">{image.name}</span>
+                  <div className="p-3">
+                    <span className="text-sm truncate block font-medium">{image.name}</span>
                   </div>
                 </div>
               ))}
@@ -206,4 +213,6 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
       </div>
     </div>
   )
+
+  return createPortal(dialogContent, document.body)
 }
