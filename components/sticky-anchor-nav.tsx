@@ -122,12 +122,6 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
     }
 
     const handleScroll = () => {
-      // Don't enable sticky behavior on mobile screens
-      if (isMobile) {
-        setIsSticky(false)
-        return
-      }
-
       const heroSection = document.querySelector('#hero-section')
       if (heroSection) {
         const heroBottom = heroSection.getBoundingClientRect().bottom
@@ -180,8 +174,8 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
 
   return (
     <>
-      {/* Placeholder element to maintain space when sticky - only on desktop */}
-      {isSticky && !isMobile && (
+      {/* Placeholder element to maintain space when sticky */}
+      {isSticky && (
         <div 
           className="bg-white border-b border-gray-200 py-4 px-4 md:px-6"
           style={{ height: '64px' }} // Match the height of the actual navigation
@@ -190,10 +184,10 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
       
       <section 
         className={`transition-all duration-300 z-30 bg-white border-b border-gray-200 py-4 ${
-          isSticky && !isMobile ? 'fixed left-0 right-0 shadow-md' : 'relative'
+          isSticky ? 'fixed left-0 right-0 shadow-md' : 'relative'
         }`}
         style={{ 
-          top: isSticky && !isMobile ? `${topOffset}px` : 'auto' 
+          top: isSticky ? `${topOffset}px` : 'auto' 
         }}
       >
         <div className="px-4 md:px-6">

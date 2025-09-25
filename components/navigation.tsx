@@ -254,7 +254,7 @@ export default function Navigation() {
 
       {/* Mobile Menu Drawer */}
       <div 
-        className={`fixed top-[88px] left-0 w-full bg-white bg-opacity-95 backdrop-blur-sm shadow-lg transform transition-transform duration-300 ease-in-out z-40 md:hidden ${
+        className={`fixed top-[88px] left-0 w-full bg-white bg-opacity-95 backdrop-blur-sm shadow-lg transform transition-transform duration-300 ease-in-out z-[65] md:hidden ${
           isMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ height: 'calc(100vh - 88px)' }}
