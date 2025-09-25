@@ -62,7 +62,7 @@ export default async function YdelserPage() {
       {/* Services Section */}
       <section className="py-16 px-4 md:px-6 bg-[#fffaf6]">
         <div className="mx-auto max-w-[1257px]">
-          <div className="grid gap-12 place-items-center md:place-items-stretch">
+          <div className="flex flex-col gap-12">
             
             {/* Tumores / knuder */}
             <ServiceCard 
