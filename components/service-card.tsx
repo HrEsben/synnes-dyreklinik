@@ -57,16 +57,33 @@ export default function ServiceCard({
       </div>
       
       <div className="prose prose-lg max-w-none text-muted-foreground relative">
-        {/* Inline image floating on the right with tilt effect */}
+        {/* Mobile layout: Image centered below text */}
         {imageKey && fallbackImageSrc && (
-          <div className={`float-right ml-6 mb-4 w-80 lg:w-96 xl:w-[28rem] transform ${rotationClass}`}>
+          <div className={`lg:hidden mb-6 flex justify-center`}>
+            <div className={`w-80 transform ${rotationClass}`}>
+              <EditableImage
+                imageKey={imageKey}
+                fallbackSrc={fallbackImageSrc}
+                alt={title}
+                width={448}
+                height={336}
+                className="w-full h-52 object-cover rounded-xl"
+                isAuthenticated={isAuthenticated}
+              />
+            </div>
+          </div>
+        )}
+        
+        {/* Desktop layout: Image floating on the right with more spacing */}
+        {imageKey && fallbackImageSrc && (
+          <div className={`hidden lg:block float-right ml-8 mb-6 w-96 xl:w-[28rem] transform ${rotationClass}`}>
             <EditableImage
               imageKey={imageKey}
               fallbackSrc={fallbackImageSrc}
               alt={title}
               width={448}
               height={336}
-              className="w-full h-52 lg:h-64 xl:h-72 object-cover rounded-xl"
+              className="w-full h-64 xl:h-72 object-cover rounded-xl"
               isAuthenticated={isAuthenticated}
             />
           </div>
