@@ -44,3 +44,6 @@ next-env.d.ts
 *_files/
 *.htm
 .history/
+
+# vscode settings (including MCP configuration)
+.vscode/
