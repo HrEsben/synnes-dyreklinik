@@ -60,6 +60,9 @@ export default function Footer() {
                 <Link href="/om">Om klinikken</Link>
               </li>
               <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">
+                <Link href="/ydelser">Ydelser</Link>
+              </li>
+              <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">
                 <Link href="/gdpr">GDPR</Link>
               </li>
               <li className="hover:text-[#f97561] hover:translate-x-1 transition-transform duration-300">

@@ -182,6 +182,13 @@ export default function Navigation() {
                 </Link>
               </li>
               <li>
+                <Link href="/ydelser">
+                  <Button variant="link">
+                    Ydelser
+                  </Button>
+                </Link>
+              </li>
+              <li>
                 <Link href="/kontakt">
                   <Button variant="link">
                     Kontakt
@@ -266,6 +273,13 @@ export default function Navigation() {
                 <Link href="/om" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="link" className="text-2xl font-bold w-full justify-start text-left px-0 hover:bg-gray-50">
                     Hvem er vi
+                  </Button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/ydelser" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="link" className="text-2xl font-bold w-full justify-start text-left px-0 hover:bg-gray-50">
+                    Ydelser
                   </Button>
                 </Link>
               </li>
