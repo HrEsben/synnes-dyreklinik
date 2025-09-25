@@ -101,7 +101,7 @@ export default function EditableImage({
       await handleUpload(convertedFile)
     } catch (error) {
       console.error('File conversion error:', error)
-      alert(error instanceof Error ? error.message : 'Fejl ved konvertering af fil')
+      console.error('Conversion error:', error instanceof Error ? error.message : 'Fejl ved konvertering af fil')
     }
   }
 
@@ -176,10 +176,10 @@ export default function EditableImage({
         fileInputRef.current.value = ''
       }
       
-      alert('Billede opdateret!')
+      console.log('Image updated successfully')
     } catch (error) {
       console.error('Error uploading image:', error)
-      alert('Fejl ved upload af billede')
+      console.error('Upload error:', error)
     } finally {
       setIsUploading(false)
     }
@@ -224,7 +224,7 @@ export default function EditableImage({
       setShowMediaBrowser(false)
     } catch (error) {
       console.error('Error selecting media:', error)
-      alert('Fejl ved valg af billede')
+      console.error('Image selection error:', error)
     }
   }
 

@@ -103,18 +103,18 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] flex flex-col">
+      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-semibold">Vælg billede</h2>
+        <div className="flex justify-between items-center p-6 border-b">
+          <h2 className="text-2xl font-semibold">Vælg billede</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </Button>
         </div>
 
         {/* Navigation */}
-        <div className="p-4 border-b bg-gray-50">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="p-6 border-b bg-gray-50">
+          <div className="flex items-center gap-2 mb-4">
             <Button 
               variant="outline" 
               size="sm" 
@@ -142,13 +142,13 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 p-6 overflow-y-auto">
           {loading ? (
-            <div className="flex justify-center py-8">
+            <div className="flex justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f97561]"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
               {/* Folders */}
               {filteredFolders.map((folder) => (
                 <div
@@ -188,14 +188,14 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
           )}
 
           {!loading && filteredImages.length === 0 && filteredFolders.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-12 text-gray-500">
               No images found in this folder
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t bg-gray-50">
+        <div className="p-6 border-t bg-gray-50">
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>{filteredImages.length} images, {filteredFolders.length} folders</span>
             <Button variant="outline" onClick={onClose}>
