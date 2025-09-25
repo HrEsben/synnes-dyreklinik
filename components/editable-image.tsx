@@ -237,15 +237,11 @@ export default function EditableImage({
   }
 
   if (!isAuthenticated || !editable) {
-    // For non-authenticated users, only show the image if it's not the fallback/placeholder
-    if (imageUrl === fallbackSrc) {
-      return null // Don't render anything if it's just the placeholder
-    }
-    
+    // For non-authenticated users, show the image (including fallback/placeholder)
     return (
       <div className={containerClassName}>
         <Image
-          src={imageUrl}
+          src={displaySrc}
           alt={alt}
           width={width}
           height={height}

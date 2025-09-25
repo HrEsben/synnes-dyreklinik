@@ -26,9 +26,9 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
   const [images, setImages] = useState<StorageItem[]>([])
   const [folders, setFolders] = useState<StorageItem[]>([])
   const [loading, setLoading] = useState(false)
-  const [currentFolder, setCurrentFolder] = useState('public')
+  const [currentFolder, setCurrentFolder] = useState('images/image-browser')
   const [searchTerm, setSearchTerm] = useState('')
-  const [folderPath, setFolderPath] = useState(['public'])
+  const [folderPath, setFolderPath] = useState(['images', 'image-browser'])
   const supabase = createClient()
 
   const loadImages = useCallback(async () => {
@@ -78,7 +78,7 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
   }
 
   const navigateBack = () => {
-    if (folderPath.length > 1) {
+    if (folderPath.length > 2) { // Changed from 1 to 2 to keep at least ['images', 'image-browser']
       const newPath = folderPath.slice(0, -1)
       setFolderPath(newPath)
       setCurrentFolder(newPath.join('/'))
@@ -119,7 +119,7 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
               variant="outline" 
               size="sm" 
               onClick={navigateBack}
-              disabled={folderPath.length <= 1}
+              disabled={folderPath.length <= 2} // Changed from 1 to 2
             >
               ← Back
             </Button>

@@ -57,8 +57,8 @@ export default function ServiceCard({
       </div>
       
       <div className="prose prose-lg max-w-none text-muted-foreground relative">
-        {/* Inline image floating on the right with tilt effect - only show for authenticated users */}
-        {imageKey && fallbackImageSrc && isAuthenticated && (
+        {/* Inline image floating on the right with tilt effect */}
+        {imageKey && fallbackImageSrc && (
           <div className={`float-right ml-6 mb-4 w-64 lg:w-72 transform ${rotationClass}`}>
             <EditableImage
               imageKey={imageKey}
