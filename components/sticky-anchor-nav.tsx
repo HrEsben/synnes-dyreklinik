@@ -149,7 +149,7 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
       window.removeEventListener('resize', handleResize)
       observer.disconnect()
     }
-  }, [])
+  }, [isMobile])
 
   return (
     <>

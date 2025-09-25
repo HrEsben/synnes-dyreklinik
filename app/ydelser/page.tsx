@@ -176,7 +176,7 @@ export default function YdelserPage() {
               <p className="mb-4">
                 Vi anbefaler samtidig at få din kat mærket i forbindelse med neutralisationen. 
                 Det er både praktisk og vigtigt for at sikre, at katten altid kan identificeres. 
-                Læs mere under "Mærkning af dit kæledyr".
+                Læs mere under &ldquo;Mærkning af dit kæledyr&rdquo;.
               </p>
               <p>
                 Det er også oplagt at starte vaccinationsprogrammet, når katten alligevel er 
@@ -208,7 +208,7 @@ export default function YdelserPage() {
                 Øretatovering er et alternativ, som gør det muligt at se med det blotte øje, 
                 at dyret er mærket. Dog kan tatoveringen med tiden blive svær at aflæse, 
                 og den kræver, at dyret er i bedøvelse. Ofte kombinerer vi chipmærkning med 
-                et lille "C" tatoveret i øret. Mærkede katte bliver herefter registreret i 
+                et lille &ldquo;C&rdquo; tatoveret i øret. Mærkede katte bliver herefter registreret i 
                 Dansk Katteregister.
               </p>
               <p>
@@ -236,7 +236,7 @@ export default function YdelserPage() {
               </p>
               <p className="mb-4">
                 <strong>Kemisk kastration</strong> kræver ingen bedøvelse og varer enten 6 eller 12 måneder. 
-                Den er reversibel, hvilket betyder, at man kan "mærke efter", om kastration har 
+                Den er reversibel, hvilket betyder, at man kan &ldquo;mærke efter&rdquo;, om kastration har 
                 den ønskede effekt – uden at tage en endelig beslutning med det samme.
               </p>
               <p className="mb-4">

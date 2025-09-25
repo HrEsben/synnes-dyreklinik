@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface SiteAlert {
@@ -26,7 +26,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   const [isVisible, setIsVisible] = useState(true)
   const supabase = createClient()
 
-  const fetchAlert = async () => {
+  const fetchAlert = useCallback(async () => {
     try {
       const { data: allAlerts, error } = await supabase
         .from('site_alerts')
@@ -45,7 +45,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       console.error('Error fetching alert:', error)
       setAlert(null)
     }
-  }
+  }, [supabase])
 
   const dismissAlert = () => {
     setIsVisible(false)
@@ -72,7 +72,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
+  }, [fetchAlert, supabase])
 
   const value = {
     alert: alert && isVisible ? alert : null,
