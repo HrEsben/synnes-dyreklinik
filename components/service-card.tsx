@@ -60,7 +60,7 @@ export default function ServiceCard({
         {/* Mobile layout: Image centered below text */}
         {imageKey && fallbackImageSrc && (
           <div className={`lg:hidden mb-6 flex justify-center`}>
-            <div className={`w-80 transform ${rotationClass}`}>
+            <div className={`w-full max-w-80 transform ${rotationClass}`}>
               <EditableImage
                 imageKey={imageKey}
                 fallbackSrc={fallbackImageSrc}
