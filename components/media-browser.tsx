@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
@@ -31,12 +31,83 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
   const [searchTerm, setSearchTerm] = useState('')
   const [folderPath, setFolderPath] = useState(['images', 'image-browser'])
   const [mounted, setMounted] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
   const supabase = createClient()
 
   // Handle client-side mounting for portal
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Focus management and keyboard event handling
+  useEffect(() => {
+    if (!isOpen) return
+
+    // Store the previously focused element
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    // Focus the dialog when it opens
+    const focusDialog = () => {
+      if (dialogRef.current) {
+        dialogRef.current.focus()
+      }
+    }
+
+    // Small delay to ensure the dialog is rendered
+    const timeoutId = setTimeout(focusDialog, 10)
+
+    // Handle keyboard events
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      }
+
+      // Trap focus within the dialog
+      if (event.key === 'Tab') {
+        trapFocus(event)
+      }
+    }
+
+    // Trap focus within the dialog
+    const trapFocus = (event: KeyboardEvent) => {
+      if (!dialogRef.current) return
+
+      const focusableElements = dialogRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      const firstElement = focusableElements[0] as HTMLElement
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+
+      if (event.shiftKey) {
+        // Shift + Tab
+        if (document.activeElement === firstElement) {
+          event.preventDefault()
+          lastElement.focus()
+        }
+      } else {
+        // Tab
+        if (document.activeElement === lastElement) {
+          event.preventDefault()
+          firstElement.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    // Cleanup function
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('keydown', handleKeyDown)
+      
+      // Restore focus to the previously focused element
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus()
+      }
+    }
+  }, [isOpen, onClose])
 
   const loadImages = useCallback(async () => {
     setLoading(true)
@@ -109,13 +180,34 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
   if (!isOpen || !mounted) return null
 
   const dialogContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col shadow-2xl transform-none">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={(e) => {
+        // Close when clicking the backdrop
+        if (e.target === e.currentTarget) {
+          onClose()
+        }
+      }}
+    >
+      <div 
+        ref={dialogRef}
+        className="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col shadow-2xl transform-none"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description"
+        tabIndex={-1}
+      >
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-semibold">Vælg billede</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="w-5 h-5" />
+          <h2 id="dialog-title" className="text-2xl font-semibold">Vælg billede</h2>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={onClose}
+            aria-label="Luk dialog"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
           </Button>
         </div>
 
@@ -137,19 +229,25 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
           
           {/* Search */}
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true" />
             <input
               type="text"
               placeholder="Search images..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-2 border rounded-md w-full"
+              aria-label="Søg efter billeder"
             />
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div 
+          id="dialog-description" 
+          className="flex-1 p-6 overflow-y-auto"
+          role="main"
+          aria-label="Billede browser indhold"
+        >
           {loading ? (
             <div className="flex justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f97561]"></div>
@@ -158,24 +256,26 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
               {/* Folders */}
               {filteredFolders.map((folder) => (
-                <div
+                <button
                   key={folder.name}
-                  className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors text-left"
                   onClick={() => navigateToFolder(folder.name)}
+                  aria-label={`Åbn mappe ${folder.name}`}
                 >
                   <div className="flex flex-col items-center">
-                    <Folder className="w-12 h-12 text-blue-500 mb-3" />
+                    <Folder className="w-12 h-12 text-blue-500 mb-3" aria-hidden="true" />
                     <span className="text-sm text-center truncate w-full font-medium">{folder.name}</span>
                   </div>
-                </div>
+                </button>
               ))}
 
               {/* Images */}
               {filteredImages.map((image) => (
-                <div
+                <button
                   key={image.name}
-                  className="border rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow transform-none"
+                  className="border rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow transform-none text-left"
                   onClick={() => handleImageSelect(image.name)}
+                  aria-label={`Vælg billede ${image.name}`}
                 >
                   <div className="aspect-[4/3] relative bg-gray-100">
                     <Image
@@ -189,7 +289,7 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
                   <div className="p-3">
                     <span className="text-sm truncate block font-medium">{image.name}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}
@@ -205,7 +305,7 @@ export default function MediaBrowser({ isOpen, onClose, onSelect }: MediaBrowser
         <div className="p-6 border-t bg-gray-50">
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>{filteredImages.length} images, {filteredFolders.length} folders</span>
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onClose} aria-label="Annuller og luk dialog">
               Cancel
             </Button>
           </div>
