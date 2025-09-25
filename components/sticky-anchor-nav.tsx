@@ -89,8 +89,6 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
         totalOffset = navHeight
       }
       
-      console.log('Nav height:', navHeight, 'Alert height:', alertHeight, 'Alert found:', !!alertBanner, 'Total offset:', totalOffset)
-      
       return totalOffset
     }
 

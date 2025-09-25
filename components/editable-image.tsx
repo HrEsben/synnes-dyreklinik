@@ -175,8 +175,6 @@ export default function EditableImage({
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-      
-      console.log('Image updated successfully')
     } catch (error) {
       console.error('Error uploading image:', error)
       console.error('Upload error:', error)

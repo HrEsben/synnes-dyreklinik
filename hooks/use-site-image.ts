@@ -27,7 +27,6 @@ export function useSiteImage(imageKey: string, fallbackUrl: string) {
           .single()
 
         if (error) {
-          console.log('No custom image found for', imageKey, 'using fallback')
           setImageUrl(fallbackUrl)
         } else {
           setImageUrl(data.image_url)
