@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
 import EditableText from "@/components/editable-text";
 import EditableImage from "@/components/editable-image";
+import EditableVideo from "@/components/editable-video";
 // import InstagramFeed from "@/components/instagram-feed"; // Use this for Instagram API integration
 // import InstagramFeed from "@/components/instagram-feed-simple"; // Using simple static version
 // import InstagramFeed from "@/components/instagram-curated-feed"; // Using oEmbed version
@@ -190,10 +191,12 @@ export default async function Home() {
       <section className="py-25 px-6 bg-[#fffaf6]">
         <div className="flex flex-col lg:flex-row items-center justify-center">
           <div className="order-2 lg:order-1">
-            <EditableImage
-              imageKey="hero-synne-dog"
-              fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"
-              alt="Synne og hund"
+            <EditableVideo
+              videoKey="about-video"
+              thumbnailKey="about-video-thumbnail"
+              videoUrl="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+              fallbackThumbnail="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"
+              alt="Video om Synne og klinikken"
               width={488}
               height={574}
               className="rounded-4xl -rotate-4"
