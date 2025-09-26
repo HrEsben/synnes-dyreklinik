@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import EditableText from '@/components/editable-text'
 
 interface GoogleReview {
   id: string
@@ -166,12 +167,18 @@ export default function GoogleReviews({
 
         <div className={isLoading ? 'opacity-50' : ''}>
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-4">
-              Hvad synes vores klienter?
-            </h2>
-            <p className="text-lg font-semibold text-muted-foreground max-w-2xl mx-auto mb-8">
-              Se hvad vores klienter (altså dem uden pels) siger om at besøge Synnes Dyreklinik
-            </p>
+            <EditableText
+              contentKey="google_reviews_heading"
+              defaultValue="Hvad siger vores kunder?"
+              tag="h2"
+              className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-4"
+            />
+            <EditableText
+              contentKey="google_reviews_description"
+              defaultValue="Se hvad andre dyreejere siger om deres oplevelser hos Synnes Dyreklinik"
+              tag="p"
+              className="text-lg font-semibold text-muted-foreground max-w-2xl mx-auto mb-8"
+            />
             
             <Link href="https://www.google.com/maps/search/synnes+dyreklinik">
             <div className="flex items-center justify-center gap-3 mb-8">
