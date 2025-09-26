@@ -169,13 +169,13 @@ export default function GoogleReviews({
           <div className="text-center mb-8">
             <EditableText
               contentKey="google_reviews_heading"
-              defaultValue="Hvad siger vores kunder?"
+              defaultValue="Hvad siger vores klienter?"
               tag="h2"
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-accent-foreground mb-4"
             />
             <EditableText
               contentKey="google_reviews_description"
-              defaultValue="Se hvad andre dyreejere siger om deres oplevelser hos Synnes Dyreklinik"
+              defaultValue="Se hvad vores klienter (dem uden pels) siger om deres oplevelser hos Synnes Dyreklinik"
               tag="p"
               className="text-lg font-semibold text-muted-foreground max-w-2xl mx-auto mb-8"
             />
