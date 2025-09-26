@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Star } from "lucide-react";
 import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
@@ -11,6 +12,7 @@ import EditableVideo from "@/components/editable-video";
 // import InstagramFeed from "@/components/instagram-curated-feed"; // Using oEmbed version
 // import InstagramFeed from "@/components/instagram-mock-feed"; // Using mockup to show how it would look
 import InstagramFeed from "@/components/instagram-polaroid-feed"; // Using polaroid style
+import GoogleReviews from "@/components/google-reviews";
 import Divider from "@/components/divider";
 
 export const metadata = {
@@ -275,6 +277,7 @@ export default async function Home() {
         </div>
       </section>
       <Divider />
+
       {/* Instagram Section */}
       <section className="py-25 px-6 bg-white">
         <div className="max-w-[1257px] mx-auto">
@@ -290,13 +293,16 @@ export default async function Home() {
         </div>
       </section>
       <Divider />
+            {/* Google Reviews Section */}
+      <GoogleReviews className="bg-[#fffaf6]" maxReviews={4} />
+      <Divider />
       {/* CTA Section */}
       <section className="pt-15 bg-[#611471] text-white">
          <div className="flex flex-col max-w-[1257px] mx-auto lg:flex-row items-center justify-between">
            <div className="">
              <EditableText 
                contentKey="cta_title" 
-               defaultValue="Book en aftale<br />allerede i dag"
+               defaultValue="Vi glæder os til at tage godt<br />imod dig og dit kæledyr"
                className="text-3xl md:text-3xl lg:text-5xl leading-10 font-extrabold mb-6 text-white"
                multiline={true}
                tag="h2"
@@ -309,11 +315,13 @@ export default async function Home() {
               href="/kontakt"
             >
               <Button className="py-5.5 px-5 text-lg font-bold w-full">
-                Kontakt os
+                Book en tid
               </Button>
             </Link>
           </div>
           </div>
+        
+          
           <div className="flex-shrink-0 mt-[-30px] lg:mt-[-157px]">
              <EditableImage
                imageKey="hero-synne-portrait"

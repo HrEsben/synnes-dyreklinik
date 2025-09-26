@@ -259,7 +259,7 @@ export default function EditableVideo({
         {/* Video modal */}
         {isVideoPlaying && (
           <div className="fixed inset-0 flex items-center justify-center z-[70]" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }} onClick={handleCloseVideo}>
-            <div className="relative w-full max-w-4xl mx-4">
+            <div className="relative w-full max-w-4xl mx-4" onClick={(e) => e.stopPropagation()}>
               <Button
                 onClick={handleCloseVideo}
                 className="absolute -top-12 right-0 bg-white hover:bg-accent text-accent-foreground hover:text-white border-0 shadow-lg transition-all duration-200 hover:scale-110 rounded-full w-10 h-10 p-0"
@@ -414,7 +414,7 @@ export default function EditableVideo({
       {/* Video modal for authenticated users */}
       {isVideoPlaying && (
         <div className="fixed inset-0 flex items-center justify-center z-[70]" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }} onClick={handleCloseVideo}>
-          <div className="relative w-full max-w-4xl mx-4">
+          <div className="relative w-full max-w-4xl mx-4" onClick={(e) => e.stopPropagation()}>
             <Button
               onClick={handleCloseVideo}
               className="absolute -top-12 right-0 bg-white hover:bg-accent text-accent-foreground hover:text-white border-0 shadow-lg transition-all duration-200 hover:scale-110 rounded-full w-10 h-10 p-0"
