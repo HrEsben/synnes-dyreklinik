@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
-import { uploadImage, getImageUrl, deleteImage, getPathFromUrl } from '@/lib/supabase/storage'
-import { Upload, Loader2, ImageIcon, FolderOpen, Play, X, Video } from 'lucide-react'
+import { uploadImage, getImageUrl} from '@/lib/supabase/storage'
+import { Upload, Loader2, FolderOpen, Play, X, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSiteImage } from '@/hooks/use-site-image'
 import MediaBrowser from '@/components/media-browser'
@@ -27,7 +27,6 @@ interface EditableVideoProps {
 }
 
 export default function EditableVideo({
-  videoKey,
   thumbnailKey,
   videoUrl,
   fallbackThumbnail,
@@ -48,7 +47,7 @@ export default function EditableVideo({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
-  const [currentVideoUrl, setCurrentVideoUrl] = useState(videoUrl)
+  const [currentVideoUrl, _setCurrentVideoUrl] = useState(videoUrl)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 

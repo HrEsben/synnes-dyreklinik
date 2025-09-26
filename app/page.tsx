@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Star } from "lucide-react";
 import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";

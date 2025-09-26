@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -60,7 +60,7 @@ export default function GoogleReviews({
   const [error, setError] = useState<string | null>(null)
 
   // Fetch reviews from Google API
-  const fetchGoogleReviews = async () => {
+  const fetchGoogleReviews = useCallback(async () => {
     if (!placeId || useMockData) {
       console.log('Using mock data')
       return
@@ -93,11 +93,11 @@ export default function GoogleReviews({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [placeId, useMockData, useMyBusinessAPI])
 
   useEffect(() => {
     fetchGoogleReviews()
-  }, [placeId, useMockData, useMyBusinessAPI])
+  }, [placeId, useMockData, useMyBusinessAPI, fetchGoogleReviews])
 
   const averageRating = reviews.length > 0 
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
