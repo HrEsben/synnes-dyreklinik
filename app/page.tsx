@@ -316,12 +316,12 @@ export default async function Home() {
                imageKey="hero-synne-portrait"
                fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/sideeye_synne.webp"
                alt="Synne dyrlæge"
-               width={550}
-               height={600}
+               width={600}
+               height={400}
                className=""
-               style={{ width: 'auto', height: 'auto' }}
+              //  style={{ width: 'auto', height: 'auto' }}
                isAuthenticated={!!user}
-               editable={false}
+               editable={true}
              />
           </div>
         </div>
