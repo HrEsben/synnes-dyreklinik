@@ -208,7 +208,7 @@ export default async function Home() {
               fetchPriority="high"
             />
           </div>
-          <div className="order-1 lg:order-2 mb-16 ml-8 w-full md:w-[611px] lg:max-w-[45%]">
+          <div className="order-1 lg:order-2 mb-16 mx-8 w-full md:w-[611px] lg:max-w-[45%]">
             <EditableText 
               contentKey="about_me_heading" 
               defaultValue={getContent('about_me_heading', 'Kort om os...')}
@@ -239,7 +239,7 @@ export default async function Home() {
                 </h3>
               </li>
               
-              <li className="flex items-end">
+              <li className="flex items-start">
                 <div className="w-7.5 h-7.5 bg-[#ffca0e] rounded-full flex items-center justify-center mr-4 flex-shrink-0">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -250,7 +250,7 @@ export default async function Home() {
                 </h3>
               </li>
               
-              <li className="flex items-end">
+              <li className="flex items-start">
                 <div className="w-7.5 h-7.5 bg-[#ffca0e] rounded-full flex items-center justify-center mr-4 flex-shrink-0">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -296,9 +296,9 @@ export default async function Home() {
       <GoogleReviews className="bg-[#fffaf6]" maxReviews={4} />
       <Divider />
       {/* CTA Section */}
-      <section className="pt-15 bg-[#611471] text-white">
-         <div className="flex flex-col max-w-[1257px] mx-auto lg:flex-row items-center justify-between">
-           <div className="">
+      <section className="pt-15 lg:pb-6 bg-[#611471] text-white overflow-hidden">
+         <div className="flex flex-col max-w-[1257px] mx-auto px-6 lg:flex-row items-center justify-between">
+           <div className="w-full lg:w-auto mb-8 lg:mb-0">
              <EditableText 
                contentKey="cta_title" 
                defaultValue="Vi glæder os til at tage godt<br />imod dig og dit kæledyr"
@@ -309,11 +309,11 @@ export default async function Home() {
              />
 
           
-          <div className="flex flex-col sm:flex-row gap-4  mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 lg:mb-12">
             <Link
               href="/kontakt"
             >
-              <Button className="py-5.5 px-5 text-lg font-bold w-full">
+              <Button className="py-5.5 px-5 text-lg font-bold w-full sm:w-auto">
                 Book en tid
               </Button>
             </Link>
@@ -321,7 +321,7 @@ export default async function Home() {
           </div>
         
           
-          <div className="flex-shrink-0 mt-[-30px] lg:mt-[-157px]">
+          <div className="flex-shrink-0 mt-0 lg:mt-[-157px]">
              <EditableImage
                imageKey="hero-synne-portrait"
                fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/sideeye_synne.webp"
