@@ -296,7 +296,7 @@ export default async function Home() {
       <GoogleReviews className="bg-[#fffaf6]" maxReviews={4} />
       <Divider />
       {/* CTA Section */}
-      <section className="pt-15 lg:pb-6 bg-[#611471] text-white overflow-hidden">
+      <section className="pt-15 lg:pb-6 bg-[#611471] text-white relative">
          <div className="flex flex-col max-w-[1257px] mx-auto px-6 lg:flex-row items-center justify-between">
            <div className="w-full lg:w-auto mb-8 lg:mb-0">
              <EditableText 
@@ -321,16 +321,14 @@ export default async function Home() {
           </div>
         
           
-          <div className="flex-shrink-0 mt-0 lg:mt-[-157px]">
+          <div className="flex-shrink-0 self-end lg:absolute lg:bottom-0 lg:right-6">
              <EditableImage
                imageKey="hero-synne-portrait"
                fallbackSrc="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/sideeye_synne.webp"
                alt="Synne dyrlæge"
                width={600}
                height={400}
-               className=""
-              //  style={{ width: 'auto', height: 'auto' }}
-               isAuthenticated={!!user}
+                          isAuthenticated={!!user}
                editable={true}
              />
           </div>
