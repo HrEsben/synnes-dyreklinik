@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
     
@@ -12,24 +12,24 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { faqs } = await request.json()
+    const { items } = await request.json()
 
-    if (!faqs || !Array.isArray(faqs)) {
-      return NextResponse.json({ error: 'Invalid FAQs data' }, { status: 400 })
+    if (!items || !Array.isArray(items)) {
+      return NextResponse.json({ error: 'Invalid items data' }, { status: 400 })
     }
 
     // Update display order for all FAQs
-    const updates = faqs.map((faq, index) => 
+    const updates = items.map((item: { id: number, display_order: number }) => 
       supabase
         .from('faqs')
-        .update({ display_order: index + 1 })
-        .eq('id', faq.id)
+        .update({ display_order: item.display_order })
+        .eq('id', item.id)
     )
 
     const results = await Promise.all(updates)
     
     // Check if any updates failed
-    const errors = results.filter(result => result.error)
+    const errors = results.filter((result: any) => result.error)
     if (errors.length > 0) {
       console.error('Error updating FAQ order:', errors)
       return NextResponse.json({ error: 'Failed to update FAQ order' }, { status: 500 })

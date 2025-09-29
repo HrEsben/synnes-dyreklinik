@@ -41,12 +41,6 @@ export async function GET(request: NextRequest) {
       )
     }
     
-    console.log('Making Google Places API request:', {
-      placeId,
-      hasApiKey: !!apiKey,
-      apiKeyPrefix: apiKey ? apiKey.substring(0, 10) + '...' : 'MISSING'
-    })
-    
     // Fetch from Google Places API (Legacy - works with API keys)
     // Added language=da to get Danish reviews in original language
     const response = await fetch(
@@ -88,9 +82,6 @@ export async function GET(request: NextRequest) {
       throw new Error(errorMessage)
     }
     
-    // Log the raw data to check language/translation
-    console.log('Raw Google Places API response:', JSON.stringify(data, null, 2))
-
     // Transform the data to match our component interface
     const transformedReviews = data.result?.reviews?.map(review => ({
       id: review.author_name + review.time,
