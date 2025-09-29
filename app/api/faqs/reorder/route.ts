@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const results = await Promise.all(updates)
     
     // Check if any updates failed
-    const errors = results.filter((result: any) => result.error)
+    const errors = results.filter(result => result.error)
     if (errors.length > 0) {
       console.error('Error updating FAQ order:', errors)
       return NextResponse.json({ error: 'Failed to update FAQ order' }, { status: 500 })
