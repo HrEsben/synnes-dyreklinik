@@ -59,58 +59,37 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative pt-12 lg:pt-16 pb-6 lg:pb-8 px-4 md:px-6 bg-[#fffaf6] overflow-hidden curved-bottom">
+      {/* Main Content Section */}
+      <section className="pt-12 lg:pt-16 pb-8 lg:pb-12 px-4 md:px-6">
         <div className="mx-auto max-w-[1257px]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-            <div className="order-2 lg:order-1">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              {/* Back to Om button */}
+              <Link
+                href="/om"
+                className="inline-flex items-center text-[#817d7d] hover:text-[#f97561] transition-colors mb-4"
+              >
+                ← Tilbage til teamet
+              </Link>
+
               <h1 className="mb-2" style={{ 
                 fontWeight: 800, 
                 fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: 'clamp(24px, 4vw, 36px)',
+                fontSize: 'clamp(28px, 4vw, 42px)',
                 lineHeight: '1.3em',
                 color: '#2c2524'
               }}>
                 {employee.name}
               </h1>
-              <p className="text-base mb-4 font-medium" style={{
+              <p className="text-lg mb-8 font-medium" style={{
                 fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-                fontSize: '16px',
+                fontSize: '18px',
                 color: '#f97561'
               }}>
                 {employee.position}
               </p>
-              
-              {/* Back to Om button */}
-              <Link
-                href="/om"
-                className="inline-flex items-center text-[#817d7d] hover:text-[#f97561] transition-colors"
-              >
-                ← Tilbage til teamet
-              </Link>
-            </div>
-            
-            <div className="order-1 lg:order-2">
-              <div className="relative max-w-xs mx-auto lg:mx-0">
-                <Image
-                  src={displayImageUrl}
-                  alt={employee.name || 'Team member'}
-                  width={250}
-                  height={320}
-                  className="w-full h-64 lg:h-72 object-cover rounded-2xl shadow-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* About Section */}
-      <section className="py-8 lg:py-12 px-4 md:px-6">
-        <div className="mx-auto max-w-[1257px]">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-            {/* Bio Content */}
-            <div className="lg:col-span-2">
               <h2 className="mb-6" style={{ 
                 fontWeight: 800, 
                 fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
@@ -138,8 +117,21 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
             </div>
             </div>
 
-            {/* Facts Box */}
-            <div className="lg:col-span-1">
+            {/* Sidebar with Profile Image and Facts */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Profile Image */}
+              <div className="relative max-w-xs mx-auto lg:mx-0">
+                <Image
+                  src={displayImageUrl}
+                  alt={employee.name || 'Team member'}
+                  width={300}
+                  height={450}
+                  className="w-full aspect-[2/3] object-cover rounded-2xl shadow-lg"
+                  style={{ objectPosition: 'center top' }}
+                />
+              </div>
+
+              {/* Facts Box */}
               <div className="bg-[#fffaf6] rounded-2xl p-6 shadow-sm border border-[#f0e8e0]">
                 <h3 className="mb-4" style={{ 
                   fontWeight: 700, 

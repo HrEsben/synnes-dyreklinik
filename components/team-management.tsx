@@ -6,7 +6,9 @@ import { createClient } from '@/lib/supabase/client'
 import { uploadImage, getImageUrl, deleteImage, getPathFromUrl } from '@/lib/supabase/storage'
 import { Button } from '@/components/ui/button'
 import RichTextEditor from '@/components/rich-text-editor'
+import MediaBrowser from '@/components/media-browser'
 import Link from 'next/link'
+import { FolderOpen } from 'lucide-react'
 
 interface Employee {
   id: number
@@ -47,6 +49,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
   const [loading, setLoading] = useState(false)
   const [converting, setConverting] = useState(false)
   const [recentlyUpdatedId, setRecentlyUpdatedId] = useState<number | null>(null)
+  const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const supabase = createClient()
 
   // Convert HEIC/HEIF files to JPEG
@@ -118,6 +121,14 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
     })
     setSelectedFile(null)
     setEditingEmployee(null)
+  }
+
+  // Handle media selection from bucket
+  const handleMediaSelection = (imagePath: string) => {
+    const imageUrl = getImageUrl(imagePath)
+    setFormData(prev => ({ ...prev, img_url: imageUrl }))
+    setSelectedFile(null) // Clear any selected file
+    setShowMediaBrowser(false)
   }
 
   // Open modal for creating new employee
@@ -329,6 +340,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                           width={64}
                           height={64}
                           className="w-full h-full object-cover"
+                          style={{ objectPosition: 'center top' }}
                         />
                       </div>
                     )}
@@ -465,6 +477,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                             src={URL.createObjectURL(selectedFile)} 
                             alt="Preview"
                             className="w-full h-full object-cover"
+                            style={{ objectPosition: 'center top' }}
                           />
                         ) : (
                           <Image 
@@ -473,6 +486,7 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                             width={64}
                             height={64}
                             className="w-full h-full object-cover"
+                            style={{ objectPosition: 'center top' }}
                           />
                         )}
                       </div>
@@ -500,47 +514,64 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
                   )}
                   
                   {/* File input */}
-                  <div className="relative">
-                    <input
-                      type="file"
-                      accept="image/*,.heic,.heif"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          try {
-                            // Convert HEIC to JPEG if needed
-                            const convertedFile = await convertHeicToJpeg(file)
-                            setSelectedFile(convertedFile)
-                          } catch (error) {
-                            console.error('File conversion error:', error)
-                            alert(error instanceof Error ? error.message : 'Fejl ved konvertering af fil')
+                  <div className="space-y-3">
+                    {/* File upload */}
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*,.heic,.heif"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            try {
+                              // Convert HEIC to JPEG if needed
+                              const convertedFile = await convertHeicToJpeg(file)
+                              setSelectedFile(convertedFile)
+                            } catch (error) {
+                              console.error('File conversion error:', error)
+                              alert(error instanceof Error ? error.message : 'Fejl ved konvertering af fil')
+                            }
                           }
-                        }
-                      }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      id="image-upload"
-                    />
-                    <label 
-                      htmlFor="image-upload"
-                      className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#2c2524] hover:bg-gray-50 transition-colors"
-                      style={{ borderColor: '#e5e7eb' }}
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="image-upload"
+                      />
+                      <label 
+                        htmlFor="image-upload"
+                        className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#2c2524] hover:bg-gray-50 transition-colors"
+                        style={{ borderColor: '#e5e7eb' }}
+                      >
+                        <div className="text-center">
+                          {converting ? (
+                            <div className="mx-auto h-8 w-8 mb-2 animate-spin rounded-full border-2 border-gray-300 border-t-[#2c2524]"></div>
+                          ) : (
+                            <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                          )}
+                          <span className="text-sm font-medium" style={{ color: '#2c2524' }}>
+                            {converting ? 'Konverterer...' : 'Upload billede'}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {converting ? 'HEIC fil konverteres' : 'Eller træk og slip her'}
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+
+                    {/* Bucket selection button */}
+                    <div className="text-center">
+                      <span className="text-xs text-gray-500">eller</span>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowMediaBrowser(true)}
+                      className="w-full"
                     >
-                      <div className="text-center">
-                        {converting ? (
-                          <div className="mx-auto h-8 w-8 mb-2 animate-spin rounded-full border-2 border-gray-300 border-t-[#2c2524]"></div>
-                        ) : (
-                          <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                          </svg>
-                        )}
-                        <span className="text-sm font-medium" style={{ color: '#2c2524' }}>
-                          {converting ? 'Konverterer...' : 'Vælg billede'}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {converting ? 'HEIC fil konverteres' : 'Eller træk og slip her'}
-                        </p>
-                      </div>
-                    </label>
+                      <FolderOpen className="w-4 h-4 mr-2" />
+                      Vælg fra mediarkiv
+                    </Button>
                   </div>
                   <p className="text-xs text-gray-500">
                     Vælg et billede (JPG, PNG, GIF, HEIC). HEIC filer konverteres automatisk. Maks 5MB.
@@ -693,6 +724,15 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
             </form>
           </div>
         </div>
+      )}
+
+      {/* Media Browser Modal */}
+      {showMediaBrowser && (
+        <MediaBrowser
+          isOpen={showMediaBrowser}
+          onClose={() => setShowMediaBrowser(false)}
+          onSelect={handleMediaSelection}
+        />
       )}
     </div>
   )

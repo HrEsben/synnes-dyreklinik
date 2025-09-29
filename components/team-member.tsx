@@ -21,6 +21,7 @@ export default function TeamMember({ name, position, imageUrl, link }: TeamMembe
           width={400}
           height={500}
           className="w-full h-100 object-cover transition-transform duration-300 group-hover:scale-105"
+          style={{ objectPosition: 'center top' }}
         />
       </div>
       <div className="pb-16 px-4 flex-grow flex flex-col justify-center">
