@@ -58,7 +58,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
   const displayImageUrl = employee.img_url || defaultImageUrl;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#fffaf6]">
       {/* Main Content Section */}
       <section className="pt-12 lg:pt-16 pb-8 lg:pb-12 px-4 md:px-6">
         <div className="mx-auto max-w-[1257px]">
@@ -132,7 +132,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
               </div>
 
               {/* Facts Box */}
-              <div className="bg-[#fffaf6] rounded-2xl p-6 shadow-sm border border-[#f0e8e0]">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#f0e8e0]">
                 <h3 className="mb-4" style={{ 
                   fontWeight: 700, 
                   fontFamily: 'Poppins Bold, Poppins, sans-serif',
