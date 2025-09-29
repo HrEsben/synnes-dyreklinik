@@ -49,7 +49,7 @@ export default function EditableText({
         if (data?.content) {
           setContent(data.content)
         }
-      } catch (error) {
+      } catch {
         // If no saved content exists, keep the default value
         console.log('No saved content found for:', contentKey)
       }

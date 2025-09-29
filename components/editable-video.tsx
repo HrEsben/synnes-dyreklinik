@@ -47,7 +47,6 @@ export default function EditableVideo({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
-  const [currentVideoUrl, _setCurrentVideoUrl] = useState(videoUrl)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -267,18 +266,20 @@ export default function EditableVideo({
                 <X size={20} />
               </Button>
               <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-                {currentVideoUrl.includes('youtube.com') || currentVideoUrl.includes('youtu.be') ? (
+                {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') ? (
                   <iframe
-                    src={currentVideoUrl.replace('watch?v=', 'embed/')}
+                    src={videoUrl.replace('watch?v=', 'embed/')}
                     className="w-full h-full rounded-lg"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     onClick={(e) => e.stopPropagation()}
                   />
-                ) : currentVideoUrl.includes('vimeo.com') ? (
+                ) : videoUrl.includes('vimeo.com') ? (
                   <iframe
-                    src={currentVideoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
-                    className="w-full h-full rounded-lg"
+                    src={videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                    width="100%"
+                    height="100%"
+                    className="rounded-lg"
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
                     onClick={(e) => e.stopPropagation()}
@@ -286,7 +287,7 @@ export default function EditableVideo({
                 ) : (
                   <video
                     ref={videoRef}
-                    src={currentVideoUrl}
+                    src={videoUrl}
                     className="w-full h-full rounded-lg"
                     controls
                     autoPlay
@@ -422,17 +423,17 @@ export default function EditableVideo({
               <X size={20} />
             </Button>
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-              {currentVideoUrl.includes('youtube.com') || currentVideoUrl.includes('youtu.be') ? (
+              {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') ? (
                 <iframe
-                  src={currentVideoUrl.replace('watch?v=', 'embed/')}
+                  src={videoUrl.replace('watch?v=', 'embed/')}
                   className="w-full h-full rounded-lg"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   onClick={(e) => e.stopPropagation()}
                 />
-              ) : currentVideoUrl.includes('vimeo.com') ? (
+              ) : videoUrl.includes('vimeo.com') ? (
                 <iframe
-                  src={currentVideoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                  src={videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
                   className="w-full h-full rounded-lg"
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
@@ -441,7 +442,7 @@ export default function EditableVideo({
               ) : (
                 <video
                   ref={videoRef}
-                  src={currentVideoUrl}
+                  src={videoUrl}
                   className="w-full h-full rounded-lg"
                   controls
                   autoPlay

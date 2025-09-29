@@ -1,47 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-// Convert star rating enum to number
-const convertStarRating = (starRating: string): number => {
-  const ratings: { [key: string]: number } = {
-    'ONE': 1,
-    'TWO': 2,
-    'THREE': 3,
-    'FOUR': 4,
-    'FIVE': 5
-  }
-  return ratings[starRating] || 5
-}
-
-// Convert timestamp to relative time description in Danish
-const getRelativeTimeDescription = (timestamp: string): string => {
-  const reviewDate = new Date(timestamp)
-  const now = new Date()
-  const diffInDays = Math.floor((now.getTime() - reviewDate.getTime()) / (1000 * 60 * 60 * 24))
-  
-  if (diffInDays === 0) return 'i dag'
-  if (diffInDays === 1) return 'i går'
-  if (diffInDays < 7) return `for ${diffInDays} dage siden`
-  if (diffInDays < 30) {
-    const weeks = Math.floor(diffInDays / 7)
-    return weeks === 1 ? 'for 1 uge siden' : `for ${weeks} uger siden`
-  }
-  if (diffInDays < 365) {
-    const months = Math.floor(diffInDays / 30)
-    return months === 1 ? 'for 1 måned siden' : `for ${months} måneder siden`
-  }
-  const years = Math.floor(diffInDays / 365)
-  return years === 1 ? 'for 1 år siden' : `for ${years} år siden`
-}
-
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url)
-    const placeId = searchParams.get('placeId')
-    const maxResults = parseInt(searchParams.get('maxResults') || '10')
-    
-    // Get API credentials from environment variables
-    const apiKey = process.env.GOOGLE_MY_BUSINESS_API_KEY
-    const businessAccountId = process.env.GOOGLE_MY_BUSINESS_ACCOUNT_ID
+    // This endpoint is currently not implemented
+    // Google My Business API requires OAuth 2.0 and special approval
     
     // For now, return mock data since we don't have credentials yet
     // When you get the credentials, uncomment the API call below
