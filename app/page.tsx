@@ -293,7 +293,12 @@ export default async function Home() {
       </section>
       <Divider />
             {/* Google Reviews Section */}
-      <GoogleReviews className="bg-[#fffaf6]" maxReviews={4} />
+      <GoogleReviews 
+        placeId="ChIJk-lvg5djUkYRB0ngfTM2oL4" 
+        useMyBusinessAPI={false}  // Use compliant Places API
+        maxReviews={3} 
+        className="bg-[#fffaf6]" 
+      />
       <Divider />
       {/* CTA Section */}
       <section className="pt-15 lg:pb-6 bg-[#611471] text-white relative">

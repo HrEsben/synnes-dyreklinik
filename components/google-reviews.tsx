@@ -5,6 +5,7 @@ import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import EditableText from '@/components/editable-text'
+import Image from 'next/image'
 
 interface GoogleReview {
   id: string
@@ -142,6 +143,7 @@ export default function GoogleReviews({
   }
 
   const getInitials = (name: string) => {
+    if (!name || typeof name !== 'string') return '??'
     return name
       .split(' ')
       .map(word => word.charAt(0).toUpperCase())
@@ -289,6 +291,22 @@ export default function GoogleReviews({
               </div>
             ))}
           </div>
+        </div>
+        
+        {/* Required Google Maps Attribution - According to Google Maps Platform Policies */}
+        <div className="flex items-center justify-center mt-8 gap-2 p-4 border-t border-gray-100">
+          <span className="text-xs text-gray-600 font-medium">
+            Reviews powered by
+          </span>
+          <Image
+            src="/GoogleMaps_Logo_Gray.svg"
+            alt="Google Maps"
+            width={65}
+            height={19}
+            className="min-w-[65px]"
+            priority
+            translate="no"
+          />
         </div>
       </div>
     </div>

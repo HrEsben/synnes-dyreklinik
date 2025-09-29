@@ -33,10 +33,30 @@ export default function EditableText({
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
   const supabase = createClient()
 
-  // Handle hydration
+  // Handle hydration and load saved content
   useEffect(() => {
     setIsHydrated(true)
-  }, [])
+    
+    // Load saved content from database after hydration
+    const loadContent = async () => {
+      try {
+        const { data } = await supabase
+          .from('site_content')
+          .select('content')
+          .eq('content_key', contentKey)
+          .single()
+        
+        if (data?.content) {
+          setContent(data.content)
+        }
+      } catch (error) {
+        // If no saved content exists, keep the default value
+        console.log('No saved content found for:', contentKey)
+      }
+    }
+    
+    loadContent()
+  }, [contentKey, supabase])
 
   // Check if user is logged in
   useEffect(() => {
@@ -148,7 +168,8 @@ export default function EditableText({
   }
 
   // Render display mode
-  const displayContent = content || defaultValue
+  // Use defaultValue during SSR, then show saved content after hydration
+  const displayContent = isHydrated ? (content || defaultValue) : defaultValue
   const commonProps = {
     className: `${className} ${user ? 'cursor-pointer hover:bg-blue-50 hover:outline-1 hover:outline-blue-300 rounded transition-all' : ''}`,
     style,
@@ -161,8 +182,8 @@ export default function EditableText({
     if (allowHtml && isHydrated) {
       return { dangerouslySetInnerHTML: { __html: displayContent } }
     } else if (!isHydrated && allowHtml) {
-      // During SSR, render a simple placeholder to prevent hydration mismatch
-      return { children: '' }
+      // During SSR, render the defaultValue to prevent hydration mismatch
+      return { children: defaultValue }
     } else {
       return { children: displayContent }
     }
