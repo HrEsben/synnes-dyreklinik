@@ -64,7 +64,7 @@ export default function EditableVideo({
   // Fetch video URL from database when component mounts
   useEffect(() => {
     const fetchVideoUrl = async () => {
-      if (isAuthenticated && videoKey) {
+      if (videoKey) {
         try {
           const { data, error } = await supabase
             .from('site_content')
@@ -72,18 +72,29 @@ export default function EditableVideo({
             .eq('content_key', videoKey)
             .single()
 
-          if (data && !error) {
+          if (data && !error && data.content) {
             setCurrentVideoUrl(data.content)
             setEditedVideoUrl(data.content)
+          } else {
+            // Fall back to prop videoUrl if no data in database
+            setCurrentVideoUrl(videoUrl)
+            setEditedVideoUrl(videoUrl)
           }
         } catch (error) {
           console.error('Error fetching video URL:', error)
+          // Fall back to prop videoUrl on error
+          setCurrentVideoUrl(videoUrl)
+          setEditedVideoUrl(videoUrl)
         }
+      } else {
+        // If no videoKey, use prop videoUrl
+        setCurrentVideoUrl(videoUrl)
+        setEditedVideoUrl(videoUrl)
       }
     }
 
     fetchVideoUrl()
-  }, [videoKey, isAuthenticated, supabase])
+  }, [videoKey, videoUrl, supabase])
 
   // Cleanup scroll lock on unmount
   useEffect(() => {
@@ -302,6 +313,18 @@ export default function EditableVideo({
     setIsEditingVideoUrl(false)
   }
 
+  const convertToEmbedUrl = (url: string) => {
+    if (url.includes('youtube.com/watch?v=')) {
+      return url.replace('youtube.com/watch?v=', 'youtube.com/embed/')
+    } else if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1].split('?')[0]
+      return `https://www.youtube.com/embed/${videoId}`
+    } else if (url.includes('vimeo.com/')) {
+      return url.replace('vimeo.com/', 'player.vimeo.com/video/')
+    }
+    return url
+  }
+
   const displayThumbnail = previewUrl || thumbnailUrl
 
   if (loading) {
@@ -348,7 +371,7 @@ export default function EditableVideo({
               <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
                 {currentVideoUrl.includes('youtube.com') || currentVideoUrl.includes('youtu.be') ? (
                   <iframe
-                    src={currentVideoUrl.replace('watch?v=', 'embed/')}
+                    src={convertToEmbedUrl(currentVideoUrl)}
                     className="w-full h-full rounded-lg"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -356,7 +379,7 @@ export default function EditableVideo({
                   />
                 ) : currentVideoUrl.includes('vimeo.com') ? (
                   <iframe
-                    src={currentVideoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                    src={convertToEmbedUrl(currentVideoUrl)}
                     width="100%"
                     height="100%"
                     className="rounded-lg"
@@ -564,7 +587,7 @@ export default function EditableVideo({
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
               {currentVideoUrl.includes('youtube.com') || currentVideoUrl.includes('youtu.be') ? (
                 <iframe
-                  src={currentVideoUrl.replace('watch?v=', 'embed/')}
+                  src={convertToEmbedUrl(currentVideoUrl)}
                   className="w-full h-full rounded-lg"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -572,7 +595,7 @@ export default function EditableVideo({
                 />
               ) : currentVideoUrl.includes('vimeo.com') ? (
                 <iframe
-                  src={currentVideoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                  src={convertToEmbedUrl(currentVideoUrl)}
                   className="w-full h-full rounded-lg"
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
