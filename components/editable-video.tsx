@@ -314,13 +314,22 @@ export default function EditableVideo({
   }
 
   const convertToEmbedUrl = (url: string) => {
-    if (url.includes('youtube.com/watch?v=')) {
-      return url.replace('youtube.com/watch?v=', 'youtube.com/embed/')
+    // Handle YouTube URLs
+    if (url.includes('youtube.com/watch?v=') || url.includes('www.youtube.com/watch?v=')) {
+      const urlObj = new URL(url)
+      const videoId = urlObj.searchParams.get('v')
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`
+      }
     } else if (url.includes('youtu.be/')) {
-      const videoId = url.split('youtu.be/')[1].split('?')[0]
+      const videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0]
       return `https://www.youtube.com/embed/${videoId}`
-    } else if (url.includes('vimeo.com/')) {
-      return url.replace('vimeo.com/', 'player.vimeo.com/video/')
+    } else if (url.includes('youtube.com/embed/')) {
+      // Already an embed URL
+      return url
+    } else if (url.includes('vimeo.com/') && !url.includes('player.vimeo.com')) {
+      const videoId = url.split('vimeo.com/')[1].split('?')[0]
+      return `https://player.vimeo.com/video/${videoId}`
     }
     return url
   }
