@@ -4,13 +4,14 @@ import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { uploadImage, getImageUrl} from '@/lib/supabase/storage'
-import { Upload, Loader2, FolderOpen, Play, X, Video } from 'lucide-react'
+import { Upload, Loader2, FolderOpen, Play, X, Video, Edit, Save, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useSiteImage } from '@/hooks/use-site-image'
 import MediaBrowser from '@/components/media-browser'
 
 interface EditableVideoProps {
-  videoKey: string
+  videoKey: string // Key for storing video URL in database
   thumbnailKey: string
   videoUrl: string // URL to the video (YouTube, Vimeo, local file, etc.)
   fallbackThumbnail: string
@@ -27,6 +28,7 @@ interface EditableVideoProps {
 }
 
 export default function EditableVideo({
+  videoKey,
   thumbnailKey,
   videoUrl,
   fallbackThumbnail,
@@ -47,6 +49,10 @@ export default function EditableVideo({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [isEditingVideoUrl, setIsEditingVideoUrl] = useState(false)
+  const [editedVideoUrl, setEditedVideoUrl] = useState(videoUrl)
+  const [currentVideoUrl, setCurrentVideoUrl] = useState(videoUrl)
+  const [isSavingVideoUrl, setIsSavingVideoUrl] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -54,6 +60,30 @@ export default function EditableVideo({
 
   // Use the site image hook for the thumbnail
   const { imageUrl: thumbnailUrl, loading } = useSiteImage(thumbnailKey, fallbackThumbnail)
+
+  // Fetch video URL from database when component mounts
+  useEffect(() => {
+    const fetchVideoUrl = async () => {
+      if (isAuthenticated && videoKey) {
+        try {
+          const { data, error } = await supabase
+            .from('site_content')
+            .select('content')
+            .eq('content_key', videoKey)
+            .single()
+
+          if (data && !error) {
+            setCurrentVideoUrl(data.content)
+            setEditedVideoUrl(data.content)
+          }
+        } catch (error) {
+          console.error('Error fetching video URL:', error)
+        }
+      }
+    }
+
+    fetchVideoUrl()
+  }, [videoKey, isAuthenticated, supabase])
 
   // Cleanup scroll lock on unmount
   useEffect(() => {
@@ -222,6 +252,56 @@ export default function EditableVideo({
     }
   }
 
+  const handleSaveVideoUrl = async () => {
+    if (!editedVideoUrl.trim()) return
+
+    setIsSavingVideoUrl(true)
+    try {
+      // Update the video URL in database
+      const { data: updateData, error: updateError } = await supabase
+        .from('site_content')
+        .update({
+          content: editedVideoUrl.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('content_key', videoKey)
+        .select()
+
+      if (updateError) {
+        console.error('Update error:', updateError)
+        throw new Error('Failed to update video URL in database')
+      }
+
+      // If no rows were updated, insert new record
+      if (!updateData || updateData.length === 0) {
+        const { error: insertError } = await supabase
+          .from('site_content')
+          .insert({
+            content_key: videoKey,
+            content: editedVideoUrl.trim()
+          })
+
+        if (insertError) {
+          console.error('Insert error:', insertError)
+          throw new Error('Failed to insert video URL in database')
+        }
+      }
+
+      setCurrentVideoUrl(editedVideoUrl.trim())
+      setIsEditingVideoUrl(false)
+    } catch (error) {
+      console.error('Error saving video URL:', error)
+      alert('Fejl ved gemning af video URL')
+    } finally {
+      setIsSavingVideoUrl(false)
+    }
+  }
+
+  const handleCancelVideoUrlEdit = () => {
+    setEditedVideoUrl(currentVideoUrl)
+    setIsEditingVideoUrl(false)
+  }
+
   const displayThumbnail = previewUrl || thumbnailUrl
 
   if (loading) {
@@ -266,17 +346,17 @@ export default function EditableVideo({
                 <X size={20} />
               </Button>
               <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-                {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') ? (
+                {currentVideoUrl.includes('youtube.com') || currentVideoUrl.includes('youtu.be') ? (
                   <iframe
-                    src={videoUrl.replace('watch?v=', 'embed/')}
+                    src={currentVideoUrl.replace('watch?v=', 'embed/')}
                     className="w-full h-full rounded-lg"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     onClick={(e) => e.stopPropagation()}
                   />
-                ) : videoUrl.includes('vimeo.com') ? (
+                ) : currentVideoUrl.includes('vimeo.com') ? (
                   <iframe
-                    src={videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                    src={currentVideoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
                     width="100%"
                     height="100%"
                     className="rounded-lg"
@@ -287,7 +367,7 @@ export default function EditableVideo({
                 ) : (
                   <video
                     ref={videoRef}
-                    src={videoUrl}
+                    src={currentVideoUrl}
                     className="w-full h-full rounded-lg"
                     controls
                     autoPlay
@@ -348,6 +428,17 @@ export default function EditableVideo({
             >
               <FolderOpen size={16} className="mr-2" />
               Vælg thumbnail
+            </Button>
+            <Button
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsEditingVideoUrl(true)
+              }}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-black hover:bg-accent hover:text-white pointer-events-auto"
+            >
+              <Edit size={16} className="mr-2" />
+              Rediger video URL
             </Button>
           </div>
         </div>
@@ -411,6 +502,54 @@ export default function EditableVideo({
         </div>
       )}
 
+      {/* Video URL editing modal */}
+      {isEditingVideoUrl && (
+        <div className="fixed inset-0 flex items-center justify-center z-[80]" style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }} onClick={handleCancelVideoUrlEdit}>
+          <div className="bg-white rounded-lg p-6 mx-4 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold mb-4">Rediger Video URL</h3>
+            <div className="mb-4">
+              <label htmlFor="video-url" className="block text-sm font-medium mb-2">
+                Video URL (YouTube, Vimeo, eller direkte video link)
+              </label>
+              <Input
+                id="video-url"
+                type="url"
+                value={editedVideoUrl}
+                onChange={(e) => setEditedVideoUrl(e.target.value)}
+                placeholder="https://youtu.be/... eller https://vimeo.com/..."
+                className="w-full"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={handleCancelVideoUrlEdit}
+                disabled={isSavingVideoUrl}
+              >
+                <XCircle size={16} className="mr-2" />
+                Annuller
+              </Button>
+              <Button
+                onClick={handleSaveVideoUrl}
+                disabled={isSavingVideoUrl || !editedVideoUrl.trim()}
+              >
+                {isSavingVideoUrl ? (
+                  <>
+                    <Loader2 size={16} className="mr-2 animate-spin" />
+                    Gemmer...
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} className="mr-2" />
+                    Gem
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Video modal for authenticated users */}
       {isVideoPlaying && (
         <div className="fixed inset-0 flex items-center justify-center z-[70]" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }} onClick={handleCloseVideo}>
@@ -423,17 +562,17 @@ export default function EditableVideo({
               <X size={20} />
             </Button>
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-              {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') ? (
+              {currentVideoUrl.includes('youtube.com') || currentVideoUrl.includes('youtu.be') ? (
                 <iframe
-                  src={videoUrl.replace('watch?v=', 'embed/')}
+                  src={currentVideoUrl.replace('watch?v=', 'embed/')}
                   className="w-full h-full rounded-lg"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   onClick={(e) => e.stopPropagation()}
                 />
-              ) : videoUrl.includes('vimeo.com') ? (
+              ) : currentVideoUrl.includes('vimeo.com') ? (
                 <iframe
-                  src={videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                  src={currentVideoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')}
                   className="w-full h-full rounded-lg"
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
@@ -442,7 +581,7 @@ export default function EditableVideo({
               ) : (
                 <video
                   ref={videoRef}
-                  src={videoUrl}
+                  src={currentVideoUrl}
                   className="w-full h-full rounded-lg"
                   controls
                   autoPlay

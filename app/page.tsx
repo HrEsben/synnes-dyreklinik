@@ -193,9 +193,9 @@ export default async function Home() {
         <div className="flex flex-col lg:flex-row items-center justify-center">
           <div className="order-2 lg:order-1">
             <EditableVideo
-              videoKey="about-video"
+              videoKey="about-video-url"
               thumbnailKey="about-video-thumbnail"
-              videoUrl="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+              videoUrl="https://youtu.be/bgLpqrR8R2M?si=MpmEvf-klqoC6yZQ"
               fallbackThumbnail="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/synneanddog.jpg"
               alt="Video om Synne og klinikken"
               width={488}
