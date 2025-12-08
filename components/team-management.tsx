@@ -303,21 +303,12 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
   }
 
   return (
-    <div className="space-y-8 w-full overflow-hidden">
-      {/* Team Members Management */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 lg:p-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 className="text-2xl font-bold" style={{
-            fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-            fontWeight: 800,
-            color: '#2c2524'
-          }}>
-            Teammedlemmer
-          </h2>
-          <Button size="default" onClick={handleCreate} className="w-full sm:w-auto">
-            Tilføj ny medarbejder
-          </Button>
-        </div>
+    <div className="w-full overflow-hidden">
+      <div className="flex justify-end mb-6">
+        <Button size="default" onClick={handleCreate} className="w-full sm:w-auto">
+          Tilføj ny medarbejder
+        </Button>
+      </div>
 
         {employees && employees.length > 0 ? (
           <div className="space-y-4">
@@ -409,7 +400,6 @@ export default function TeamManagement({ initialEmployees }: TeamManagementProps
             </Button>
           </div>
         )}
-      </div>
 
       {/* Modal for Create/Edit */}
       {isModalOpen && (

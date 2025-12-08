@@ -1,10 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import UserProfile from '@/components/auth/user-profile'
-import TeamManagement from '@/components/team-management'
-import FAQManagement from '@/components/faq-management'
-import AlertManagement from '@/components/alert-management'
-import ServiceManagement from '@/components/service-management'
+import DashboardContent from '@/components/dashboard-content'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -57,8 +53,6 @@ export default async function DashboardPage() {
             }}>
             Her kan du redigere indholdet på hjemmesiden.<br /> Hvis du har spørgsmål eller der er noget galt, skal du bare ringe til din lillebror.
             </p>
-            
-           
           </div>
         </div>
       </section>
@@ -66,22 +60,10 @@ export default async function DashboardPage() {
       {/* Main Content */}
       <section className="py-6 px-4 md:px-6">
         <div className="mx-auto max-w-[1257px]">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* User Profile and Alert Management */}
-            <div className="lg:col-span-1 space-y-8">
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-                <UserProfile />
-              </div>
-              <AlertManagement initialAlert={currentAlert || null} />
-            </div>
-
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              <ServiceManagement />
-              <TeamManagement initialEmployees={employees || []} />
-              <FAQManagement />
-            </div>
-          </div>
+          <DashboardContent 
+            employees={employees || []} 
+            currentAlert={currentAlert || null} 
+          />
         </div>
       </section>
     </div>

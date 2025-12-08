@@ -71,8 +71,8 @@ export default function AlertManagement({ initialAlert }: AlertManagementProps) 
 
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-      <h2 className="text-2xl font-bold mb-6" style={{ 
-        fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+      <h2 className="text-xl font-bold mb-6" style={{ 
+        fontFamily: 'Poppins, sans-serif',
         color: '#2c2524'
       }}>
         Advarselsbesked

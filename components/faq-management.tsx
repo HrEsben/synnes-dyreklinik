@@ -192,14 +192,8 @@ export default function FAQManagement() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold" style={{
-          fontFamily: 'Poppins, sans-serif',
-          color: '#2c2524'
-        }}>
-          Ofte stillede spørgsmål
-        </h2>
+    <div>
+      <div className="flex items-center justify-end mb-6">
         <Button size="default" onClick={handleAdd} className="w-full sm:w-auto">
           Tilføj spørgsmål
         </Button>
