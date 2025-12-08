@@ -267,6 +267,7 @@ export default function ServiceManagement() {
   const [isCreatingCategory, setIsCreatingCategory] = useState(false)
   const [categoryError, setCategoryError] = useState<string | null>(null)
   const [categoryFormData, setCategoryFormData] = useState({ slug: '', label: '' })
+  const [showMarkdownHelp, setShowMarkdownHelp] = useState(false)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -323,7 +324,7 @@ export default function ServiceManagement() {
     setFormData({
       ...formData,
       title,
-      slug: isCreating ? generateSlug(title) : formData.slug
+      slug: generateSlug(title)
     })
   }
 
@@ -700,17 +701,6 @@ export default function ServiceManagement() {
                       placeholder="F.eks. Vaccinationer"
                     />
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Slug (URL)
-                    </label>
-                    <Input
-                      value={formData.slug}
-                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                      placeholder="f.eks. vaccinationer"
-                    />
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -767,7 +757,7 @@ export default function ServiceManagement() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Indhold (understøtter Markdown)
+                    Indhold (<button type="button" onClick={() => setShowMarkdownHelp(true)} className="text-[#f97561] hover:underline">understøtter Markdown</button>)
                   </label>
                   <textarea
                     value={formData.content}
@@ -932,17 +922,6 @@ export default function ServiceManagement() {
                           placeholder="F.eks. Vaccinationer"
                         />
                       </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Slug (URL)
-                        </label>
-                        <Input
-                          value={formData.slug}
-                          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                          placeholder="f.eks. vaccinationer"
-                        />
-                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -999,7 +978,7 @@ export default function ServiceManagement() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Indhold (understøtter Markdown)
+                        Indhold (<button type="button" onClick={() => setShowMarkdownHelp(true)} className="text-[#f97561] hover:underline">understøtter Markdown</button>)
                       </label>
                       <textarea
                         value={formData.content}
@@ -1276,6 +1255,68 @@ export default function ServiceManagement() {
         onClose={() => setShowMediaBrowser(false)}
         onSelect={handleMediaSelect}
       />
+
+      {/* Markdown Help Modal */}
+      {showMarkdownHelp && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[80] p-4"
+          onClick={() => setShowMarkdownHelp(false)}
+        >
+          <div 
+            className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">Markdown formatering</h3>
+              <button 
+                onClick={() => setShowMarkdownHelp(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4 text-sm">
+              <div>
+                <p className="font-medium text-gray-700 mb-2">Fed tekst</p>
+                <code className="bg-gray-100 px-2 py-1 rounded text-gray-800">**fed tekst**</code>
+                <p className="text-gray-500 mt-1">→ <strong>fed tekst</strong></p>
+              </div>
+              
+              <div>
+                <p className="font-medium text-gray-700 mb-2">Kursiv tekst</p>
+                <code className="bg-gray-100 px-2 py-1 rounded text-gray-800">*kursiv tekst*</code>
+                <p className="text-gray-500 mt-1">→ <em>kursiv tekst</em></p>
+              </div>
+              
+              <div>
+                <p className="font-medium text-gray-700 mb-2">Punktliste</p>
+                <code className="bg-gray-100 px-2 py-1 rounded text-gray-800 block whitespace-pre">- Første punkt{'\n'}- Andet punkt{'\n'}- Tredje punkt</code>
+                <div className="text-gray-500 mt-1">
+                  <p>→</p>
+                  <ul className="list-disc list-inside ml-2">
+                    <li>Første punkt</li>
+                    <li>Andet punkt</li>
+                    <li>Tredje punkt</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div>
+                <p className="font-medium text-gray-700 mb-2">Nyt afsnit</p>
+                <p className="text-gray-500">Efterlad en tom linje mellem afsnit</p>
+              </div>
+            </div>
+            
+            <Button 
+              onClick={() => setShowMarkdownHelp(false)}
+              className="w-full mt-6"
+            >
+              Forstået
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
