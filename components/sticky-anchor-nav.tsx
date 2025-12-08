@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ReactNode } from 'react'
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -10,20 +11,85 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+interface ServiceItem {
+  id: string
+  label: string
+  href: string
+  icon?: ReactNode
+}
+
 interface StickyAnchorNavProps {
-  services: Array<{
-    id: string
-    label: string
-    href: string
-    icon?: ReactNode
-  }>
+  services: ServiceItem[]
+}
+
+// Group services into categories for better organization
+const categoryLabels: Record<string, string> = {
+  'basis': 'Basis ydelser',
+  'kirurgi': 'Kirurgi',
+  'klinisk': 'Kliniske ydelser',
+  'diagnostik': 'Diagnostik',
+  'special': 'Specialydelser'
+}
+
+const serviceCategories: Record<string, string[]> = {
+  'basis': ['vaccinationer', 'maerkning', 'kloklip', 'foder'],
+  'kirurgi': ['neutralisation-kat', 'kastration-hund', 'sterilisation-taeve', 'tumorer'],
+  'klinisk': ['operation', 'tandbehandling', 'konsultation', 'sygeplejerske-konsultation'],
+  'diagnostik': ['ultralydsscanning', 'roentgen', 'blodproever'],
+  'special': ['kaniner', 'fysiurgi', 'haandkoeb', 'fear-free']
 }
 
 export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
   const [isSticky, setIsSticky] = useState(false)
-  const [topOffset, setTopOffset] = useState(88) // Default header height
+  const [topOffset, setTopOffset] = useState(88)
   const [isMobile, setIsMobile] = useState(false)
   const [currentService, setCurrentService] = useState<string>('')
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  // Check scroll position for arrows
+  const checkScrollPosition = () => {
+    const container = scrollContainerRef.current
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0)
+      setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth - 10)
+    }
+  }
+
+  const scrollNav = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current
+    if (container) {
+      const scrollAmount = 200
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  // Organize services into categories
+  const getServicesByCategory = () => {
+    const categorized: Record<string, ServiceItem[]> = {}
+    
+    Object.entries(serviceCategories).forEach(([category, serviceIds]) => {
+      categorized[category] = serviceIds
+        .map(id => services.find(s => s.id === id))
+        .filter((s): s is ServiceItem => s !== undefined)
+    })
+    
+    // Add any uncategorized services to a misc category
+    const categorizedIds = Object.values(serviceCategories).flat()
+    const uncategorized = services.filter(s => !categorizedIds.includes(s.id))
+    if (uncategorized.length > 0) {
+      categorized['andet'] = uncategorized
+    }
+    
+    return categorized
+  }
+
+  const categorizedServices = getServicesByCategory()
 
   const handleSelectChange = (serviceId: string) => {
     setCurrentService(serviceId)
@@ -172,18 +238,28 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
     }
   }, [isMobile])
 
+  // Check scroll position on mount and when container changes
+  useEffect(() => {
+    checkScrollPosition()
+    const container = scrollContainerRef.current
+    if (container) {
+      container.addEventListener('scroll', checkScrollPosition)
+      return () => container.removeEventListener('scroll', checkScrollPosition)
+    }
+  }, [isSticky])
+
   return (
     <>
       {/* Placeholder element to maintain space when sticky */}
       {isSticky && (
         <div 
           className="bg-white border-b border-gray-200 py-4 px-4 md:px-6"
-          style={{ height: '64px' }} // Match the height of the actual navigation
+          style={{ height: '64px' }}
         />
       )}
       
       <section 
-        className={`transition-all duration-300 z-30 bg-white border-b border-gray-200 py-4 ${
+        className={`transition-all duration-300 z-30 bg-white border-b border-gray-200 py-3 ${
           isSticky ? 'fixed left-0 right-0 shadow-md' : 'relative'
         }`}
         style={{ 
@@ -191,46 +267,83 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
         }}
       >
         <div className="px-4 md:px-6">
-          {/* Mobile Select Dropdown */}
+          {/* Mobile Select Dropdown with Categories */}
           <div className="md:hidden">
             <Select value={currentService} onValueChange={handleSelectChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Vælg en ydelse" />
               </SelectTrigger>
-              <SelectContent>
-                {services.map((service) => (
-                  <SelectItem key={service.id} value={service.id}>
-                    <div className="flex items-center gap-2">
-                      {service.icon && (
-                        <span className="text-[#f97561] flex-shrink-0">
-                          {service.icon}
-                        </span>
-                      )}
-                      <span>{service.label}</span>
+              <SelectContent className="max-h-[60vh]">
+                {Object.entries(categorizedServices).map(([category, categoryServices]) => (
+                  <div key={category}>
+                    <div className="px-2 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
+                      {categoryLabels[category] || category}
                     </div>
-                  </SelectItem>
+                    {categoryServices.map((service) => (
+                      <SelectItem key={service.id} value={service.id}>
+                        <div className="flex items-center gap-2">
+                          {service.icon && (
+                            <span className="text-[#f97561] flex-shrink-0">
+                              {service.icon}
+                            </span>
+                          )}
+                          <span>{service.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </div>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex justify-center">
-            <nav className="flex gap-4 flex-wrap">
-              {services.map((service) => (
-                <a
-                  key={service.id}
-                  href={`#${service.id}`}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#f97561] transition-colors duration-200 whitespace-nowrap"
-                  onClick={(e) => handleAnchorClick(e, service.id)}
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <nav className="flex justify-center gap-1">
+              {Object.entries(categorizedServices).map(([category, categoryServices]) => (
+                <div 
+                  key={category} 
+                  className="relative"
+                  onMouseEnter={() => setActiveCategory(category)}
+                  onMouseLeave={() => setActiveCategory(null)}
                 >
-                  {service.icon && (
-                    <span className="text-[#f97561] flex-shrink-0">
-                      {service.icon}
-                    </span>
-                  )}
-                  <span>{service.label}</span>
-                </a>
+                  {/* Category button */}
+                  <button
+                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#f97561] hover:bg-gray-50 rounded-lg transition-all duration-200"
+                    onClick={() => setActiveCategory(activeCategory === category ? null : category)}
+                  >
+                    <span>{categoryLabels[category] || category}</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeCategory === category ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {/* Dropdown menu */}
+                  <div 
+                    className={`absolute top-full left-0 pt-1 z-50 ${
+                      activeCategory === category ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+                    }`}
+                  >
+                    <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-[220px] transition-all duration-200">
+                      {categoryServices.map((service) => (
+                        <a
+                          key={service.id}
+                          href={`#${service.id}`}
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:text-[#f97561] hover:bg-gray-50 transition-colors"
+                          onClick={(e) => {
+                            handleAnchorClick(e, service.id)
+                            setActiveCategory(null)
+                          }}
+                        >
+                          {service.icon && (
+                            <span className="text-[#f97561] flex-shrink-0">
+                              {service.icon}
+                            </span>
+                          )}
+                          <span>{service.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               ))}
             </nav>
           </div>
