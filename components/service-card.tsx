@@ -10,8 +10,9 @@ interface ServiceCardProps {
   // Editable content props
   titleKey?: string // Key for editable title
   contentKey?: string // Key for editable content
-  imageKey?: string // Key for editable image
+  imageKey?: string // Key for editable image (uses site_images table lookup)
   fallbackImageSrc?: string // Fallback image URL
+  directImageUrl?: string // Direct image URL (bypasses site_images table)
   defaultContent?: string // Default content for editable text
   isAuthenticated?: boolean // Whether user is authenticated for editing
   tiltDirection?: 'left' | 'right' // Tilt direction for image
@@ -26,6 +27,7 @@ export default function ServiceCard({
   contentKey,
   imageKey,
   fallbackImageSrc,
+  directImageUrl,
   defaultContent,
   isAuthenticated = false,
   tiltDirection
@@ -58,34 +60,50 @@ export default function ServiceCard({
       
       <div className="prose prose-lg max-w-none text-muted-foreground relative">
         {/* Mobile layout: Image centered below text */}
-        {imageKey && fallbackImageSrc && (
+        {(directImageUrl || (imageKey && fallbackImageSrc)) && (
           <div className={`lg:hidden mb-6 flex justify-center`}>
             <div className={`w-full max-w-80 transform ${rotationClass}`}>
-              <EditableImage
-                imageKey={imageKey}
-                fallbackSrc={fallbackImageSrc}
-                alt={title}
-                width={448}
-                height={336}
-                className="w-full h-52 object-cover rounded-xl"
-                isAuthenticated={isAuthenticated}
-              />
+              {directImageUrl ? (
+                <img
+                  src={directImageUrl}
+                  alt={title}
+                  className="w-full h-52 object-cover rounded-xl"
+                />
+              ) : (
+                <EditableImage
+                  imageKey={imageKey!}
+                  fallbackSrc={fallbackImageSrc!}
+                  alt={title}
+                  width={448}
+                  height={336}
+                  className="w-full h-52 object-cover rounded-xl"
+                  isAuthenticated={isAuthenticated}
+                />
+              )}
             </div>
           </div>
         )}
         
         {/* Desktop layout: Image floating on the right with more spacing */}
-        {imageKey && fallbackImageSrc && (
+        {(directImageUrl || (imageKey && fallbackImageSrc)) && (
           <div className={`hidden lg:block float-right ml-8 mb-6 w-96 xl:w-[28rem] transform ${rotationClass}`}>
-            <EditableImage
-              imageKey={imageKey}
-              fallbackSrc={fallbackImageSrc}
-              alt={title}
-              width={448}
-              height={336}
-              className="w-full h-64 xl:h-72 object-cover rounded-xl"
-              isAuthenticated={isAuthenticated}
-            />
+            {directImageUrl ? (
+              <img
+                src={directImageUrl}
+                alt={title}
+                className="w-full h-64 xl:h-72 object-cover rounded-xl"
+              />
+            ) : (
+              <EditableImage
+                imageKey={imageKey!}
+                fallbackSrc={fallbackImageSrc!}
+                alt={title}
+                width={448}
+                height={336}
+                className="w-full h-64 xl:h-72 object-cover rounded-xl"
+                isAuthenticated={isAuthenticated}
+              />
+            )}
           </div>
         )}
         

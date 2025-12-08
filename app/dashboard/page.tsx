@@ -4,6 +4,7 @@ import UserProfile from '@/components/auth/user-profile'
 import TeamManagement from '@/components/team-management'
 import FAQManagement from '@/components/faq-management'
 import AlertManagement from '@/components/alert-management'
+import ServiceManagement from '@/components/service-management'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -76,6 +77,7 @@ export default async function DashboardPage() {
 
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
+              <ServiceManagement />
               <TeamManagement initialEmployees={employees || []} />
               <FAQManagement />
             </div>

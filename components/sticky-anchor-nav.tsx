@@ -16,13 +16,14 @@ interface ServiceItem {
   label: string
   href: string
   icon?: ReactNode
+  category?: string
 }
 
 interface StickyAnchorNavProps {
   services: ServiceItem[]
 }
 
-// Group services into categories for better organization
+// Category labels for display
 const categoryLabels: Record<string, string> = {
   'basis': 'Basis ydelser',
   'kirurgi': 'Kirurgi',
@@ -31,13 +32,8 @@ const categoryLabels: Record<string, string> = {
   'special': 'Specialydelser'
 }
 
-const serviceCategories: Record<string, string[]> = {
-  'basis': ['vaccinationer', 'maerkning', 'kloklip', 'foder'],
-  'kirurgi': ['neutralisation-kat', 'kastration-hund', 'sterilisation-taeve', 'tumorer'],
-  'klinisk': ['operation', 'tandbehandling', 'konsultation', 'sygeplejerske-konsultation'],
-  'diagnostik': ['ultralydsscanning', 'roentgen', 'blodproever'],
-  'special': ['kaniner', 'fysiurgi', 'haandkoeb', 'fear-free']
-}
+// Category order for consistent display
+const categoryOrder = ['basis', 'kirurgi', 'klinisk', 'diagnostik', 'special']
 
 export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
   const [isSticky, setIsSticky] = useState(false)
@@ -69,24 +65,35 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
     }
   }
 
-  // Organize services into categories
+  // Organize services into categories based on their category property
   const getServicesByCategory = () => {
     const categorized: Record<string, ServiceItem[]> = {}
     
-    Object.entries(serviceCategories).forEach(([category, serviceIds]) => {
-      categorized[category] = serviceIds
-        .map(id => services.find(s => s.id === id))
-        .filter((s): s is ServiceItem => s !== undefined)
+    // Group services by their category property
+    services.forEach(service => {
+      const category = service.category || 'andet'
+      if (!categorized[category]) {
+        categorized[category] = []
+      }
+      categorized[category].push(service)
     })
     
-    // Add any uncategorized services to a misc category
-    const categorizedIds = Object.values(serviceCategories).flat()
-    const uncategorized = services.filter(s => !categorizedIds.includes(s.id))
-    if (uncategorized.length > 0) {
-      categorized['andet'] = uncategorized
-    }
+    // Sort categories by predefined order
+    const sortedCategorized: Record<string, ServiceItem[]> = {}
+    categoryOrder.forEach(cat => {
+      if (categorized[cat]) {
+        sortedCategorized[cat] = categorized[cat]
+      }
+    })
     
-    return categorized
+    // Add any remaining categories
+    Object.keys(categorized).forEach(cat => {
+      if (!sortedCategorized[cat]) {
+        sortedCategorized[cat] = categorized[cat]
+      }
+    })
+    
+    return sortedCategorized
   }
 
   const categorizedServices = getServicesByCategory()
