@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { updateFaqSchema, validateInput } from '@/lib/validations/api'
 
 export async function PUT(
   request: NextRequest,
@@ -15,19 +16,23 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { question, answer } = await request.json()
+    const body = await request.json()
     const params = await context.params
     const faqId = parseInt(params.id)
-
-    if (!question || !answer) {
-      return NextResponse.json({ error: 'Question and answer are required' }, { status: 400 })
+    
+    // Validate input
+    const validation = validateInput(updateFaqSchema, body)
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 })
     }
+    
+    const { question, answer } = validation.data
 
     const { data: updatedFaq, error } = await supabase
       .from('faqs')
       .update({
-        question: question.trim(),
-        answer: answer.trim()
+        question,
+        answer
       })
       .eq('id', faqId)
       .select()

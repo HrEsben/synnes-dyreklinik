@@ -23,8 +23,6 @@ export default async function YdelserPage() {
     console.error('Error fetching services:', error)
   }
 
-  console.log('Fetched services count:', services?.length || 0)
-
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}

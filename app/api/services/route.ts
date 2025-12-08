@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { createServiceSchema, validateInput } from '@/lib/validations/api'
 
 export async function GET() {
   const supabase = await createClient()
@@ -28,7 +29,14 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { slug, title, content, icon, category, image_key } = body
+    
+    // Validate input
+    const validation = validateInput(createServiceSchema, body)
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 })
+    }
+    
+    const { slug, title, content, icon, category, image_key } = validation.data
 
     // Get the highest sort_order
     const { data: maxOrder } = await supabase
@@ -46,8 +54,8 @@ export async function POST(request: NextRequest) {
         slug,
         title,
         content,
-        icon: icon || 'Stethoscope',
-        category: category || 'basis',
+        icon,
+        category,
         sort_order: newSortOrder,
         image_key
       })

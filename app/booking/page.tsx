@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import BookingFrame from '@/components/booking-frame'
+
+export const metadata: Metadata = {
+  title: 'Book tid - Synnes Dyreklinik',
+  description: 'Book en tid hos Synnes Dyreklinik online. Vi står klar til at hjælpe dig og dit kæledyr.',
+}
 
 export default function BookingPage() {
   return (

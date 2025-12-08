@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'GDPR & Privatlivspolitik - Synnes Dyreklinik',
+  description: 'Læs om hvordan Synnes Dyreklinik behandler dine personoplysninger i overensstemmelse med GDPR.',
+}
+
 export default function GDPRPage() {
   return (
     <div className="min-h-screen bg-white">

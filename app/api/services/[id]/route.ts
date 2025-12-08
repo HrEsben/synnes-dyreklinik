@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { updateServiceSchema, validateInput } from '@/lib/validations/api'
 
 export async function GET(
   request: NextRequest,
@@ -36,7 +37,14 @@ export async function PUT(
 
   try {
     const body = await request.json()
-    const { slug, title, content, icon, category, image_key, is_active } = body
+    
+    // Validate input
+    const validation = validateInput(updateServiceSchema, body)
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 })
+    }
+    
+    const { slug, title, content, icon, category, image_key, is_active } = validation.data
 
     const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() }
     

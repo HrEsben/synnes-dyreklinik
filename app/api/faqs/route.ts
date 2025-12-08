@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createFaqSchema, validateInput } from '@/lib/validations/api'
 
 export async function GET() {
   try {
@@ -34,11 +35,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { question, answer } = await request.json()
-
-    if (!question || !answer) {
-      return NextResponse.json({ error: 'Question and answer are required' }, { status: 400 })
+    const body = await request.json()
+    
+    // Validate input
+    const validation = validateInput(createFaqSchema, body)
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 })
     }
+    
+    const { question, answer } = validation.data
 
     // Get the next display order
     const { data: maxOrderData } = await supabase
@@ -51,13 +56,11 @@ export async function POST(request: NextRequest) {
 
     const { data: newFaq, error } = await supabase
       .from('faqs')
-      .insert([
-        {
-          question: question.trim(),
-          answer: answer.trim(),
-          display_order: nextOrder
-        }
-      ])
+      .insert([{
+        question,
+        answer,
+        display_order: nextOrder
+      }])
       .select()
       .single()
 

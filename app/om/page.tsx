@@ -1,8 +1,14 @@
+import type { Metadata } from 'next'
 import TeamMember from "@/components/team-member";
 import { createClient } from "@/lib/supabase/server";
 import Divider from "@/components/divider";
 import EditableText from "@/components/editable-text";
 import EditableImage from "@/components/editable-image";
+
+export const metadata: Metadata = {
+  title: 'Om os - Synnes Dyreklinik',
+  description: 'Mød teamet bag Synnes Dyreklinik. Lær vores erfarne dyrlæger og personale at kende, som brygger på faglighed, fleksibilitet og tryghed.',
+}
 
 export default async function OmPage() {
   const supabase = await createClient()
