@@ -159,7 +159,6 @@ export default function KontaktPage() {
                         <SelectItem value="konsultation" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Konsultation</SelectItem>
                         <SelectItem value="vaccination" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Vaccination</SelectItem>
                         <SelectItem value="operation" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Operation</SelectItem>
-                        <SelectItem value="akut" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Akut behandling</SelectItem>
                         <SelectItem value="andet" className="text-base font-semibold hover:bg-[#fffaf6] focus:bg-[#fffaf6] cursor-pointer">Andet</SelectItem>
                       </SelectContent>
                     </Select>
