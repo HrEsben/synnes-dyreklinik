@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Facebook, Instagram, Linkedin, MapPin, Mail, Phone } from "lucide-react";
+import { Facebook, Instagram, MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -38,14 +38,6 @@ export default function Footer() {
                   className="bg-secondary rounded-full p-2 hover:text-white hover:bg-[#f97561] transition-colors"
                 >
                   <Instagram size={16} />
-                </a>
-                <a 
-                  href="https://www.linkedin.com/in/synne-fyhn-stephansen-ab466054" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="bg-secondary rounded-full p-2 hover:text-white hover:bg-[#f97561] transition-colors"
-                >
-                  <Linkedin size={16} />
                 </a>
               </div>
             </div>
