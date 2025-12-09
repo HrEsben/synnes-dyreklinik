@@ -6,11 +6,13 @@ import TeamManagement from '@/components/team-management'
 import FAQManagement from '@/components/faq-management'
 import AlertManagement from '@/components/alert-management'
 import ServiceManagement from '@/components/service-management'
+import PriceManagement from '@/components/price-management'
 import { 
   Bell, 
   Briefcase, 
   Users, 
-  HelpCircle
+  HelpCircle,
+  DollarSign
 } from 'lucide-react'
 
 interface Employee {
@@ -61,6 +63,15 @@ export default function DashboardContent({ employees, currentAlert }: DashboardC
           defaultOpen={false}
         >
           <ServiceManagement />
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          title="Prisliste"
+          description="Administrer priser og priskategorier"
+          icon={DollarSign}
+          defaultOpen={false}
+        >
+          <PriceManagement />
         </CollapsibleSection>
 
         <CollapsibleSection

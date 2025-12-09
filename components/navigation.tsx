@@ -179,6 +179,13 @@ export default function Navigation() {
                 </Link>
               </li>
               <li>
+                <Link href="/priser">
+                  <Button variant="link">
+                    Priser
+                  </Button>
+                </Link>
+              </li>
+              <li>
                 <Link href="/kontakt">
                   <Button variant="link">
                     Kontakt
@@ -270,6 +277,13 @@ export default function Navigation() {
                 <Link href="/ydelser" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="link" className="text-2xl font-bold w-full justify-start text-left px-0 hover:bg-gray-50">
                     Ydelser
+                  </Button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/priser" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="link" className="text-2xl font-bold w-full justify-start text-left px-0 hover:bg-gray-50">
+                    Priser
                   </Button>
                 </Link>
               </li>

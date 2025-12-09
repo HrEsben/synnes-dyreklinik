@@ -142,6 +142,125 @@ export const reorderSchema = z.object({
 export type ReorderInput = z.infer<typeof reorderSchema>
 
 // ============================================
+// Price Category Schemas
+// ============================================
+
+export const createPriceCategorySchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Navn er påkrævet')
+    .max(100, 'Navn må max være 100 tegn')
+    .transform((val) => val.trim()),
+  slug: z
+    .string()
+    .min(1, 'Slug er påkrævet')
+    .max(100, 'Slug må max være 100 tegn')
+    .regex(/^[a-z0-9-]+$/, 'Slug må kun indeholde små bogstaver, tal og bindestreger'),
+  description: z
+    .string()
+    .max(500, 'Beskrivelse må max være 500 tegn')
+    .optional()
+    .nullable()
+    .transform((val) => val?.trim() || null),
+})
+
+export const updatePriceCategorySchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Navn er påkrævet')
+    .max(100, 'Navn må max være 100 tegn')
+    .transform((val) => val.trim())
+    .optional(),
+  slug: z
+    .string()
+    .min(1, 'Slug er påkrævet')
+    .max(100, 'Slug må max være 100 tegn')
+    .regex(/^[a-z0-9-]+$/, 'Slug må kun indeholde små bogstaver, tal og bindestreger')
+    .optional(),
+  description: z
+    .string()
+    .max(500, 'Beskrivelse må max være 500 tegn')
+    .optional()
+    .nullable()
+    .transform((val) => val?.trim() || null),
+  is_active: z.boolean().optional(),
+})
+
+export type CreatePriceCategoryInput = z.infer<typeof createPriceCategorySchema>
+export type UpdatePriceCategoryInput = z.infer<typeof updatePriceCategorySchema>
+
+// ============================================
+// Price Item Schemas
+// ============================================
+
+export const createPriceItemSchema = z.object({
+  category_id: z.string().uuid('Ugyldig kategori ID'),
+  name: z
+    .string()
+    .min(1, 'Navn er påkrævet')
+    .max(200, 'Navn må max være 200 tegn')
+    .transform((val) => val.trim()),
+  description: z
+    .string()
+    .max(500, 'Beskrivelse må max være 500 tegn')
+    .optional()
+    .nullable()
+    .transform((val) => val?.trim() || null),
+  price_from: z
+    .number()
+    .min(0, 'Pris skal være positiv')
+    .optional()
+    .nullable(),
+  price_to: z
+    .number()
+    .min(0, 'Pris skal være positiv')
+    .optional()
+    .nullable(),
+  price_note: z
+    .string()
+    .max(200, 'Prisnote må max være 200 tegn')
+    .optional()
+    .nullable()
+    .transform((val) => val?.trim() || null),
+})
+
+export const updatePriceItemSchema = z.object({
+  category_id: z.string().uuid('Ugyldig kategori ID').optional(),
+  name: z
+    .string()
+    .min(1, 'Navn er påkrævet')
+    .max(200, 'Navn må max være 200 tegn')
+    .transform((val) => val.trim())
+    .optional(),
+  description: z
+    .string()
+    .max(500, 'Beskrivelse må max være 500 tegn')
+    .optional()
+    .nullable()
+    .transform((val) => val?.trim() || null),
+  price_from: z
+    .number()
+    .min(0, 'Pris skal være positiv')
+    .optional()
+    .nullable(),
+  price_to: z
+    .number()
+    .min(0, 'Pris skal være positiv')
+    .optional()
+    .nullable(),
+  price_note: z
+    .string()
+    .max(200, 'Prisnote må max være 200 tegn')
+    .optional()
+    .nullable()
+    .transform((val) => val?.trim() || null),
+  is_active: z.boolean().optional(),
+})
+
+export type CreatePriceItemInput = z.infer<typeof createPriceItemSchema>
+export type UpdatePriceItemInput = z.infer<typeof updatePriceItemSchema>
+
+// ============================================
 // Helper function for API validation
 // ============================================
 
