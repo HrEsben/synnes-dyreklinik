@@ -12,7 +12,8 @@ import {
   ChevronDown,
   ChevronUp,
   DollarSign,
-  Tag
+  Tag,
+  GripVertical
 } from 'lucide-react'
 
 // Form component for price items
@@ -175,6 +176,7 @@ export default function PriceManagement() {
   const [priceItems, setPriceItems] = useState<PriceItem[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [draggedItem, setDraggedItem] = useState<string | null>(null)
   
   // Category editing state
   const [editingCategory, setEditingCategory] = useState<PriceCategory | null>(null)
@@ -398,9 +400,109 @@ export default function PriceManagement() {
     setIsCreatingItem(false)
   }
 
+  // ============================================
+  // Drag and Drop for Price Items
+  // ============================================
+
+  const handleItemDragStart = (e: React.DragEvent, itemId: string) => {
+    setDraggedItem(itemId)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleItemDrop = async (e: React.DragEvent, targetId: string, categoryId: string) => {
+    e.preventDefault()
+    if (!draggedItem || draggedItem === targetId) {
+      setDraggedItem(null)
+      return
+    }
+
+    // Only allow reordering within the same category
+    const draggedItemData = priceItems.find(i => i.id === draggedItem)
+    if (!draggedItemData || draggedItemData.category_id !== categoryId) {
+      setDraggedItem(null)
+      return
+    }
+
+    // Get items in this category
+    const categoryItems = priceItems.filter(i => i.category_id === categoryId)
+    const newItems = [...categoryItems]
+    const draggedIndex = newItems.findIndex(i => i.id === draggedItem)
+    const targetIndex = newItems.findIndex(i => i.id === targetId)
+
+    const [removed] = newItems.splice(draggedIndex, 1)
+    newItems.splice(targetIndex, 0, removed)
+
+    // Update local state optimistically
+    const updatedItems = priceItems.map(item => {
+      if (item.category_id !== categoryId) return item
+      const newIndex = newItems.findIndex(i => i.id === item.id)
+      return { ...item, sort_order: newIndex + 1 }
+    })
+    setPriceItems(updatedItems)
+    setDraggedItem(null)
+
+    // Save new order
+    try {
+      await fetch('/api/prices/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderedIds: newItems.map(i => i.id) })
+      })
+    } catch (error) {
+      console.error('Error reordering prices:', error)
+      fetchData() // Revert on error
+    }
+  }
+
+  // ============================================
+  // Drag and Drop for Categories
+  // ============================================
+
+  const handleCategoryDragStart = (e: React.DragEvent, categoryId: string) => {
+    setDraggedItem(categoryId)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleCategoryDrop = async (e: React.DragEvent, targetId: string) => {
+    e.preventDefault()
+    if (!draggedItem || draggedItem === targetId) {
+      setDraggedItem(null)
+      return
+    }
+
+    const newCategories = [...categories]
+    const draggedIndex = newCategories.findIndex(c => c.id === draggedItem)
+    const targetIndex = newCategories.findIndex(c => c.id === targetId)
+
+    const [removed] = newCategories.splice(draggedIndex, 1)
+    newCategories.splice(targetIndex, 0, removed)
+
+    setCategories(newCategories)
+    setDraggedItem(null)
+
+    // Save new order
+    try {
+      await fetch('/api/price-categories/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderedIds: newCategories.map(c => c.id) })
+      })
+    } catch (error) {
+      console.error('Error reordering categories:', error)
+      fetchData() // Revert on error
+    }
+  }
+
   // Get items for a specific category
   const getItemsForCategory = (categoryId: string) => {
-    return priceItems.filter(item => item.category_id === categoryId)
+    return priceItems
+      .filter(item => item.category_id === categoryId)
+      .sort((a, b) => a.sort_order - b.sort_order)
   }
 
   if (loading) {
@@ -487,7 +589,14 @@ export default function PriceManagement() {
                       ) : (
                         <div className="divide-y divide-gray-200">
                           {items.map((item) => (
-                            <div key={item.id}>
+                            <div 
+                              key={item.id}
+                              draggable={editingItemId !== item.id && !isCreatingItem}
+                              onDragStart={(e) => handleItemDragStart(e, item.id)}
+                              onDragOver={handleDragOver}
+                              onDrop={(e) => handleItemDrop(e, item.id, category.id)}
+                              className={draggedItem === item.id ? 'opacity-50' : ''}
+                            >
                               {editingItemId === item.id ? (
                                 <div className="p-4">
                                   <PriceItemForm
@@ -501,19 +610,24 @@ export default function PriceManagement() {
                               ) : (
                                 <div className="p-4 hover:bg-gray-50 transition-colors">
                                   <div className="flex items-start justify-between gap-4">
-                                    <div className="flex-1">
-                                      <h4 className="font-medium">{item.name}</h4>
-                                      {item.description && (
-                                        <p className="text-sm text-gray-600">{item.description}</p>
-                                      )}
-                                      <div className="mt-1 text-sm font-medium text-[#f97561]">
-                                        {item.price_note || (
-                                          item.price_from && item.price_to && item.price_from !== item.price_to
-                                            ? `${item.price_from} - ${item.price_to} kr.`
-                                            : item.price_from
-                                            ? `${item.price_from} kr.`
-                                            : 'Ingen pris sat'
+                                    <div className="flex items-start gap-3 flex-1">
+                                      <div className="cursor-grab text-gray-400 hover:text-gray-600 mt-1">
+                                        <GripVertical className="w-5 h-5" />
+                                      </div>
+                                      <div className="flex-1">
+                                        <h4 className="font-medium">{item.name}</h4>
+                                        {item.description && (
+                                          <p className="text-sm text-gray-600">{item.description}</p>
                                         )}
+                                        <div className="mt-1 text-sm font-medium text-[#f97561]">
+                                          {item.price_note || (
+                                            item.price_from && item.price_to && item.price_from !== item.price_to
+                                              ? `${item.price_from} - ${item.price_to} kr.`
+                                              : item.price_from
+                                              ? `${item.price_from} kr.`
+                                              : 'Ingen pris sat'
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
 
@@ -605,21 +719,33 @@ export default function PriceManagement() {
           <div className="space-y-2">
             {categories.map((category) => {
               const itemCount = getItemsForCategory(category.id).length
+              const isEditing = editingCategory?.id === category.id
               
               return (
                 <div
                   key={category.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  draggable={!isEditing && !isCreatingCategory}
+                  onDragStart={(e) => handleCategoryDragStart(e, category.id)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleCategoryDrop(e, category.id)}
+                  className={`border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors ${
+                    draggedItem === category.id ? 'opacity-50' : ''
+                  }`}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <h4 className="font-semibold">{category.name}</h4>
-                      {category.description && (
-                        <p className="text-sm text-gray-600 mt-1">{category.description}</p>
-                      )}
-                      <p className="text-xs text-gray-500 mt-2">
-                        {itemCount} {itemCount === 1 ? 'pris' : 'priser'}
-                      </p>
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="cursor-grab text-gray-400 hover:text-gray-600 mt-1">
+                        <GripVertical className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold">{category.name}</h4>
+                        {category.description && (
+                          <p className="text-sm text-gray-600 mt-1">{category.description}</p>
+                        )}
+                        <p className="text-xs text-gray-500 mt-2">
+                          {itemCount} {itemCount === 1 ? 'pris' : 'priser'}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex gap-2">
@@ -651,6 +777,12 @@ export default function PriceManagement() {
               </div>
             )}
           </div>
+
+          {categories.length > 0 && (
+            <p className="mt-4 text-sm text-gray-500">
+              Træk og slip for at ændre rækkefølgen. Ændringer gemmes automatisk.
+            </p>
+          )}
         </div>
       )}
     </div>

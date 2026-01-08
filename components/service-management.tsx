@@ -1344,15 +1344,7 @@ export default function ServiceManagement() {
                       onChange={(e) => handleCategoryLabelChange(e.target.value)}
                       placeholder="F.eks. Specialbehandlinger"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Slug (URL-venligt navn)</label>
-                    <Input
-                      value={categoryFormData.slug}
-                      onChange={(e) => setCategoryFormData({ ...categoryFormData, slug: e.target.value })}
-                      placeholder="f.eks. specialbehandlinger"
-                    />
-                    <p className="mt-1 text-xs text-gray-500">Bruges i URL&apos;er og kode. Kun små bogstaver og bindestreger.</p>
+                    <p className="mt-1 text-xs text-gray-500">Slug genereres automatisk fra navnet</p>
                   </div>
                   <div className="flex gap-2 pt-2">
                     <Button
@@ -1439,14 +1431,7 @@ export default function ServiceManagement() {
                             value={categoryFormData.label}
                             onChange={(e) => setCategoryFormData({ ...categoryFormData, label: e.target.value })}
                           />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                          <Input
-                            value={categoryFormData.slug}
-                            onChange={(e) => setCategoryFormData({ ...categoryFormData, slug: e.target.value })}
-                          />
-                          <p className="mt-1 text-xs text-gray-500">Kun små bogstaver og bindestreger.</p>
+                          <p className="mt-1 text-xs text-gray-500">Slug: {categoryFormData.slug || 'Genereres fra navnet'}</p>
                         </div>
                         <div className="flex gap-2 pt-2">
                           <Button
