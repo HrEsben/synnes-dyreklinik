@@ -37,6 +37,20 @@ export async function PUT(
     const supabase = await createClient()
     const body = await request.json()
     
+    // First, get the current category to check if slug is changing
+    const { data: currentCategory } = await supabase
+      .from('service_categories')
+      .select('slug')
+      .eq('id', id)
+      .single()
+    
+    if (!currentCategory) {
+      return NextResponse.json({ error: 'Category not found' }, { status: 404 })
+    }
+    
+    const slugChanged = currentCategory.slug !== body.slug
+    
+    // Update the category
     const { data, error } = await supabase
       .from('service_categories')
       .update({
@@ -51,6 +65,20 @@ export async function PUT(
     if (error) {
       console.error('Error updating category:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+    
+    // If slug changed, update all services that reference this category
+    if (slugChanged) {
+      const { error: servicesError } = await supabase
+        .from('services')
+        .update({ category: body.slug })
+        .eq('category', currentCategory.slug)
+      
+      if (servicesError) {
+        console.error('Error updating services category:', servicesError)
+        // Note: The category is already updated, so we just log the error
+        // but still return success for the category update
+      }
     }
     
     return NextResponse.json(data)

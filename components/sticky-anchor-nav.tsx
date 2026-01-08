@@ -19,23 +19,19 @@ interface ServiceItem {
   category?: string
 }
 
+interface Category {
+  id: string
+  slug: string
+  label: string
+  sort_order: number
+}
+
 interface StickyAnchorNavProps {
   services: ServiceItem[]
+  categories: Category[]
 }
 
-// Category labels for display
-const categoryLabels: Record<string, string> = {
-  'basis': 'Basis ydelser',
-  'kirurgi': 'Kirurgi',
-  'klinisk': 'Kliniske ydelser',
-  'diagnostik': 'Diagnostik',
-  'special': 'Specialydelser'
-}
-
-// Category order for consistent display
-const categoryOrder = ['basis', 'kirurgi', 'klinisk', 'diagnostik', 'special']
-
-export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
+export default function StickyAnchorNav({ services, categories }: StickyAnchorNavProps) {
   const [isSticky, setIsSticky] = useState(false)
   const [topOffset, setTopOffset] = useState(88)
   const [isMobile, setIsMobile] = useState(false)
@@ -78,15 +74,17 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
       categorized[category].push(service)
     })
     
-    // Sort categories by predefined order
+    // Sort categories by their sort_order from database
     const sortedCategorized: Record<string, ServiceItem[]> = {}
-    categoryOrder.forEach(cat => {
-      if (categorized[cat]) {
-        sortedCategorized[cat] = categorized[cat]
+    const sortedCategories = [...categories].sort((a, b) => a.sort_order - b.sort_order)
+    
+    sortedCategories.forEach(cat => {
+      if (categorized[cat.slug]) {
+        sortedCategorized[cat.slug] = categorized[cat.slug]
       }
     })
     
-    // Add any remaining categories
+    // Add any remaining categories that aren't in the database
     Object.keys(categorized).forEach(cat => {
       if (!sortedCategorized[cat]) {
         sortedCategorized[cat] = categorized[cat]
@@ -97,6 +95,12 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
   }
 
   const categorizedServices = getServicesByCategory()
+
+  // Helper to get category label from slug
+  const getCategoryLabel = (slug: string) => {
+    const category = categories.find(c => c.slug === slug)
+    return category?.label || slug
+  }
 
   const handleSelectChange = (serviceId: string) => {
     setCurrentService(serviceId)
@@ -284,7 +288,7 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
                 {Object.entries(categorizedServices).map(([category, categoryServices]) => (
                   <div key={category}>
                     <div className="px-2 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
-                      {categoryLabels[category] || category}
+                      {getCategoryLabel(category)}
                     </div>
                     {categoryServices.map((service) => (
                       <SelectItem key={service.id} value={service.id}>
@@ -319,7 +323,7 @@ export default function StickyAnchorNav({ services }: StickyAnchorNavProps) {
                     className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#f97561] hover:bg-gray-50 rounded-lg transition-all duration-200"
                     onClick={() => setActiveCategory(activeCategory === category ? null : category)}
                   >
-                    <span>{categoryLabels[category] || category}</span>
+                    <span>{getCategoryLabel(category)}</span>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeCategory === category ? 'rotate-180' : ''}`} />
                   </button>
                   

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import MediaBrowser from '@/components/media-browser'
 import { createClient } from '@/lib/supabase/client'
+import { uploadImage, getImageUrl, deleteImage, getPathFromUrl } from '@/lib/supabase/storage'
 import { 
   Plus, 
   Pencil, 
@@ -261,6 +262,9 @@ export default function ServiceManagement() {
   const [draggedItem, setDraggedItem] = useState<string | null>(null)
   const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [converting, setConverting] = useState(false)
   
   // Category editing state
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
@@ -320,6 +324,65 @@ export default function ServiceManagement() {
       .replace(/^-+|-+$/g, '')
   }
 
+  // Convert HEIC/HEIF files to JPEG
+  const convertHeicToJpeg = async (file: File): Promise<File> => {
+    if (!file.type.includes('heic') && !file.type.includes('heif') && !file.name.toLowerCase().includes('.heic')) {
+      return file // Return original if not HEIC
+    }
+
+    try {
+      setConverting(true)
+      
+      // Dynamic import to avoid SSR issues
+      const heic2any = (await import('heic2any')).default
+      
+      const convertedBlob = await heic2any({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.9,
+      }) as Blob
+
+      // Create new File object from converted blob
+      const convertedFile = new File(
+        [convertedBlob],
+        file.name.replace(/\.(heic|heif)$/i, '.jpg'),
+        { type: 'image/jpeg' }
+      )
+
+      return convertedFile
+    } catch (error) {
+      console.error('Error converting HEIC file:', error)
+      throw new Error('Kunne ikke konvertere HEIC fil. Prøv at gemme som JPEG først.')
+    } finally {
+      setConverting(false)
+    }
+  }
+
+  // Handle image upload
+  const handleImageUpload = async (): Promise<string | null> => {
+    if (!selectedFile) return formData.image_key || null
+
+    setUploading(true)
+    try {
+      // Create a unique filename
+      const fileExt = selectedFile.name.split('.').pop()
+      const fileName = `images/services/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+      
+      const uploadResult = await uploadImage(selectedFile, fileName)
+      if (!uploadResult) {
+        throw new Error('Failed to upload image')
+      }
+
+      return fileName // Return the path, not the full URL
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Fejl ved upload af billede')
+      return null
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleTitleChange = (title: string) => {
     setFormData({
       ...formData,
@@ -332,6 +395,7 @@ export default function ServiceManagement() {
     setIsCreating(true)
     setEditingService(null)
     setSelectedImageUrl(null)
+    setSelectedFile(null)
     setFormData({
       slug: '',
       title: '',
@@ -345,6 +409,7 @@ export default function ServiceManagement() {
   const handleEdit = (service: Service) => {
     setEditingService(service)
     setIsCreating(false)
+    setSelectedFile(null)
     // Load existing image URL if there is a valid image_key (full storage path with /)
     if (service.image_key && service.image_key.includes('/')) {
       setSelectedImageUrl(getPublicImageUrl(service.image_key))
@@ -365,6 +430,7 @@ export default function ServiceManagement() {
     setIsCreating(false)
     setEditingService(null)
     setSelectedImageUrl(null)
+    setSelectedFile(null)
     setFormData({
       slug: '',
       title: '',
@@ -383,12 +449,17 @@ export default function ServiceManagement() {
     console.log('Generated image URL:', imageUrl)
     setFormData({ ...formData, image_key: imagePath })
     setSelectedImageUrl(imageUrl)
+    setSelectedFile(null) // Clear any selected file
     setShowMediaBrowser(false)
   }
 
   const handleRemoveImage = () => {
     setFormData({ ...formData, image_key: '' })
     setSelectedImageUrl(null)
+    setSelectedFile(null)
+    // Reset the file input
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
+    if (fileInput) fileInput.value = ''
   }
 
   const handleSave = async () => {
@@ -396,11 +467,43 @@ export default function ServiceManagement() {
 
     setSaving(true)
     try {
+      // Handle image upload if there's a selected file
+      let imageKey = formData.image_key
+
+      // If new file is selected, upload it
+      if (selectedFile) {
+        // If replacing an existing image, delete the old one first
+        if (editingService && editingService.image_key && editingService.image_key !== formData.image_key) {
+          const oldImagePath = editingService.image_key
+          if (oldImagePath && oldImagePath.includes('/')) {
+            await deleteImage(oldImagePath)
+          }
+        }
+        
+        const uploadedPath = await handleImageUpload()
+        if (!uploadedPath) {
+          // If we tried to upload but failed, don't proceed
+          return
+        }
+        imageKey = uploadedPath
+      }
+      // If editing and there's an old image, and either no new file selected or image was explicitly removed
+      else if (editingService && editingService.image_key && !formData.image_key && !selectedFile) {
+        // Delete the old image from storage
+        const oldImagePath = editingService.image_key
+        if (oldImagePath && oldImagePath.includes('/')) {
+          await deleteImage(oldImagePath)
+        }
+        imageKey = ''
+      }
+
+      const dataToSave = { ...formData, image_key: imageKey }
+
       if (isCreating) {
         const response = await fetch('/api/services', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(dataToSave)
         })
         if (response.ok) {
           await fetchServices()
@@ -410,7 +513,7 @@ export default function ServiceManagement() {
         const response = await fetch(`/api/services/${editingService.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(dataToSave)
         })
         if (response.ok) {
           await fetchServices()
@@ -773,67 +876,129 @@ export default function ServiceManagement() {
                     Billede (valgfri)
                   </label>
                   
-                  {(selectedImageUrl || (formData.image_key && formData.image_key.includes('/'))) ? (
-                    <div className="flex items-start gap-4">
-                      <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={selectedImageUrl || getPublicImageUrl(formData.image_key) || ''}
-                          alt="Valgt billede"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            console.error('Image failed to load:', e.currentTarget.src)
+                  <div className="space-y-3">
+                    {/* Current image preview */}
+                    {(selectedFile || selectedImageUrl || (formData.image_key && formData.image_key.includes('/'))) && (
+                      <div className="flex items-start gap-4">
+                        <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                          {selectedFile ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img 
+                              src={URL.createObjectURL(selectedFile)} 
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={selectedImageUrl || getPublicImageUrl(formData.image_key) || ''}
+                              alt="Valgt billede"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                console.error('Image failed to load:', e.currentTarget.src)
+                              }}
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          {selectedFile && (
+                            <span className="text-sm text-gray-600 block mb-2">
+                              {selectedFile.name}
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={handleRemoveImage}
+                            className="text-xs text-red-600 hover:text-red-800 underline"
+                          >
+                            Fjern billede
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* File upload and media browser options */}
+                    <div className="space-y-3">
+                      {/* File upload */}
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*,.heic,.heif"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              try {
+                                // Convert HEIC to JPEG if needed
+                                const convertedFile = await convertHeicToJpeg(file)
+                                setSelectedFile(convertedFile)
+                                // Clear media browser selection
+                                setFormData(prev => ({ ...prev, image_key: '' }))
+                                setSelectedImageUrl(null)
+                              } catch (error) {
+                                console.error('File conversion error:', error)
+                                alert(error instanceof Error ? error.message : 'Fejl ved konvertering af fil')
+                              }
+                            }
                           }}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          id="service-image-upload"
                         />
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <p className="text-xs text-gray-500 truncate max-w-48" title={formData.image_key}>
-                          {formData.image_key.split('/').pop() || 'Billede'}
-                        </p>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setShowMediaBrowser(true)}
+                        <label 
+                          htmlFor="service-image-upload"
+                          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#f97561] hover:bg-[#f97561]/5 transition-colors"
                         >
-                          <FolderOpen className="w-4 h-4 mr-2" />
-                          Skift billede
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={handleRemoveImage}
-                          className="text-red-600 hover:text-red-700 hover:border-red-300"
-                        >
-                          <X className="w-4 h-4 mr-2" />
-                          Fjern billede
-                        </Button>
+                          <div className="text-center">
+                            {converting ? (
+                              <div className="mx-auto h-8 w-8 mb-2 animate-spin rounded-full border-2 border-gray-300 border-t-[#f97561]"></div>
+                            ) : (
+                              <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                            )}
+                            <span className="text-sm font-medium text-gray-700">
+                              {converting ? 'Konverterer...' : 'Upload billede'}
+                            </span>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {converting ? 'HEIC fil konverteres' : 'Eller træk og slip her'}
+                            </p>
+                          </div>
+                        </label>
                       </div>
+
+                      {/* Bucket selection button */}
+                      <div className="text-center">
+                        <span className="text-xs text-gray-500">eller</span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowMediaBrowser(true)}
+                        className="w-full"
+                      >
+                        <FolderOpen className="w-4 h-4 mr-2" />
+                        Vælg fra mediarkiv
+                      </Button>
                     </div>
-                  ) : (
-                    <div 
-                      onClick={() => setShowMediaBrowser(true)}
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-[#f97561] hover:bg-[#f97561]/5 transition-colors"
-                    >
-                      <ImageIcon className="w-6 h-6 mx-auto text-gray-400 mb-1" />
-                      <p className="text-sm text-gray-600">Klik for at vælge billede</p>
-                    </div>
-                  )}
+
+                    <p className="text-xs text-gray-500">
+                      Vælg et billede (JPG, PNG, GIF, HEIC). HEIC filer konverteres automatisk. Maks 5MB.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="flex gap-2 pt-2">
                   <Button
                     onClick={handleSave}
-                    disabled={saving || !formData.title.trim()}
+                    disabled={saving || uploading || converting || !formData.title.trim()}
                     className="bg-[#f97561] hover:bg-[#f97561]/90"
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    {saving ? 'Gemmer...' : 'Gem'}
+                    {converting ? 'Konverterer...' : uploading ? 'Uploader billede...' : saving ? 'Gemmer...' : 'Gem'}
                   </Button>
                   <Button
                     onClick={handleCancel}
                     variant="outline"
+                    disabled={saving || uploading || converting}
                   >
                     <X className="w-4 h-4 mr-2" />
                     Annuller
@@ -994,67 +1159,129 @@ export default function ServiceManagement() {
                         Billede (valgfri)
                       </label>
                       
-                      {(selectedImageUrl || (formData.image_key && formData.image_key.includes('/'))) ? (
-                        <div className="flex items-start gap-4">
-                          <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={selectedImageUrl || getPublicImageUrl(formData.image_key) || ''}
-                              alt="Valgt billede"
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                console.error('Image failed to load:', e.currentTarget.src)
+                      <div className="space-y-3">
+                        {/* Current image preview */}
+                        {(selectedFile || selectedImageUrl || (formData.image_key && formData.image_key.includes('/'))) && (
+                          <div className="flex items-start gap-4">
+                            <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                              {selectedFile ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img 
+                                  src={URL.createObjectURL(selectedFile)} 
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={selectedImageUrl || getPublicImageUrl(formData.image_key) || ''}
+                                  alt="Valgt billede"
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    console.error('Image failed to load:', e.currentTarget.src)
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              {selectedFile && (
+                                <span className="text-sm text-gray-600 block mb-2">
+                                  {selectedFile.name}
+                                </span>
+                              )}
+                              <button
+                                type="button"
+                                onClick={handleRemoveImage}
+                                className="text-xs text-red-600 hover:text-red-800 underline"
+                              >
+                                Fjern billede
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* File upload and media browser options */}
+                        <div className="space-y-3">
+                          {/* File upload */}
+                          <div className="relative">
+                            <input
+                              type="file"
+                              accept="image/*,.heic,.heif"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0]
+                                if (file) {
+                                  try {
+                                    // Convert HEIC to JPEG if needed
+                                    const convertedFile = await convertHeicToJpeg(file)
+                                    setSelectedFile(convertedFile)
+                                    // Clear media browser selection
+                                    setFormData(prev => ({ ...prev, image_key: '' }))
+                                    setSelectedImageUrl(null)
+                                  } catch (error) {
+                                    console.error('File conversion error:', error)
+                                    alert(error instanceof Error ? error.message : 'Fejl ved konvertering af fil')
+                                  }
+                                }
                               }}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              id="service-image-upload-inline"
                             />
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <p className="text-xs text-gray-500 truncate max-w-48" title={formData.image_key}>
-                              {formData.image_key.split('/').pop() || 'Billede'}
-                            </p>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setShowMediaBrowser(true)}
+                            <label 
+                              htmlFor="service-image-upload-inline"
+                              className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#f97561] hover:bg-[#f97561]/5 transition-colors"
                             >
-                              <FolderOpen className="w-4 h-4 mr-2" />
-                              Skift billede
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={handleRemoveImage}
-                              className="text-red-600 hover:text-red-700 hover:border-red-300"
-                            >
-                              <X className="w-4 h-4 mr-2" />
-                              Fjern billede
-                            </Button>
+                              <div className="text-center">
+                                {converting ? (
+                                  <div className="mx-auto h-8 w-8 mb-2 animate-spin rounded-full border-2 border-gray-300 border-t-[#f97561]"></div>
+                                ) : (
+                                  <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                  </svg>
+                                )}
+                                <span className="text-sm font-medium text-gray-700">
+                                  {converting ? 'Konverterer...' : 'Upload billede'}
+                                </span>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  {converting ? 'HEIC fil konverteres' : 'Eller træk og slip her'}
+                                </p>
+                              </div>
+                            </label>
                           </div>
+
+                          {/* Bucket selection button */}
+                          <div className="text-center">
+                            <span className="text-xs text-gray-500">eller</span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowMediaBrowser(true)}
+                            className="w-full"
+                          >
+                            <FolderOpen className="w-4 h-4 mr-2" />
+                            Vælg fra mediarkiv
+                          </Button>
                         </div>
-                      ) : (
-                        <div 
-                          onClick={() => setShowMediaBrowser(true)}
-                          className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-[#f97561] hover:bg-[#f97561]/5 transition-colors"
-                        >
-                          <ImageIcon className="w-6 h-6 mx-auto text-gray-400 mb-1" />
-                          <p className="text-sm text-gray-600">Klik for at vælge billede</p>
-                        </div>
-                      )}
+
+                        <p className="text-xs text-gray-500">
+                          Vælg et billede (JPG, PNG, GIF, HEIC). HEIC filer konverteres automatisk. Maks 5MB.
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex gap-2 pt-2">
                       <Button
                         onClick={handleSave}
-                        disabled={saving || !formData.title.trim()}
+                        disabled={saving || uploading || converting || !formData.title.trim()}
                         className="bg-[#f97561] hover:bg-[#f97561]/90"
                       >
                         <Save className="w-4 h-4 mr-2" />
-                        {saving ? 'Gemmer...' : 'Gem'}
+                        {converting ? 'Konverterer...' : uploading ? 'Uploader billede...' : saving ? 'Gemmer...' : 'Gem'}
                       </Button>
                       <Button
                         onClick={handleCancel}
                         variant="outline"
+                        disabled={saving || uploading || converting}
                       >
                         <X className="w-4 h-4 mr-2" />
                         Annuller

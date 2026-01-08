@@ -48,6 +48,13 @@ interface Service {
   is_active: boolean
 }
 
+interface Category {
+  id: string
+  slug: string
+  label: string
+  sort_order: number
+}
+
 // Map icon names to components
 const iconMap: Record<string, ReactNode> = {
   'Syringe': <Syringe className="w-6 h-6 text-white" />,
@@ -147,13 +154,27 @@ function markdownToHtml(content: string): string {
 
 export default function DynamicServices({ isAuthenticated, initialServices }: DynamicServicesProps) {
   const [services, setServices] = useState<Service[]>(initialServices || [])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(!initialServices || initialServices.length === 0)
 
   useEffect(() => {
+    fetchCategories()
     if (!initialServices || initialServices.length === 0) {
       fetchServices()
     }
   }, [initialServices])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/service-categories')
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data)
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
 
   const fetchServices = async () => {
     try {
@@ -169,8 +190,23 @@ export default function DynamicServices({ isAuthenticated, initialServices }: Dy
     }
   }
 
+  // Sort services by category order, then by their own sort_order
+  const sortedServices = [...services].sort((a, b) => {
+    const catA = categories.find(c => c.slug === a.category)
+    const catB = categories.find(c => c.slug === b.category)
+    
+    const catOrderA = catA?.sort_order ?? 999
+    const catOrderB = catB?.sort_order ?? 999
+    
+    if (catOrderA !== catOrderB) {
+      return catOrderA - catOrderB
+    }
+    
+    return a.sort_order - b.sort_order
+  })
+
   // Prepare navigation items with category
-  const navServices = services.map(service => ({
+  const navServices = sortedServices.map(service => ({
     id: service.slug,
     label: service.title,
     href: `#${service.slug}`,
@@ -219,7 +255,7 @@ export default function DynamicServices({ isAuthenticated, initialServices }: Dy
   return (
     <>
       {/* Sticky Anchor Navigation Menu */}
-      <StickyAnchorNav services={navServices} />
+      <StickyAnchorNav services={navServices} categories={categories} />
 
       <Divider />
 
@@ -227,7 +263,7 @@ export default function DynamicServices({ isAuthenticated, initialServices }: Dy
       <section className="py-16 px-4 md:px-6 bg-[#fffaf6]">
         <div className="mx-auto max-w-[1257px]">
           <div className="flex flex-col gap-12">
-            {services.map((service, index) => (
+            {sortedServices.map((service, index) => (
               <ServiceCard 
                 key={service.id}
                 id={service.slug}
