@@ -50,8 +50,7 @@ export default function EditableText({
           setContent(data.content)
         }
       } catch {
-        // If no saved content exists, keep the default value
-        console.log('No saved content found for:', contentKey)
+        // Ignore errors and use default content
       }
     }
     

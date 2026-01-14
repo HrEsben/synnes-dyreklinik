@@ -28,8 +28,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 async function setupStorage() {
   try {
-    console.log('Checking if clinic-images bucket exists...')
-    
+
     // List all buckets
     const { data: buckets, error: listError } = await supabase.storage.listBuckets()
     
@@ -38,16 +37,11 @@ async function setupStorage() {
       return
     }
     
-    console.log('Existing buckets:', buckets.map(b => b.name))
-    
+
     // Check if clinic-images bucket exists
     const bucketExists = buckets.some(bucket => bucket.name === 'clinic-images')
     
-    if (bucketExists) {
-      console.log('✅ clinic-images bucket already exists')
-    } else {
-      console.log('Creating clinic-images bucket...')
-      
+    if (!bucketExists) {
       // Create the bucket
       const { data, error } = await supabase.storage.createBucket('clinic-images', {
         public: true,
@@ -59,12 +53,9 @@ async function setupStorage() {
         console.error('Error creating bucket:', error)
         return
       }
-      
-      console.log('✅ clinic-images bucket created successfully')
     }
     
     // Test upload to verify bucket is working
-    console.log('Testing bucket access...')
     const testFile = Buffer.from('test')
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('clinic-images')
@@ -73,8 +64,6 @@ async function setupStorage() {
     if (uploadError) {
       console.error('Error testing upload:', uploadError)
     } else {
-      console.log('✅ Bucket is accessible')
-      
       // Clean up test file
       await supabase.storage.from('clinic-images').remove(['test.txt'])
     }

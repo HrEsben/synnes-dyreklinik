@@ -444,9 +444,7 @@ export default function ServiceManagement() {
   const handleMediaSelect = (imagePath: string) => {
     // imagePath is like "images/image-browser/folder/image.jpg"
     // Set the full path as image_key
-    console.log('Selected image path:', imagePath)
     const imageUrl = getPublicImageUrl(imagePath)
-    console.log('Generated image URL:', imageUrl)
     setFormData({ ...formData, image_key: imagePath })
     setSelectedImageUrl(imageUrl)
     setSelectedFile(null) // Clear any selected file

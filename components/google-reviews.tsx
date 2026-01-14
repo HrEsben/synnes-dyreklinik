@@ -63,7 +63,6 @@ export default function GoogleReviews({
   // Fetch reviews from Google API
   const fetchGoogleReviews = useCallback(async () => {
     if (!placeId || useMockData) {
-      console.log('Using mock data')
       return
     }
 
