@@ -314,19 +314,19 @@ export default function EditableVideo({
   }
 
   const convertToEmbedUrl = (url: string) => {
-    // Handle YouTube URLs
+    // Handle YouTube URLs - use youtube-nocookie.com for privacy (no tracking cookies)
     if (url.includes('youtube.com/watch?v=') || url.includes('www.youtube.com/watch?v=')) {
       const urlObj = new URL(url)
       const videoId = urlObj.searchParams.get('v')
       if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}`
+        return `https://www.youtube-nocookie.com/embed/${videoId}`
       }
     } else if (url.includes('youtu.be/')) {
       const videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0]
-      return `https://www.youtube.com/embed/${videoId}`
-    } else if (url.includes('youtube.com/embed/')) {
-      // Already an embed URL
-      return url
+      return `https://www.youtube-nocookie.com/embed/${videoId}`
+    } else if (url.includes('youtube.com/embed/') || url.includes('youtube-nocookie.com/embed/')) {
+      // Already an embed URL - convert to nocookie version if needed
+      return url.replace('youtube.com/embed/', 'youtube-nocookie.com/embed/')
     } else if (url.includes('vimeo.com/') && !url.includes('player.vimeo.com')) {
       const videoId = url.split('vimeo.com/')[1].split('?')[0]
       return `https://player.vimeo.com/video/${videoId}`

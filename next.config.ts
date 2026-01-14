@@ -61,7 +61,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' https://fonts.gstatic.com",
               `connect-src 'self' https://${supabaseHostname} wss://${supabaseHostname} https://maps.googleapis.com https://www.google.com https://vercel.live https://*.vercel.live wss://vercel.live wss://*.vercel.live`,
-              "frame-src 'self' https://www.google.com https://www.instagram.com https://platform.instagram.com https://onlinebooking.planday.com https://www.vettigo.dk https://vettigo.dk https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
+              "frame-src 'self' https://www.google.com https://www.instagram.com https://platform.instagram.com https://onlinebooking.planday.com https://www.vettigo.dk https://vettigo.dk https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://vercel.live https://*.vercel.live",
               "media-src 'self' blob:",
               "object-src 'none'",
               "base-uri 'self'",
