@@ -86,8 +86,8 @@ export default function GoogleReviews({
       if (data.reviews && Array.isArray(data.reviews)) {
         setReviews(data.reviews)
       }
-    } catch (err) {
-      console.error('Error fetching Google reviews:', err)
+    } catch {
+      // Silently fall back to mock data - no need to log expected failures
       setError('Failed to load Google reviews. Using fallback data.')
       setReviews(mockReviews)
     } finally {

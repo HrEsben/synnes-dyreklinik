@@ -14,8 +14,51 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Synnes Dyreklinik",
-  description: "Erfaren dyrlæge med passion for familiens dyr og dyrenes familier",
+  title: {
+    default: "Synnes Dyreklinik",
+    template: "%s | Synnes Dyreklinik"
+  },
+  description: "Erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Personlig og professionel behandling af kæledyr i Nordsjælland.",
+  keywords: ["dyrlæge", "dyreklinik", "veterinær", "kæledyr", "hund", "kat", "Nordsjælland", "Hillerød"],
+  authors: [{ name: "Synnes Dyreklinik" }],
+  creator: "Synnes Dyreklinik",
+  metadataBase: new URL('https://synnesdyreklinik.dk'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'da_DK',
+    url: 'https://synnesdyreklinik.dk',
+    siteName: 'Synnes Dyreklinik',
+    title: 'Synnes Dyreklinik',
+    description: 'Erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Personlig og professionel behandling af kæledyr i Nordsjælland.',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Synnes Dyreklinik - Dyrlæge i Nordsjælland',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Synnes Dyreklinik',
+    description: 'Erfaren dyrlæge med passion for familiens dyr og dyrenes familier.',
+    images: ['/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: [
       { url: '/favicon-transparent-16.png', sizes: '16x16', type: 'image/png' },

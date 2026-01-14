@@ -90,12 +90,14 @@ export default function InteractiveHero() {
             style={{
               transform: `translate(${mousePosition.x * -0.3}px, 0px)`
             }}
+            aria-hidden="true"
+            role="presentation"
           >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d1_shape-1-home-hero-veterinary-x-template.svg"
               alt=""
-              width={0}
-              height={0}
+              width={100}
+              height={100}
               style={{ width: '100px', height: 'auto' }}
             />
           </div>
@@ -106,12 +108,14 @@ export default function InteractiveHero() {
             style={{
               transform: `translate(${mousePosition.x * 0.2}px, 0px)`
             }}
+            aria-hidden="true"
+            role="presentation"
           >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d3_shape-2-home-hero-veterinary-x-template.svg"
               alt=""
-              width={0}
-              height={0}
+              width={160}
+              height={160}
               style={{ width: '160px', height: 'auto' }}
             />
           </div>
@@ -122,12 +126,14 @@ export default function InteractiveHero() {
             style={{
               transform: `translate(${mousePosition.x * -0.1}px, 0px)`
             }}
+            aria-hidden="true"
+            role="presentation"
           >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d2_shape-3-home-hero-veterinary-x-template.svg"
               alt=""
-              width={0}
-              height={0}
+              width={240}
+              height={240}
               style={{ width: '240px', height: 'auto' }}
             />
           </div>
@@ -138,12 +144,14 @@ export default function InteractiveHero() {
             style={{
               transform: `translate(${mousePosition.x * 0.1}px, 0px)`
             }}
+            aria-hidden="true"
+            role="presentation"
           >
             <Image
               src="https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/shapes/6465e9cdad1ed7a73d3719d0_shape-4-home-hero-veterinary-x-template.svg"
               alt=""
-              width={0}
-              height={0}
+              width={220}
+              height={220}
               style={{ width: '220px', height: 'auto' }}
             />
           </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface TeamMemberPageProps {
   params: Promise<{
@@ -104,7 +105,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
               {bioContent ? (
                 <div 
                   className="prose prose-gray max-w-none [&>p]:mb-4 [&>p:last-child]:mb-0"
-                  dangerouslySetInnerHTML={{ __html: bioContent }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(bioContent) }}
                   style={{
                     lineHeight: '1.6'
                   }}

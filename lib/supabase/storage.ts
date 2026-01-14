@@ -1,4 +1,5 @@
 import { createClient } from './client'
+import { logger } from '@/lib/logger'
 
 const supabase = createClient()
 
@@ -13,7 +14,7 @@ export async function uploadImage(file: File, path: string) {
     })
 
   if (error) {
-    console.error('Error uploading image:', error)
+    logger.error('Error uploading image:', { error: error.message })
     return null
   }
 
@@ -34,7 +35,7 @@ export async function listImages() {
     .list()
 
   if (error) {
-    console.error('Error listing images:', error)
+    logger.error('Error listing images:', { error: error.message })
     return []
   }
 
@@ -47,7 +48,7 @@ export async function deleteImage(path: string) {
     .remove([path])
 
   if (error) {
-    console.error('Error deleting image:', error)
+    logger.error('Error deleting image:', { error: error.message })
     return false
   }
 

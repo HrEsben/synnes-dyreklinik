@@ -1,0 +1,14 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin/dashboard areas
+Disallow: /dashboard
+Disallow: /login
+Disallow: /auth
+
+# Disallow API routes
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://synnesdyreklinik.dk/sitemap.xml

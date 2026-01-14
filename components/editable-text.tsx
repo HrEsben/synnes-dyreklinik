@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 interface EditableTextProps {
   contentKey: string // Unique key for this text content
@@ -179,7 +180,7 @@ export default function EditableText({
   // Prevent hydration mismatch by not rendering HTML content until hydrated
   const renderContent = () => {
     if (allowHtml && isHydrated) {
-      return { dangerouslySetInnerHTML: { __html: displayContent } }
+      return { dangerouslySetInnerHTML: { __html: sanitizeHtml(displayContent) } }
     } else if (!isHydrated && allowHtml) {
       // During SSR, render the defaultValue to prevent hydration mismatch
       return { children: defaultValue }
