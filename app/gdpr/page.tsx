@@ -84,7 +84,7 @@ export default function GDPRPage() {
                 Besøg på hjemmeside
               </h3>
               <p className="text-gray-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                Når du besøger vores hjemmeside, så anvender vi cookies for at hjemmesiden kan fungere, hvilket du kan læse mere om i vores cookiepolitik.
+                Når du besøger vores hjemmeside, anvender vi kun teknisk nødvendige cookies. Du kan læse mere i vores <a href="#cookiepolitik" className="text-[#f97561] hover:underline">cookiepolitik</a> nedenfor.
               </p>
             </div>
 
@@ -375,6 +375,84 @@ export default function GDPRPage() {
                   Du har ret til at indgive en klage til Datatilsynet, hvis du er utilfreds med den måde, vi behandler dine personoplysninger på. Du finder Datatilsynets kontaktoplysninger på <a href="https://www.datatilsynet.dk/" className="text-[#f97561] hover:underline">www.datatilsynet.dk</a>.
                 </p>
               </div>
+            </div>
+          </div>
+
+          {/* Cookiepolitik */}
+          <div id="cookiepolitik" className="mb-12 scroll-mt-24">
+            <h2 className="mb-6" style={{ 
+              fontWeight: 800, 
+              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
+              fontSize: '32px',
+              color: '#2c2524'
+            }}>
+              Cookiepolitik
+            </h2>
+            <div className="text-gray-700 space-y-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              <p>
+                Vi bruger <strong>(næsten) ingen cookies</strong> på denne hjemmeside. Vi har bevidst designet siden til at respektere dit privatliv.
+              </p>
+              
+              <h3 className="mt-6 mb-3" style={{ 
+                fontWeight: 700, 
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '20px',
+                color: '#2c2524'
+              }}>
+                Teknisk nødvendige cookies
+              </h3>
+              <p>
+                Vi bruger kun én type cookie, som er teknisk nødvendig for at hjemmesiden kan fungere:
+              </p>
+              <div className="bg-[#fffaf6] p-6 rounded-lg mt-4">
+                <p className="font-semibold mb-2">Session-cookie (Supabase)</p>
+                <p className="text-sm">Denne cookie bruges udelukkende til at holde administratorer logget ind på hjemmesidens dashboard. Almindelige besøgende på hjemmesiden får ikke sat denne cookie.</p>
+              </div>
+
+              <h3 className="mt-6 mb-3" style={{ 
+                fontWeight: 700, 
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '20px',
+                color: '#2c2524'
+              }}>
+                Ingen tracking eller markedsføring
+              </h3>
+              <p>
+                Vi bruger <strong>ikke</strong>:
+              </p>
+              <ul className="list-disc list-inside space-y-1 ml-4">
+                <li>Google Analytics eller andre analyseværktøjer</li>
+                <li>Facebook Pixel eller andre markedsføringscookies</li>
+                <li>Tracking-cookies fra tredjeparter</li>
+              </ul>
+
+              <h3 className="mt-6 mb-3" style={{ 
+                fontWeight: 700, 
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '20px',
+                color: '#2c2524'
+              }}>
+                Indlejret indhold
+              </h3>
+              <p>
+                Vi har indlejret indhold fra følgende tjenester, som er konfigureret til at respektere dit privatliv:
+              </p>
+              <ul className="list-disc list-inside space-y-1 ml-4 mt-2">
+                <li><strong>YouTube-videoer</strong> – Vi bruger YouTube&apos;s privacy-enhanced mode (youtube-nocookie.com), som ikke sætter tracking-cookies</li>
+                <li><strong>Vettigo booking</strong> – Bookingsystemet sætter ingen cookies på din enhed</li>
+              </ul>
+
+              <h3 className="mt-6 mb-3" style={{ 
+                fontWeight: 700, 
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '20px',
+                color: '#2c2524'
+              }}>
+                Derfor ingen cookie-banner
+              </h3>
+              <p>
+                Da vi kun bruger teknisk nødvendige cookies, som er undtaget fra samtykkekravet under GDPR og ePrivacy-direktivet, har vi valgt ikke at vise en cookie-banner. Du kan trygt besøge vores hjemmeside uden at blive sporet.
+              </p>
             </div>
           </div>
 

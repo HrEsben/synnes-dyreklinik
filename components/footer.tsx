@@ -98,6 +98,15 @@ export default function Footer() {
             </div>
           </div>
         </div>
+        
+        <div className="mt-10">
+          <Link 
+            href="/gdpr#cookiepolitik" 
+            className="text-xs text-gray-400 hover:text-[#f97561] transition-colors"
+          >
+            Vi bruger (næsten) ingen cookies
+          </Link>
+        </div>
       </div>
     </footer>
   );
