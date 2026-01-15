@@ -3,6 +3,7 @@ import Image from "next/image";
 import { createClient } from '@/lib/supabase/server'
 import { Button } from "@/components/ui/button";
 import InteractiveHero from "@/components/interactive-hero";
+import BookingPopover from "@/components/booking-popover";
 import EditableText from "@/components/editable-text";
 import EditableImage from "@/components/editable-image";
 import EditableVideo from "@/components/editable-video";
@@ -315,13 +316,11 @@ export default async function Home() {
 
           
           <div className="flex flex-col sm:flex-row gap-4 mb-8 lg:mb-12">
-            <Link
-              href="/kontakt"
-            >
+            <BookingPopover>
               <Button className="py-5.5 px-5 text-lg font-bold w-full sm:w-auto">
                 Book en tid
               </Button>
-            </Link>
+            </BookingPopover>
           </div>
           </div>
         

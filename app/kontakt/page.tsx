@@ -1,9 +1,10 @@
 "use client"
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FAQSectionClient } from "@/components/faq-section-client";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import Divider from "@/components/divider";
 import {
   Select,
@@ -14,6 +15,48 @@ import {
 } from "@/components/ui/select";
 
 export default function KontaktPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string,
+      treatment: formData.get('treatment') as string,
+      message: formData.get('message') as string,
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Der opstod en fejl');
+      }
+
+      setSubmitStatus('success');
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      setSubmitStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Der opstod en fejl');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
 
@@ -80,7 +123,23 @@ export default function KontaktPage() {
 
             {/* Right Column - Contact Form */}
             <div className="bg-white p-8 rounded-[20px] border-[#e0dbdb] border-1">
-              <form className="space-y-6">
+              {submitStatus === 'success' ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Tak for din henvendelse!</h3>
+                  <p className="text-gray-600 mb-6">Vi vender tilbage til dig hurtigst muligt.</p>
+                  <Button onClick={() => setSubmitStatus('idle')}>
+                    Send ny henvendelse
+                  </Button>
+                </div>
+              ) : (
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                {submitStatus === 'error' && (
+                  <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block mb-2" style={{ 
@@ -187,10 +246,19 @@ export default function KontaktPage() {
                 <Button
                   type="submit"
                   className="w-full"
+                  disabled={isSubmitting}
                 >
-                  Send henvendelse
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sender...
+                    </>
+                  ) : (
+                    'Send henvendelse'
+                  )}
                 </Button>
               </form>
+              )}
             </div>
           </div>
         </div>
