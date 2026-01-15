@@ -52,6 +52,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/favicon-transparent-16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon-transparent-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/favicon-transparent-48.png', sizes: '48x48', type: 'image/png' },
@@ -59,7 +60,7 @@ export const metadata: Metadata = {
     apple: [
       { url: '/favicon-transparent-180.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/favicon.svg',
   },
 };
 
