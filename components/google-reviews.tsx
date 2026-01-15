@@ -181,7 +181,12 @@ export default function GoogleReviews({
               className="text-lg font-semibold text-muted-foreground max-w-2xl mx-auto mb-8"
             />
             
-            <Link href="https://www.google.com/maps/search/synnes+dyreklinik">
+            <a 
+              href="https://www.google.com/search?sca_esv=c95da4bab9673599&hl=da-DK&gl=dk&sxsrf=ANbL-n5tlXUzXzn70mpK0x0TybUBi_WHGA:1768464170830&q=Synnes+Dyreklinik+Anmeldelser&rflfq=1&num=20&stick=H4sIAAAAAAAAAONgkxIxNDY3NjMwtjAxtTAyMzawNDU1tdzAyPiKUTa4Mi8vtVjBpbIoNTsnMy8zW8ExLzc1JyU1pzi1aBErfnkANCuFkFsAAAA&rldimm=13736038458263095559&tbm=lcl&sa=X&ved=2ahUKEwjv8My1io2SAxU9HBAIHQd8LS8Q9fQKegQINxAG&biw=1440&bih=660&dpr=2&aic=0#lkt=LocalPoiReviews"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition-opacity"
+            >
             <div className="flex items-center justify-center gap-3 mb-8">
               <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-lg">
                 <div className="w-6 h-6 flex items-center justify-center">
@@ -201,7 +206,7 @@ export default function GoogleReviews({
                 </span>
               </div>
             </div>
-</Link>
+            </a>
           </div>
           <div className="hidden lg:block">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -290,6 +295,21 @@ export default function GoogleReviews({
               </div>
             ))}
           </div>
+        </div>
+        
+        {/* Link to all reviews */}
+        <div className="flex justify-center mt-8">
+          <a
+            href="https://www.google.com/search?sca_esv=c95da4bab9673599&hl=da-DK&gl=dk&sxsrf=ANbL-n5tlXUzXzn70mpK0x0TybUBi_WHGA:1768464170830&q=Synnes+Dyreklinik+Anmeldelser&rflfq=1&num=20&stick=H4sIAAAAAAAAAONgkxIxNDY3NjMwtjAxtTAyMzawNDU1tdzAyPiKUTa4Mi8vtVjBpbIoNTsnMy8zW8ExLzc1JyU1pzi1aBErfnkANCuFkFsAAAA&rldimm=13736038458263095559&tbm=lcl&sa=X&ved=2ahUKEwjv8My1io2SAxU9HBAIHQd8LS8Q9fQKegQINxAG&biw=1440&bih=660&dpr=2&aic=0#lkt=LocalPoiReviews"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-[#611471] font-semibold hover:bg-gray-50"
+          >
+            Se alle anmeldelser på Google
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
         </div>
         
         {/* Required Google Maps Attribution - According to Google Maps Platform Policies */}
