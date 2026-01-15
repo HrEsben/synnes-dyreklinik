@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     // Send email to the clinic
     const { error } = await resend.emails.send({
       from: 'Synnes Dyreklinik <noreply@synnesdyreklinik.dk>',
-      to: ['synne@synnesdyreklinik.dk'],
+      to: ['info@synnesdyreklinik.dk'],
       replyTo: email,
       subject: `Ny henvendelse fra ${name} - ${treatmentLabel}`,
       html: `
