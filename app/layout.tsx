@@ -32,21 +32,12 @@ export const metadata: Metadata = {
     url: 'https://synnesdyreklinik.dk',
     siteName: 'Synnes Dyreklinik',
     title: 'Synnes Dyreklinik',
-    description: 'Erfaren dyrlæge med passion for familiens dyr og dyrenes familier. Personlig og professionel behandling af kæledyr i Nordsjælland.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Synnes Dyreklinik - Dyrlæge i Nordsjælland',
-      },
-    ],
+    description: 'Fear Free dyreklinik med høj faglighed og personligt nærvær. Din lokale dyrlæge i Ejby, Kirke Hyllinge.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Synnes Dyreklinik',
-    description: 'Erfaren dyrlæge med passion for familiens dyr og dyrenes familier.',
-    images: ['/og-image.jpg'],
+    description: 'Fear Free dyreklinik med høj faglighed og personligt nærvær. Din lokale dyrlæge i Ejby, Kirke Hyllinge.',
   },
   robots: {
     index: true,
