@@ -185,20 +185,43 @@ export default function InstagramManagement() {
         url: formData.url.trim(),
         image_url: imageUrl,
         caption: formData.caption.trim(),
-        display_order: editingPost ? editingPost.display_order : posts.length + 1,
+        display_order: editingPost ? editingPost.display_order : 1, // New posts always at top
         is_active: true
       }
 
-      const response = await fetch('/api/instagram', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ posts: [postData] }),
-      })
+      // If creating a new post, we need to update all existing posts' display_order
+      if (!editingPost) {
+        // Increment all existing posts' display_order by 1
+        const updatedPosts = posts.map(post => ({
+          ...post,
+          display_order: post.display_order + 1
+        }))
 
-      if (!response.ok) {
-        throw new Error('Failed to save post')
+        // Save all posts including the new one
+        const response = await fetch('/api/instagram', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ posts: [postData, ...updatedPosts] }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to save post')
+        }
+      } else {
+        // If editing, just update the single post
+        const response = await fetch('/api/instagram', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ posts: [postData] }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to save post')
+        }
       }
 
       await fetchPosts() // Refresh the list
