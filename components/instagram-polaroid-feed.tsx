@@ -11,6 +11,15 @@ interface PolaroidInstagramPost {
   caption: string;
 }
 
+interface InstagramPostFromAPI {
+  id: string;
+  url: string;
+  image_url: string;
+  caption: string;
+  display_order: number;
+  is_active: boolean;
+}
+
 // Predefined rotations for each polaroid to make them look naturally scattered
 const POLAROID_ROTATIONS = [
   'rotate-[-8deg]',
@@ -69,7 +78,7 @@ export default function InstagramPolaroidFeed({
         const data = await response.json();
         
         // Map API response to component format
-        const mappedPosts = (data.posts || []).map((post: any) => ({
+        const mappedPosts = (data.posts || []).map((post: InstagramPostFromAPI) => ({
           id: post.id,
           url: post.url,
           image: post.image_url,
