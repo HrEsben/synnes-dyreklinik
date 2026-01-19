@@ -262,14 +262,14 @@ export default function InstagramManagement() {
       {/* Posts List */}
       <div className="space-y-3">
         {posts.map((post, index) => (
-          <div 
-            key={post.id} 
-            className={`flex items-center gap-4 p-4 rounded-lg hover:bg-opacity-80 transition-colors ${
-              index < 6 
-                ? 'bg-green-50 border border-green-200' 
-                : 'bg-gray-50'
-            }`}
-          >
+          <React.Fragment key={post.id}>
+            <div 
+              className={`flex items-center gap-4 p-4 rounded-lg hover:bg-opacity-80 transition-colors ${
+                index < 6 
+                  ? 'bg-green-50 border border-green-200' 
+                  : 'bg-gray-50'
+              }`}
+            >
             <div className="flex flex-col gap-1">
               <button
                 onClick={() => moveItem(post.id, 'up')}
@@ -337,6 +337,19 @@ export default function InstagramManagement() {
               </Button>
             </div>
           </div>
+
+          {/* Divider after 6th post */}
+          {index === 5 && posts.length > 6 && (
+            <div className="relative py-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-white px-4 text-sm text-gray-500">Vises ikke</span>
+              </div>
+            </div>
+          )}
+          </React.Fragment>
         ))}
 
         {posts.length === 0 && (
