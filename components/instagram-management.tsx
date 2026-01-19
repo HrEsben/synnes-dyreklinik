@@ -101,25 +101,24 @@ export default function InstagramManagement() {
       return
     }
 
+    if (!formData.caption.trim()) {
+      alert('Billedtekst skal udfyldes')
+      return
+    }
+
     setLoading(true)
 
     try {
-      // Fetch Instagram data via oEmbed
+      // Fetch Instagram thumbnail via oEmbed
       let thumbnailUrl = ''
-      let instagramCaption = ''
       try {
         const oembedResponse = await fetch(`/api/instagram-oembed?url=${encodeURIComponent(formData.url)}`)
         if (oembedResponse.ok) {
           const oembedData = await oembedResponse.json()
-          console.log('oEmbed data:', oembedData)
           thumbnailUrl = oembedData.thumbnail_url || ''
-          instagramCaption = oembedData.title || ''
-          console.log('Extracted caption:', instagramCaption)
-        } else {
-          console.error('oEmbed fetch failed:', await oembedResponse.text())
         }
       } catch (err) {
-        console.warn('Could not fetch Instagram data:', err)
+        console.warn('Could not fetch Instagram thumbnail:', err)
       }
 
       // Extract post ID from URL or use existing
@@ -135,7 +134,7 @@ export default function InstagramManagement() {
         id: postId,
         url: formData.url.trim(),
         image_url: thumbnailUrl,
-        caption: formData.caption.trim() || instagramCaption,
+        caption: formData.caption.trim(),
         display_order: editingPost ? editingPost.display_order : 1,
         is_active: true
       }
@@ -375,13 +374,13 @@ export default function InstagramManagement() {
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Billedet og billedteksten hentes automatisk fra Instagram
+                    Billedet hentes automatisk fra Instagram
                   </p>
                 </div>
 
                 <div>
                   <label htmlFor="caption" className="block text-sm font-medium mb-2">
-                    Billedtekst (valgfri)
+                    Billedtekst *
                   </label>
                   <textarea
                     id="caption"
@@ -391,9 +390,10 @@ export default function InstagramManagement() {
                     placeholder="Skriv en kort billedtekst..."
                     rows={2}
                     style={{ minHeight: '60px' }}
+                    required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Lad tom for at bruge billedteksten fra Instagram. Eller skriv din egen.
+                    Vises under polaroid-billedet på forsiden
                   </p>
                 </div>
 
