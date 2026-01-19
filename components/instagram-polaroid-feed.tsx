@@ -140,6 +140,7 @@ export default function InstagramPolaroidFeed({
                   fill
                   className="object-cover"
                   sizes="192px"
+                  unoptimized
                 />
                 
                 {/* Hover overlay */}
@@ -194,6 +195,7 @@ export default function InstagramPolaroidFeed({
                       fill
                       className="object-cover"
                       sizes="192px"
+                      unoptimized
                     />
                     
                     {/* Hover overlay */}
