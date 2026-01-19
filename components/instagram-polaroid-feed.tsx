@@ -81,7 +81,7 @@ export default function InstagramPolaroidFeed({
         const mappedPosts = (data.posts || []).map((post: InstagramPostFromAPI) => ({
           id: post.id,
           url: post.url,
-          image_url: post.image_url || `https://www.instagram.com/p/${post.id}/media/?size=m`,
+          image_url: post.image_url,
           caption: post.caption || ''
         }));
         
@@ -140,7 +140,6 @@ export default function InstagramPolaroidFeed({
                   fill
                   className="object-cover"
                   sizes="192px"
-                  unoptimized
                 />
                 
                 {/* Hover overlay */}
@@ -195,7 +194,6 @@ export default function InstagramPolaroidFeed({
                       fill
                       className="object-cover"
                       sizes="192px"
-                      unoptimized
                     />
                     
                     {/* Hover overlay */}

@@ -52,9 +52,9 @@ export async function POST(request: Request) {
     
     // Validate each post
     for (const post of posts) {
-      if (!post.id || !post.url) {
+      if (!post.id || !post.url || !post.image_url) {
         return NextResponse.json(
-          { error: 'Each post must have id and url' },
+          { error: 'Each post must have id, url, and image_url' },
           { status: 400 }
         )
       }
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
         posts.map((post, index) => ({
           id: post.id,
           url: post.url,
-          image_url: post.image_url || '', // Optional for embeds
+          image_url: post.image_url,
           caption: post.caption || '',
           display_order: post.display_order ?? index + 1,
           is_active: post.is_active ?? true,
