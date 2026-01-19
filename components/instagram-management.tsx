@@ -286,7 +286,9 @@ export default function InstagramManagement() {
 
             <div className="flex items-center text-gray-400">
               <GripVertical className="h-5 w-5" />
-              <span className="text-xs ml-1">#{post.display_order}</span>
+              {index < 6 && (
+                <span className="text-xs ml-1">#{index + 1}</span>
+              )}
             </div>
 
             {post.image_url && (
