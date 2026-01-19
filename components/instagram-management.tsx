@@ -275,7 +275,7 @@ export default function InstagramManagement() {
 
             <div className="flex-1 min-w-0">
               <p className="font-medium text-gray-900 truncate">
-                {post.caption || 'Ingen caption'}
+                {post.caption || 'Ingen billedtekst'}
               </p>
               <p className="text-sm text-gray-500 truncate">
                 {post.url}
@@ -370,7 +370,7 @@ export default function InstagramManagement() {
 
                 <div>
                   <label htmlFor="caption" className="block text-sm font-medium mb-2">
-                    Caption
+                    Billedtekst
                   </label>
                   <textarea
                     id="caption"
