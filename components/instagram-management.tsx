@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card } from '@/components/ui/card'
 import { Loader2, Plus, Trash2, Save, RefreshCw, GripVertical } from 'lucide-react'
 import { useAlert } from '@/components/alert-context'
 import Image from 'next/image'
@@ -166,7 +164,7 @@ export default function InstagramManagement() {
 
       <div className="space-y-4">
         {posts.map((post, index) => (
-          <Card key={post.id} className="p-4">
+          <div key={post.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
             <div className="flex gap-4">
               <div className="flex items-center">
                 <GripVertical className="h-5 w-5 text-gray-400" />
@@ -225,12 +223,12 @@ export default function InstagramManagement() {
                   <label className="text-xs font-medium text-gray-700 mb-1 block">
                     Caption
                   </label>
-                  <Textarea
+                  <textarea
                     value={post.caption}
                     onChange={(e) => handleUpdatePost(index, 'caption', e.target.value)}
                     placeholder="Skriv en billedtekst..."
                     rows={2}
-                    className="text-sm"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none text-sm"
                   />
                 </div>
               </div>
@@ -247,7 +245,7 @@ export default function InstagramManagement() {
                 <div className="text-xs text-gray-500">#{post.display_order}</div>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
 
         {posts.length === 0 && (
