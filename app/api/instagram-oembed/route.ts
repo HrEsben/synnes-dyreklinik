@@ -23,7 +23,10 @@ export async function GET(request: Request) {
     
     const response = await fetch(oembedUrl)
     
+    console.log('Instagram oEmbed API response status:', response.status)
+    
     if (!response.ok) {
+      console.log('Instagram API failed, using fallback')
       // Fallback: extract post ID from URL and construct thumbnail URL
       const postIdMatch = url.match(/\/p\/([^\/]+)/)
       if (postIdMatch) {
@@ -43,6 +46,7 @@ export async function GET(request: Request) {
     }
     
     const data: InstagramOEmbedResponse = await response.json()
+    console.log('Instagram oEmbed data received:', data)
     
     return NextResponse.json(data)
   } catch (error) {

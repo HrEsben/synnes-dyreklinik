@@ -111,8 +111,12 @@ export default function InstagramManagement() {
         const oembedResponse = await fetch(`/api/instagram-oembed?url=${encodeURIComponent(formData.url)}`)
         if (oembedResponse.ok) {
           const oembedData = await oembedResponse.json()
+          console.log('oEmbed data:', oembedData)
           thumbnailUrl = oembedData.thumbnail_url || ''
           instagramCaption = oembedData.title || ''
+          console.log('Extracted caption:', instagramCaption)
+        } else {
+          console.error('oEmbed fetch failed:', await oembedResponse.text())
         }
       } catch (err) {
         console.warn('Could not fetch Instagram data:', err)
