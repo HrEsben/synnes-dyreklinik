@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, Plus, Trash2, Edit2, GripVertical, Upload } from 'lucide-react'
+import { Loader2, Plus, Trash2, Edit2, GripVertical } from 'lucide-react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
-import { uploadImage, getImageUrl } from '@/lib/supabase/storage'
 
 interface InstagramPost {
   id: string
@@ -158,46 +157,29 @@ export default function InstagramManagement() {
     e.preventDefault()
 
     if (!formData.id.trim() || !formData.url.trim()) {
-      alert('ID og URL skal udfyldes')
-      return
-    }
-
-    if (!selectedFile && !formData.image_url.trim()) {
-      alert('Upload venligst et billede')
+      alert('Instagram URL skal udfyldes')
       return
     }
 
     setLoading(true)
 
     try {
-      // Upload image if a file is selected
-      let imageUrl = formData.image_url
-      if (selectedFile) {
-        const uploadedUrl = await handleImageUpload()
-        if (!uploadedUrl) {
-          return // Upload failed, error already shown
-        }
-        imageUrl = uploadedUrl
-      }
-
       const postData = {
         id: formData.id.trim(),
         url: formData.url.trim(),
-        image_url: imageUrl,
+        image_url: '', // No longer needed - using Instagram embed
         caption: formData.caption.trim(),
-        display_order: editingPost ? editingPost.display_order : 1, // New posts always at top
+        display_order: editingPost ? editingPost.display_order : 1,
         is_active: true
       }
 
-      // If creating a new post, we need to update all existing posts' display_order
+      // If creating a new post, update all existing posts' display_order
       if (!editingPost) {
-        // Increment all existing posts' display_order by 1
         const updatedPosts = posts.map(post => ({
           ...post,
           display_order: post.display_order + 1
         }))
 
-        // Save all posts including the new one
         const response = await fetch('/api/instagram', {
           method: 'POST',
           headers: {
@@ -210,7 +192,6 @@ export default function InstagramManagement() {
           throw new Error('Failed to save post')
         }
       } else {
-        // If editing, just update the single post
         const response = await fetch('/api/instagram', {
           method: 'POST',
           headers: {
@@ -224,7 +205,7 @@ export default function InstagramManagement() {
         }
       }
 
-      await fetchPosts() // Refresh the list
+      await fetchPosts()
       setIsModalOpen(false)
       resetForm()
     } catch (error) {
@@ -417,71 +398,38 @@ export default function InstagramManagement() {
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Post ID udtrækkes automatisk fra URL&apos;en
+                    Indsæt linket til Instagram opslaget
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Billede *
-                  </label>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-center w-full">
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                          <p className="mb-2 text-sm text-gray-500">
-                            <span className="font-semibold">Klik for at uploade</span> eller træk og slip
-                          </p>
-                          <p className="text-xs text-gray-500">PNG, JPG (MAX. 10MB)</p>
-                        </div>
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={handleFileSelect}
-                        />
-                      </label>
-                    </div>
-                    
-                    {formData.image_url && (
-                      <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
-                        <Image
-                          src={formData.image_url}
-                          alt="Preview"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div>
                   <label htmlFor="caption" className="block text-sm font-medium mb-2">
-                    Billedtekst
+                    Billedtekst (valgfri)
                   </label>
                   <textarea
                     id="caption"
                     value={formData.caption}
                     onChange={(e) => setFormData(prev => ({ ...prev, caption: e.target.value }))}
                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none resize-y"
-                    placeholder="Skriv en billedtekst..."
-                    rows={3}
-                    style={{ minHeight: '80px' }}
+                    placeholder="Skriv en kort billedtekst (vises kun i admin)..."
+                    rows={2}
+                    style={{ minHeight: '60px' }}
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Hjælpetekst til at identificere opslaget i listen
+                  </p>
                 </div>
 
                 <div className="flex gap-3">
                   <Button 
                     type="submit" 
                     className="flex-1 bg-[#f97561] hover:bg-[#e86850]" 
-                    disabled={loading || uploading}
+                    disabled={loading}
                   >
-                    {loading || uploading ? (
+                    {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {uploading ? 'Uploader...' : 'Gemmer...'}
+                        Gemmer...
                       </>
                     ) : (
                       editingPost ? 'Gem ændringer' : 'Tilføj opslag'
@@ -492,7 +440,7 @@ export default function InstagramManagement() {
                     onClick={handleCancel}
                     variant="outline"
                     className="flex-1"
-                    disabled={loading || uploading}
+                    disabled={loading}
                   >
                     Annuller
                   </Button>
