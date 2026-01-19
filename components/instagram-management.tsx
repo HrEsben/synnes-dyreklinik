@@ -430,6 +430,7 @@ export default function InstagramManagement() {
       {/* Media Browser Modal */}
       {showMediaBrowser && (
         <MediaBrowser
+          isOpen={showMediaBrowser}
           onSelect={handleMediaSelection}
           onClose={() => setShowMediaBrowser(false)}
         />
