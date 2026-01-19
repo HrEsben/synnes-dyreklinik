@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, Plus, Trash2, Edit2, GripVertical, Upload } from 'lucide-react'
+import { Loader2, Plus, Trash2, Edit2, GripVertical } from 'lucide-react'
 import Image from 'next/image'
-import { uploadImage, getImageUrl } from '@/lib/supabase/storage'
 
 interface InstagramPost {
   id: string
@@ -21,11 +20,8 @@ export default function InstagramManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingPost, setEditingPost] = useState<InstagramPost | null>(null)
   const [loading, setLoading] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [formData, setFormData] = useState({
     url: '',
-    image_url: '',
     caption: ''
   })
 
@@ -55,45 +51,9 @@ export default function InstagramManagement() {
   const resetForm = () => {
     setFormData({
       url: '',
-      image_url: '',
       caption: ''
     })
-    setSelectedFile(null)
     setEditingPost(null)
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedFile(file)
-      // Create preview URL
-      const previewUrl = URL.createObjectURL(file)
-      setFormData(prev => ({ ...prev, image_url: previewUrl }))
-    }
-  }
-
-  const handleImageUpload = async (): Promise<string | null> => {
-    if (!selectedFile) return formData.image_url || null
-
-    setUploading(true)
-    try {
-      const fileExt = selectedFile.name.split('.').pop()
-      const fileName = `images/instagram/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
-      
-      const uploadResult = await uploadImage(selectedFile, fileName)
-      if (!uploadResult) {
-        throw new Error('Failed to upload image')
-      }
-
-      const imageUrl = getImageUrl(fileName)
-      return imageUrl
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Fejl ved upload af billede')
-      return null
-    } finally {
-      setUploading(false)
-    }
   }
 
   const handleCreate = () => {
@@ -105,7 +65,6 @@ export default function InstagramManagement() {
     setEditingPost(post)
     setFormData({
       url: post.url,
-      image_url: post.image_url,
       caption: post.caption
     })
     setIsModalOpen(true)
@@ -142,23 +101,22 @@ export default function InstagramManagement() {
       return
     }
 
-    if (!selectedFile && !formData.image_url) {
-      alert('Du skal uploade et billede')
-      return
-    }
-
     setLoading(true)
 
     try {
-      // Upload image if new file is selected
-      const imageUrl = await handleImageUpload()
-      
-      if (!imageUrl) {
-        alert('Billede upload fejlede')
-        return
+      // Fetch Instagram thumbnail via oEmbed
+      let thumbnailUrl = ''
+      try {
+        const oembedResponse = await fetch(`/api/instagram-oembed?url=${encodeURIComponent(formData.url)}`)
+        if (oembedResponse.ok) {
+          const oembedData = await oembedResponse.json()
+          thumbnailUrl = oembedData.thumbnail_url || ''
+        }
+      } catch (err) {
+        console.warn('Could not fetch Instagram thumbnail:', err)
       }
 
-      // Extract post ID from URL or use existing ID if editing
+      // Extract post ID from URL or use existing
       let postId: string
       if (editingPost) {
         postId = editingPost.id
@@ -170,7 +128,7 @@ export default function InstagramManagement() {
       const postData = {
         id: postId,
         url: formData.url.trim(),
-        image_url: imageUrl,
+        image_url: thumbnailUrl,
         caption: formData.caption.trim(),
         display_order: editingPost ? editingPost.display_order : 1,
         is_active: true
@@ -412,56 +370,6 @@ export default function InstagramManagement() {
                   </p>
                 </div>
 
-                {/* Image Upload */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Billede *
-                  </label>
-                  
-                  {formData.image_url ? (
-                    <div className="space-y-3">
-                      <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
-                        <Image
-                          src={formData.image_url}
-                          alt="Preview"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, image_url: '' }))
-                          setSelectedFile(null)
-                        }}
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                      >
-                        Skift billede
-                      </Button>
-                    </div>
-                  ) : (
-                    <div>
-                      <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="h-10 w-10 text-gray-400 mb-3" />
-                          <p className="mb-2 text-sm text-gray-500">
-                            <span className="font-semibold">Klik for at uploade</span> eller træk og slip
-                          </p>
-                          <p className="text-xs text-gray-500">PNG, JPG eller WEBP</p>
-                        </div>
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={handleFileSelect}
-                        />
-                      </label>
-                    </div>
-                  )}
-                </div>
-
                 <div>
                   <label htmlFor="caption" className="block text-sm font-medium mb-2">
                     Billedtekst (valgfri)
@@ -484,12 +392,12 @@ export default function InstagramManagement() {
                   <Button 
                     type="submit" 
                     className="flex-1 bg-[#f97561] hover:bg-[#e86850]" 
-                    disabled={loading || uploading}
+                    disabled={loading}
                   >
-                    {loading || uploading ? (
+                    {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {uploading ? 'Uploader...' : 'Gemmer...'}
+                        Gemmer...
                       </>
                     ) : (
                       editingPost ? 'Gem ændringer' : 'Tilføj opslag'
@@ -500,7 +408,7 @@ export default function InstagramManagement() {
                     onClick={handleCancel}
                     variant="outline"
                     className="flex-1"
-                    disabled={loading || uploading}
+                    disabled={loading}
                   >
                     Annuller
                   </Button>
