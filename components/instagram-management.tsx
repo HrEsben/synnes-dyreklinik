@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Loader2, Plus, Trash2, Save, RefreshCw, GripVertical } from 'lucide-react'
-import { useAlert } from '@/components/alert-context'
+import { Loader2, Plus, Trash2, Edit2, GripVertical } from 'lucide-react'
 import Image from 'next/image'
 
 interface InstagramPost {
@@ -19,8 +17,15 @@ interface InstagramPost {
 export default function InstagramManagement() {
   const [posts, setPosts] = useState<InstagramPost[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-  const { showAlert } = useAlert()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingPost, setEditingPost] = useState<InstagramPost | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    id: '',
+    url: '',
+    image_url: '',
+    caption: ''
+  })
 
   useEffect(() => {
     fetchPosts()
@@ -39,50 +44,94 @@ export default function InstagramManagement() {
       setPosts(data.posts || [])
     } catch (error) {
       console.error('Error fetching Instagram posts:', error)
-      showAlert('Kunne ikke hente Instagram posts', 'error')
+      alert('Kunne ikke hente Instagram posts')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleAddPost = () => {
-    const newPost: InstagramPost = {
-      id: `new-${Date.now()}`,
+  const resetForm = () => {
+    setFormData({
+      id: '',
       url: '',
       image_url: '',
-      caption: '',
-      display_order: posts.length + 1,
-      is_active: true
-    }
-    setPosts([...posts, newPost])
+      caption: ''
+    })
+    setEditingPost(null)
   }
 
-  const handleUpdatePost = (index: number, field: keyof InstagramPost, value: string | number | boolean) => {
-    const updatedPosts = [...posts]
-    updatedPosts[index] = { ...updatedPosts[index], [field]: value }
-    setPosts(updatedPosts)
+  const handleCreate = () => {
+    resetForm()
+    setIsModalOpen(true)
   }
 
-  const handleDeletePost = (index: number) => {
-    const updatedPosts = posts.filter((_, i) => i !== index)
-    // Update display_order for remaining posts
-    const reorderedPosts = updatedPosts.map((post, i) => ({
-      ...post,
-      display_order: i + 1
-    }))
-    setPosts(reorderedPosts)
+  const handleEdit = (post: InstagramPost) => {
+    setEditingPost(post)
+    setFormData({
+      id: post.id,
+      url: post.url,
+      image_url: post.image_url,
+      caption: post.caption
+    })
+    setIsModalOpen(true)
   }
 
-  const handleSavePosts = async () => {
+  const handleDelete = async (id: string) => {
+    if (!confirm('Er du sikker på at du vil slette dette Instagram opslag?')) return
+
+    setLoading(true)
+
     try {
-      setIsSaving(true)
-      
-      // Validate posts
-      for (const post of posts) {
-        if (!post.id || !post.url || !post.image_url) {
-          showAlert('Alle posts skal have ID, URL og billede-URL', 'error')
-          return
-        }
+      const response = await fetch(`/api/instagram?id=${id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setPosts(posts.filter(post => post.id !== id))
+      } else {
+        alert('Fejl ved sletning af opslag')
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error)
+      alert('Fejl ved sletning af opslag')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const extractInstagramId = (url: string): string => {
+    const match = url.match(/\/p\/([A-Za-z0-9_-]+)/)
+    return match ? match[1] : ''
+  }
+
+  const handleUrlChange = (url: string) => {
+    setFormData(prev => ({ ...prev, url }))
+    
+    // Auto-extract ID if it's a valid Instagram URL and we're creating a new post
+    const postId = extractInstagramId(url)
+    if (postId && !editingPost) {
+      setFormData(prev => ({ ...prev, id: postId }))
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!formData.id.trim() || !formData.url.trim() || !formData.image_url.trim()) {
+      alert('ID, URL og Billede URL skal udfyldes')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const postData = {
+        id: formData.id.trim(),
+        url: formData.url.trim(),
+        image_url: formData.image_url.trim(),
+        caption: formData.caption.trim(),
+        display_order: editingPost ? editingPost.display_order : posts.length + 1,
+        is_active: true
       }
 
       const response = await fetch('/api/instagram', {
@@ -90,37 +139,27 @@ export default function InstagramManagement() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ posts }),
+        body: JSON.stringify({ posts: [postData] }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to save posts')
+        throw new Error('Failed to save post')
       }
 
-      showAlert('Instagram posts opdateret!', 'success')
-      await fetchPosts() // Refresh to get latest data
+      await fetchPosts() // Refresh the list
+      setIsModalOpen(false)
+      resetForm()
     } catch (error) {
-      console.error('Error saving Instagram posts:', error)
-      showAlert('Kunne ikke gemme Instagram posts', 'error')
+      console.error('Error saving Instagram post:', error)
+      alert('Kunne ikke gemme Instagram opslag')
     } finally {
-      setIsSaving(false)
+      setLoading(false)
     }
   }
 
-  const extractInstagramId = (url: string): string => {
-    // Extract Instagram post ID from URL
-    // Example: https://www.instagram.com/p/ABC123/ -> ABC123
-    const match = url.match(/\/p\/([A-Za-z0-9_-]+)/)
-    return match ? match[1] : ''
-  }
-
-  const handleUrlChange = (index: number, url: string) => {
-    handleUpdatePost(index, 'url', url)
-    // Auto-extract ID if it's a valid Instagram URL
-    const postId = extractInstagramId(url)
-    if (postId && posts[index].id.startsWith('new-')) {
-      handleUpdatePost(index, 'id', postId)
-    }
+  const handleCancel = () => {
+    setIsModalOpen(false)
+    resetForm()
   }
 
   if (isLoading) {
@@ -133,148 +172,194 @@ export default function InstagramManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-lg font-semibold">Instagram Feed</h3>
           <p className="text-sm text-gray-600">
-            Administrer Instagram posts der vises på hjemmesiden
+            {posts.length} {posts.length === 1 ? 'opslag' : 'opslag'} i alt
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={fetchPosts}
-            variant="outline"
-            size="sm"
-            disabled={isSaving}
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Opdater
-          </Button>
-          <Button
-            onClick={handleAddPost}
-            variant="outline"
-            size="sm"
-            disabled={isSaving}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Tilføj post
-          </Button>
-        </div>
+        <Button
+          onClick={handleCreate}
+          className="bg-[#f97561] hover:bg-[#e86850]"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Tilføj opslag
+        </Button>
       </div>
 
-      <div className="space-y-4">
+      {/* Posts List */}
+      <div className="space-y-3">
         {posts.map((post, index) => (
-          <div key={post.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <GripVertical className="h-5 w-5 text-gray-400" />
+          <div 
+            key={post.id} 
+            className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center text-gray-400">
+              <GripVertical className="h-5 w-5" />
+              <span className="text-xs ml-1">#{post.display_order}</span>
+            </div>
+
+            {post.image_url && (
+              <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-200">
+                <Image
+                  src={post.image_url}
+                  alt={post.caption || 'Instagram post'}
+                  fill
+                  className="object-cover"
+                />
               </div>
+            )}
 
-              {post.image_url && (
-                <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                  <Image
-                    src={post.image_url}
-                    alt={post.caption || 'Instagram post'}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate">
+                {post.caption || 'Ingen caption'}
+              </p>
+              <p className="text-sm text-gray-500 truncate">
+                {post.url}
+              </p>
+            </div>
 
-              <div className="flex-1 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-medium text-gray-700 mb-1 block">
-                      Instagram URL
-                    </label>
-                    <Input
-                      value={post.url}
-                      onChange={(e) => handleUrlChange(index, e.target.value)}
-                      placeholder="https://www.instagram.com/p/..."
-                      className="text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-gray-700 mb-1 block">
-                      Post ID
-                    </label>
-                    <Input
-                      value={post.id}
-                      onChange={(e) => handleUpdatePost(index, 'id', e.target.value)}
-                      placeholder="ABC123"
-                      className="text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium text-gray-700 mb-1 block">
-                    Billede URL
-                  </label>
-                  <Input
-                    value={post.image_url}
-                    onChange={(e) => handleUpdatePost(index, 'image_url', e.target.value)}
-                    placeholder="https://..."
-                    className="text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium text-gray-700 mb-1 block">
-                    Caption
-                  </label>
-                  <textarea
-                    value={post.caption}
-                    onChange={(e) => handleUpdatePost(index, 'caption', e.target.value)}
-                    placeholder="Skriv en billedtekst..."
-                    rows={2}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col items-end justify-between">
-                <Button
-                  onClick={() => handleDeletePost(index)}
-                  variant="ghost"
-                  size="sm"
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-                <div className="text-xs text-gray-500">#{post.display_order}</div>
-              </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleEdit(post)}
+                variant="outline"
+                size="sm"
+                disabled={loading}
+              >
+                <Edit2 className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={() => handleDelete(post.id)}
+                variant="outline"
+                size="sm"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                disabled={loading}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         ))}
 
         {posts.length === 0 && (
           <div className="text-center py-12 text-gray-500">
-            <p>Ingen Instagram posts endnu</p>
-            <p className="text-sm mt-2">Klik på &quot;Tilføj post&quot; for at komme i gang</p>
+            <p>Ingen Instagram opslag endnu</p>
+            <p className="text-sm mt-2">Klik på &quot;Tilføj opslag&quot; for at komme i gang</p>
           </div>
         )}
       </div>
 
-      <div className="flex justify-end pt-4">
-        <Button
-          onClick={handleSavePosts}
-          disabled={isSaving || posts.length === 0}
-          className="min-w-[150px]"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Gemmer...
-            </>
-          ) : (
-            <>
-              <Save className="mr-2 h-4 w-4" />
-              Gem ændringer
-            </>
-          )}
-        </Button>
-      </div>
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-8">
+              <h2 className="text-2xl font-bold mb-6" style={{ 
+                fontFamily: 'Poppins, sans-serif',
+                color: '#2c2524'
+              }}>
+                {editingPost ? 'Rediger Instagram opslag' : 'Tilføj Instagram opslag'}
+              </h2>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="url" className="block text-sm font-medium mb-2">
+                    Instagram URL *
+                  </label>
+                  <input
+                    type="url"
+                    id="url"
+                    value={formData.url}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                    placeholder="https://www.instagram.com/p/ABC123/"
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Post ID udtrækkes automatisk fra URL&apos;en
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="id" className="block text-sm font-medium mb-2">
+                    Post ID *
+                  </label>
+                  <input
+                    type="text"
+                    id="id"
+                    value={formData.id}
+                    onChange={(e) => setFormData(prev => ({ ...prev, id: e.target.value }))}
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                    placeholder="ABC123"
+                    required
+                    disabled={!!editingPost}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="image_url" className="block text-sm font-medium mb-2">
+                    Billede URL *
+                  </label>
+                  <input
+                    type="url"
+                    id="image_url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                    placeholder="https://..."
+                    required
+                  />
+                  {formData.image_url && (
+                    <div className="mt-3 relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
+                      <Image
+                        src={formData.image_url}
+                        alt="Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="caption" className="block text-sm font-medium mb-2">
+                    Caption
+                  </label>
+                  <textarea
+                    id="caption"
+                    value={formData.caption}
+                    onChange={(e) => setFormData(prev => ({ ...prev, caption: e.target.value }))}
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none resize-y"
+                    placeholder="Skriv en billedtekst..."
+                    rows={3}
+                    style={{ minHeight: '80px' }}
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    type="submit" 
+                    className="flex-1 bg-[#f97561] hover:bg-[#e86850]" 
+                    disabled={loading}
+                  >
+                    {loading ? 'Gemmer...' : (editingPost ? 'Gem ændringer' : 'Tilføj opslag')}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    onClick={handleCancel}
+                    variant="outline"
+                    className="flex-1"
+                    disabled={loading}
+                  >
+                    Annuller
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
