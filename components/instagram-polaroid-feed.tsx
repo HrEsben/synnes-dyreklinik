@@ -144,15 +144,8 @@ export default function InstagramPolaroidFeed({
                 />
                 
                 {/* Position badge */}
-                <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-gray-800 px-2 py-1 rounded-md text-xs font-semibold shadow-sm">
+                <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-gray-800 px-2 py-1 rounded-md text-xs font-semibold shadow-sm z-10">
                   #{index + 1}
-                </div>
-                
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                  <div className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity hover:bg-[#ed6e21] hover:text-white">
-                    <Instagram size={20} />
-                  </div>
                 </div>
               </div>
               
@@ -204,15 +197,8 @@ export default function InstagramPolaroidFeed({
                     />
                     
                     {/* Position badge */}
-                    <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-gray-800 px-2 py-1 rounded-md text-xs font-semibold shadow-sm">
+                    <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-gray-800 px-2 py-1 rounded-md text-xs font-semibold shadow-sm z-10">
                       #{index + 1}
-                    </div>
-                    
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                      <div className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 opacity-0 hover:opacity-100 transition-opacity hover:bg-[#ed6e21] hover:text-white">
-                        <Instagram size={20} />
-                      </div>
                     </div>
                   </div>
                   
