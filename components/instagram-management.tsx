@@ -344,22 +344,6 @@ export default function InstagramManagement() {
                 </div>
 
                 <div>
-                  <label htmlFor="id" className="block text-sm font-medium mb-2">
-                    Post ID *
-                  </label>
-                  <input
-                    type="text"
-                    id="id"
-                    value={formData.id}
-                    onChange={(e) => setFormData(prev => ({ ...prev, id: e.target.value }))}
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
-                    placeholder="ABC123"
-                    required
-                    disabled={!!editingPost}
-                  />
-                </div>
-
-                <div>
                   <label htmlFor="image_url" className="block text-sm font-medium mb-2">
                     Billede URL *
                   </label>
