@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import AlertBanner from "@/components/alert-banner";
 import DynamicSpacer from "@/components/dynamic-spacer";
 import { AlertProvider } from "@/components/alert-context";
+import { Analytics } from "@vercel/analytics/next";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -83,6 +84,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </AlertProvider>
+        <Analytics />
       </body>
     </html>
   );
