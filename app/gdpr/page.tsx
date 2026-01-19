@@ -51,7 +51,7 @@ export default function GDPRPage() {
               
               <div className="bg-[#fffaf6] p-6 rounded-lg">
                 <p className="font-semibold mb-2">Synnes Dyreklinik</p>
-                <p>Blommevej 9, 4070 Kirke Hyllinge</p>
+                <p>Gammel Skolevej 5, Ejby, 4070 Kirke Hyllinge</p>
                 <p>CVR-nr.: 44032864</p>
               </div>
               
