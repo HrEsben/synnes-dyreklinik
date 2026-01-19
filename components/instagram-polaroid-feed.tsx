@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Instagram } from 'lucide-react';
 
@@ -9,46 +10,6 @@ interface PolaroidInstagramPost {
   image: string;
   caption: string;
 }
-
-// Your actual Instagram posts with captions
-const POLAROID_POSTS: PolaroidInstagramPost[] = [
-  {
-    id: 'DNxVdvtWs_-',
-    url: 'https://www.instagram.com/synnesdyreklinik/p/DNxVdvtWs_-/',
-    image: 'https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/ig-test/1.png',
-    caption: '🐾📞 Så er vi i gang igen!'
-  },
-  {
-    id: 'DNpmyK-N8_3',
-    url: 'https://www.instagram.com/synnesdyreklinik/p/DNpmyK-N8_3/',
-    image: 'https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/ig-test/2.png',
-    caption: 'Klinikken oplever i øjeblikket telefonproblemer'
-  },
-  {
-    id: 'DNkpxxdgP0I',
-    url: 'https://www.instagram.com/synnesdyreklinik/p/DNkpxxdgP0I/',
-    image: 'https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/ig-test/3.png',
-    caption: '🔬 Vi ser mere end det blotte øje kan! 🐾💡'
-  },
-  {
-    id: 'DNfnHPNocoQ',
-    url: 'https://www.instagram.com/synnesdyreklinik/p/DNfnHPNocoQ/',
-    image: 'https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/ig-test/4.png',
-    caption: '🏆 Katten: 1🐱 – Musen: 0🐭'
-  },
-  {
-    id: 'DNVayE1V7do',
-    url: 'https://www.instagram.com/synnesdyreklinik/p/DNVayE1V7do/',
-    image: 'https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/ig-test/5.png',
-    caption: '🌾👂 To genstridige græs-agnere – men Kima tog det i stiv pote! �'
-  },
-  {
-    id: 'DNQMT00KDss',
-    url: 'https://www.instagram.com/synnesdyreklinik/p/DNQMT00KDss/',
-    image: 'https://sethupsgoqfwrdepecld.supabase.co/storage/v1/object/public/media/public/images/ig-test/6.png',
-    caption: '☀️🐾 Hot dog? Nej tak! �'
-  }
-];
 
 // Predefined rotations for each polaroid to make them look naturally scattered
 const POLAROID_ROTATIONS = [
@@ -95,7 +56,52 @@ export default function InstagramPolaroidFeed({
   limit = 6,
   className = "" 
 }: InstagramPolaroidFeedProps) {
-  const posts = POLAROID_POSTS.slice(0, limit);
+  const [posts, setPosts] = useState<PolaroidInstagramPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('/api/instagram');
+        if (!response.ok) {
+          throw new Error('Failed to fetch Instagram posts');
+        }
+        const data = await response.json();
+        
+        // Map API response to component format
+        const mappedPosts = (data.posts || []).map((post: any) => ({
+          id: post.id,
+          url: post.url,
+          image: post.image_url,
+          caption: post.caption || ''
+        }));
+        
+        setPosts(mappedPosts.slice(0, limit));
+      } catch (error) {
+        console.error('Error fetching Instagram posts:', error);
+        // Set empty array on error
+        setPosts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [limit]);
+
+  if (isLoading) {
+    return (
+      <div className={`w-full ${className}`}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (posts.length === 0) {
+    return null;
+  }
 
   return (
     <div className={`w-full ${className}`}>

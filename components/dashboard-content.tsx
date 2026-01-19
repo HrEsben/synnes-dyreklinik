@@ -7,12 +7,14 @@ import FAQManagement from '@/components/faq-management'
 import AlertManagement from '@/components/alert-management'
 import ServiceManagement from '@/components/service-management'
 import PriceManagement from '@/components/price-management'
+import InstagramManagement from '@/components/instagram-management'
 import { 
   Bell, 
   Briefcase, 
   Users, 
   HelpCircle,
-  DollarSign
+  DollarSign,
+  Instagram
 } from 'lucide-react'
 
 interface Employee {
@@ -56,6 +58,15 @@ export default function DashboardContent({ employees, currentAlert }: DashboardC
 
       {/* Right Column - Main Content with Collapsible Sections */}
       <div className="lg:col-span-2 space-y-4">
+        <CollapsibleSection
+          title="Instagram Feed"
+          description="Administrer Instagram posts der vises på hjemmesiden"
+          icon={Instagram}
+          defaultOpen={false}
+        >
+          <InstagramManagement />
+        </CollapsibleSection>
+
         <CollapsibleSection
           title="Ydelser"
           description="Administrer klinikkens ydelser og kategorier"
