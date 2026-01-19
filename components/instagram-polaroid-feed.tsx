@@ -142,11 +142,6 @@ export default function InstagramPolaroidFeed({
                   sizes="192px"
                   unoptimized
                 />
-                
-                {/* Position badge */}
-                <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-gray-800 px-2 py-1 rounded-md text-xs font-semibold shadow-sm z-10">
-                  #{index + 1}
-                </div>
               </div>
               
               {/* Polaroid caption area */}
@@ -195,11 +190,6 @@ export default function InstagramPolaroidFeed({
                       sizes="192px"
                       unoptimized
                     />
-                    
-                    {/* Position badge */}
-                    <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-gray-800 px-2 py-1 rounded-md text-xs font-semibold shadow-sm z-10">
-                      #{index + 1}
-                    </div>
                   </div>
                   
                   {/* Polaroid caption area */}
