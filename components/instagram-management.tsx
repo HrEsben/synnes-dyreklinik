@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, Plus, Trash2, Edit2, GripVertical } from 'lucide-react'
+import { Loader2, Plus, Trash2, Edit2, GripVertical, FolderOpen } from 'lucide-react'
 import Image from 'next/image'
+import MediaBrowser from '@/components/media-browser'
+import { getImageUrl } from '@/lib/supabase/storage'
 
 interface InstagramPost {
   id: string
@@ -20,7 +22,7 @@ export default function InstagramManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingPost, setEditingPost] = useState<InstagramPost | null>(null)
   const [loading, setLoading] = useState(false)
-  const [isFetching, setIsFetching] = useState(false)
+  const [showMediaBrowser, setShowMediaBrowser] = useState(false)
   const [formData, setFormData] = useState({
     id: '',
     url: '',
@@ -59,6 +61,12 @@ export default function InstagramManagement() {
       caption: ''
     })
     setEditingPost(null)
+  }
+
+  const handleMediaSelection = (imagePath: string) => {
+    const imageUrl = getImageUrl(imagePath)
+    setFormData(prev => ({ ...prev, image_url: imageUrl }))
+    setShowMediaBrowser(false)
   }
 
   const handleCreate = () => {
@@ -103,50 +111,6 @@ export default function InstagramManagement() {
   const extractInstagramId = (url: string): string => {
     const match = url.match(/\/p\/([A-Za-z0-9_-]+)/)
     return match ? match[1] : ''
-  }
-
-  const handleFetchFromInstagram = async () => {
-    if (!formData.url.trim()) {
-      alert('Indtast venligst en Instagram URL først')
-      return
-    }
-
-    setIsFetching(true)
-
-    try {
-      const response = await fetch('/api/instagram/fetch', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: formData.url }),
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        alert(error.error || 'Kunne ikke hente post data')
-        return
-      }
-
-      const data = await response.json()
-
-      // Update form with fetched data
-      setFormData(prev => ({
-        ...prev,
-        id: data.id || prev.id,
-        image_url: data.image_url || prev.image_url,
-        caption: data.caption || prev.caption,
-      }))
-
-      if (data.warning) {
-        alert(data.warning)
-      }
-    } catch (error) {
-      console.error('Error fetching from Instagram:', error)
-      alert('Kunne ikke hente data fra Instagram. Prøv igen eller indtast manuelt.')
-    } finally {
-      setIsFetching(false)
-    }
   }
 
   const handleUrlChange = (url: string) => {
@@ -374,32 +338,15 @@ export default function InstagramManagement() {
                   <label htmlFor="url" className="block text-sm font-medium mb-2">
                     Instagram URL *
                   </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="url"
-                      id="url"
-                      value={formData.url}
-                      onChange={(e) => handleUrlChange(e.target.value)}
-                      className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
-                      placeholder="https://www.instagram.com/p/ABC123/"
-                      required
-                    />
-                    <Button
-                      type="button"
-                      onClick={handleFetchFromInstagram}
-                      disabled={isFetching || !formData.url.trim()}
-                      className="bg-[#2c2524] hover:bg-[#3d3634] whitespace-nowrap"
-                    >
-                      {isFetching ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Henter...
-                        </>
-                      ) : (
-                        'Hent fra Instagram'
-                      )}
-                    </Button>
-                  </div>
+                  <input
+                    type="url"
+                    id="url"
+                    value={formData.url}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                    placeholder="https://www.instagram.com/p/ABC123/"
+                    required
+                  />
                   <p className="text-xs text-gray-500 mt-1">
                     Post ID udtrækkes automatisk fra URL&apos;en
                   </p>
@@ -409,15 +356,26 @@ export default function InstagramManagement() {
                   <label htmlFor="image_url" className="block text-sm font-medium mb-2">
                     Billede URL *
                   </label>
-                  <input
-                    type="url"
-                    id="image_url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
-                    placeholder="https://..."
-                    required
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      id="image_url"
+                      value={formData.image_url}
+                      onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                      className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                      placeholder="https://..."
+                      required
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => setShowMediaBrowser(true)}
+                      variant="outline"
+                      className="whitespace-nowrap"
+                    >
+                      <FolderOpen className="h-4 w-4 mr-2" />
+                      Vælg fra bibliotek
+                    </Button>
+                  </div>
                   {formData.image_url && (
                     <div className="mt-3 relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
                       <Image
@@ -467,6 +425,14 @@ export default function InstagramManagement() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Media Browser Modal */}
+      {showMediaBrowser && (
+        <MediaBrowser
+          onSelect={handleMediaSelection}
+          onClose={() => setShowMediaBrowser(false)}
+        />
       )}
     </div>
   )
