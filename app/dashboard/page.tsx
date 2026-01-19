@@ -44,15 +44,6 @@ export default async function DashboardPage() {
             }}>
               Administration
             </h1>
-            <p className="text-lg text-muted-foreground leading-[1.9] max-w-2xl" style={{
-              fontFamily: 'Poppins ExtraBold, Poppins, sans-serif',
-              fontWeight: 500,
-              fontSize: '16px',
-              lineHeight: '1.89em',
-              color: '#817d7d'
-            }}>
-            Her kan du redigere indholdet på hjemmesiden.<br /> Hvis du har spørgsmål eller der er noget galt, skal du bare ringe til din lillebror.
-            </p>
           </div>
         </div>
       </section>
