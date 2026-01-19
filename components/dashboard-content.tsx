@@ -60,7 +60,7 @@ export default function DashboardContent({ employees, currentAlert }: DashboardC
       <div className="lg:col-span-2 space-y-4">
         <CollapsibleSection
           title="Instagram Feed"
-          description="Administrer Instagram posts der vises på hjemmesiden"
+          description="Administrer Instagram posts på forsiden"
           icon={Instagram}
           defaultOpen={false}
         >

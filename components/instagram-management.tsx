@@ -244,12 +244,7 @@ export default function InstagramManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="text-sm text-gray-600">
-            Administrer Instagram posts på forsiden
-          </p>
-        </div>
+      <div className="flex justify-end items-center">
         <Button
           onClick={handleCreate}
           className="bg-[#f97561] hover:bg-[#e86850]"
