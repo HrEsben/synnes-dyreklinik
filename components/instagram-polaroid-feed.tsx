@@ -1,20 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { Instagram } from 'lucide-react';
+import Script from 'next/script';
 
 interface PolaroidInstagramPost {
   id: string;
   url: string;
-  image: string;
   caption: string;
 }
 
 interface InstagramPostFromAPI {
   id: string;
   url: string;
-  image_url: string;
   caption: string;
   display_order: number;
   is_active: boolean;
@@ -81,14 +78,12 @@ export default function InstagramPolaroidFeed({
         const mappedPosts = (data.posts || []).map((post: InstagramPostFromAPI) => ({
           id: post.id,
           url: post.url,
-          image: post.image_url,
           caption: post.caption || ''
         }));
         
         setPosts(mappedPosts.slice(0, limit));
       } catch (error) {
         console.error('Error fetching Instagram posts:', error);
-        // Set empty array on error
         setPosts([]);
       } finally {
         setIsLoading(false);
@@ -97,6 +92,17 @@ export default function InstagramPolaroidFeed({
 
     fetchPosts();
   }, [limit]);
+
+  // Load Instagram embed script after posts are loaded
+  useEffect(() => {
+    if (posts.length > 0 && typeof window !== 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const instgrm = (window as any).instgrm;
+      if (instgrm) {
+        instgrm.Embeds.process();
+      }
+    }
+  }, [posts]);
 
   if (isLoading) {
     return (
@@ -114,6 +120,21 @@ export default function InstagramPolaroidFeed({
 
   return (
     <div className={`w-full ${className}`}>
+      {/* Load Instagram embed script */}
+      <Script 
+        src="https://www.instagram.com/embed.js" 
+        strategy="lazyOnload"
+        onLoad={() => {
+          if (typeof window !== 'undefined') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const instgrm = (window as any).instgrm;
+            if (instgrm) {
+              instgrm.Embeds.process();
+            }
+          }
+        }}
+      />
+
       {/* Mobile: Vertical staggered layout */}
       <div className="md:hidden flex flex-col items-center space-y-[-30px] py-8 pt-0">
         {posts.map((post, index) => (
@@ -129,36 +150,36 @@ export default function InstagramPolaroidFeed({
 
           >
             {/* Polaroid frame */}
-            <div className="bg-white p-3 pb-16 rounded-lg shadow-sm transition-shadow duration-300">
-              {/* Photo area */}
+            <div className="bg-white p-3 pb-12 rounded-lg shadow-sm transition-shadow duration-300">
+              {/* Instagram embed area */}
               <div className="relative w-48 h-48 rounded overflow-hidden">
-                <Image
-                  src={post.image}
-                  alt={post.caption}
-                  fill
-                  className="object-cover"
-                  sizes="192px"
+                <blockquote
+                  className="instagram-media"
+                  data-instgrm-captioned
+                  data-instgrm-permalink={post.url}
+                  data-instgrm-version="14"
+                  style={{
+                    background: '#FFF',
+                    border: 0,
+                    borderRadius: '3px',
+                    boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+                    margin: '1px',
+                    maxWidth: '540px',
+                    minWidth: '326px',
+                    padding: 0,
+                    width: 'calc(100% - 2px)'
+                  }}
                 />
-                
-                {/* Hover overlay */}
-                <div className="absolute inset-0 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                  <a
-                    href={post.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 hover:bg-[#ed6e21] hover:text-white [transition:color_.3s,transform_.3s,background-color_.3s] hover:[transform:translate3d(0,-4px,.01px)]"
-                  >
-                    <Instagram size={20} />
-                  </a>
-                </div>
               </div>
               
-              {/* Polaroid caption area */}
-              <div className="absolute bottom-3 left-3 right-3 text-center">
-                <p className="text-sm text-gray-700 font-medium leading-tight">
-                  {truncateCaption(post.caption, 45)}
-                </p>
-              </div>
+              {/* Polaroid caption area - optional caption from admin */}
+              {post.caption && (
+                <div className="absolute bottom-3 left-3 right-3 text-center">
+                  <p className="text-xs text-gray-700 font-medium leading-tight">
+                    {truncateCaption(post.caption, 35)}
+                  </p>
+                </div>
+              )}
             </div>
             
             {/* Tape effect */}
@@ -183,36 +204,36 @@ export default function InstagramPolaroidFeed({
             
               >
                 {/* Polaroid frame */}
-                <div className="bg-white p-3 pb-16 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
-                  {/* Photo area */}
+                <div className="bg-white p-3 pb-12 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
+                  {/* Instagram embed area */}
                   <div className="relative w-48 h-48 rounded overflow-hidden">
-                    <Image
-                      src={post.image}
-                      alt={post.caption}
-                      fill
-                      className="object-cover"
-                      sizes="192px"
+                    <blockquote
+                      className="instagram-media"
+                      data-instgrm-captioned
+                      data-instgrm-permalink={post.url}
+                      data-instgrm-version="14"
+                      style={{
+                        background: '#FFF',
+                        border: 0,
+                        borderRadius: '3px',
+                        boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+                        margin: '1px',
+                        maxWidth: '540px',
+                        minWidth: '326px',
+                        padding: 0,
+                        width: 'calc(100% - 2px)'
+                      }}
                     />
-                    
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                      <a
-                        href={post.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-white bg-opacity-90 text-gray-800 rounded-full p-2 hover:bg-[#ed6e21] hover:text-white [transition:color_.3s,transform_.3s,background-color_.3s] hover:[transform:translate3d(0,-4px,.01px)]"
-                      >
-                        <Instagram size={20} />
-                      </a>
-                    </div>
                   </div>
                   
-                  {/* Polaroid caption area */}
-                  <div className="absolute bottom-3 left-3 right-3 text-center">
-                    <p className="text-sm text-gray-700 font-medium leading-tight">
-                      {truncateCaption(post.caption, 45)}
-                    </p>
-                  </div>
+                  {/* Polaroid caption area - optional caption from admin */}
+                  {post.caption && (
+                    <div className="absolute bottom-3 left-3 right-3 text-center">
+                      <p className="text-xs text-gray-700 font-medium leading-tight">
+                        {truncateCaption(post.caption, 35)}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 {/* Tape effect */}

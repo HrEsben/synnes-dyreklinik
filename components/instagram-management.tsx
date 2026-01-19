@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Loader2, Plus, Trash2, Edit2, GripVertical } from 'lucide-react'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/client'
 
 interface InstagramPost {
   id: string
@@ -21,15 +20,12 @@ export default function InstagramManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingPost, setEditingPost] = useState<InstagramPost | null>(null)
   const [loading, setLoading] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [formData, setFormData] = useState({
     id: '',
     url: '',
     image_url: '',
     caption: ''
   })
-  const supabase = createClient()
 
   useEffect(() => {
     fetchPosts()
@@ -61,42 +57,7 @@ export default function InstagramManagement() {
       image_url: '',
       caption: ''
     })
-    setSelectedFile(null)
     setEditingPost(null)
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedFile(file)
-      // Create preview URL
-      const previewUrl = URL.createObjectURL(file)
-      setFormData(prev => ({ ...prev, image_url: previewUrl }))
-    }
-  }
-
-  const handleImageUpload = async (): Promise<string | null> => {
-    if (!selectedFile) return formData.image_url || null
-
-    setUploading(true)
-    try {
-      const fileExt = selectedFile.name.split('.').pop()
-      const fileName = `images/instagram/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
-      
-      const uploadResult = await uploadImage(selectedFile, fileName)
-      if (!uploadResult) {
-        throw new Error('Failed to upload image')
-      }
-
-      const imageUrl = getImageUrl(fileName)
-      return imageUrl
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Fejl ved upload af billede')
-      return null
-    } finally {
-      setUploading(false)
-    }
   }
 
   const handleCreate = () => {
