@@ -262,6 +262,10 @@ export default function InstagramManagement() {
           <p className="text-sm text-gray-600">
             {posts.length} {posts.length === 1 ? 'opslag' : 'opslag'} i alt
           </p>
+          <p className="text-xs text-gray-500 mt-1">
+            <span className="inline-block w-3 h-3 bg-green-500 rounded mr-1"></span>
+            De første 6 opslag vises på forsiden
+          </p>
         </div>
         <Button
           onClick={handleCreate}
@@ -298,9 +302,18 @@ export default function InstagramManagement() {
               </button>
             </div>
 
-            <div className="flex items-center text-gray-400">
-              <GripVertical className="h-5 w-5" />
-              <span className="text-xs ml-1">#{post.display_order}</span>
+            {/* Position indicator - green badge for first 6 (shown on homepage) */}
+            <div className="flex items-center">
+              {index < 6 ? (
+                <div className="bg-green-500 text-white px-2 py-1 rounded-md text-sm font-semibold min-w-[40px] text-center">
+                  #{index + 1}
+                </div>
+              ) : (
+                <div className="flex items-center text-gray-400">
+                  <GripVertical className="h-5 w-5" />
+                  <span className="text-xs ml-1">#{post.display_order}</span>
+                </div>
+              )}
             </div>
 
             {post.image_url && (
