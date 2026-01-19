@@ -21,7 +21,6 @@ export default function InstagramManagement() {
   const [editingPost, setEditingPost] = useState<InstagramPost | null>(null)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    id: '',
     url: '',
     image_url: '',
     caption: ''
@@ -52,7 +51,6 @@ export default function InstagramManagement() {
 
   const resetForm = () => {
     setFormData({
-      id: '',
       url: '',
       image_url: '',
       caption: ''
@@ -68,7 +66,6 @@ export default function InstagramManagement() {
   const handleEdit = (post: InstagramPost) => {
     setEditingPost(post)
     setFormData({
-      id: post.id,
       url: post.url,
       image_url: post.image_url,
       caption: post.caption
@@ -117,7 +114,7 @@ export default function InstagramManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.id.trim() || !formData.url.trim()) {
+    if (!formData.url.trim()) {
       alert('Instagram URL skal udfyldes')
       return
     }
@@ -125,10 +122,26 @@ export default function InstagramManagement() {
     setLoading(true)
 
     try {
+      // Fetch Instagram post data (thumbnail) from oEmbed
+      let thumbnailUrl = ''
+      try {
+        const oembedResponse = await fetch(`/api/instagram-oembed?url=${encodeURIComponent(formData.url)}`)
+        if (oembedResponse.ok) {
+          const oembedData = await oembedResponse.json()
+          thumbnailUrl = oembedData.thumbnail_url || ''
+        }
+      } catch (err) {
+        console.warn('Could not fetch Instagram thumbnail:', err)
+      }
+
+      // Extract post ID from URL
+      const postIdMatch = formData.url.match(/\/p\/([^\/\?]+)/)
+      const postId = postIdMatch ? postIdMatch[1] : `post-${Date.now()}`
+
       const postData = {
-        id: formData.id.trim(),
+        id: postId,
         url: formData.url.trim(),
-        image_url: '', // No longer needed - using Instagram embed
+        image_url: thumbnailUrl,
         caption: formData.caption.trim(),
         display_order: editingPost ? editingPost.display_order : 1,
         is_active: true
