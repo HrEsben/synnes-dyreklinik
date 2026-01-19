@@ -134,14 +134,19 @@ export default function InstagramManagement() {
         console.warn('Could not fetch Instagram thumbnail:', err)
       }
 
-      // Extract post ID from URL
-      const postIdMatch = formData.url.match(/\/p\/([^\/\?]+)/)
-      const postId = postIdMatch ? postIdMatch[1] : `post-${Date.now()}`
+      // Extract post ID from URL or use existing ID if editing
+      let postId: string
+      if (editingPost) {
+        postId = editingPost.id
+      } else {
+        const postIdMatch = formData.url.match(/\/p\/([^\/\?]+)/)
+        postId = postIdMatch ? postIdMatch[1] : `post-${Date.now()}`
+      }
 
       const postData = {
         id: postId,
         url: formData.url.trim(),
-        image_url: thumbnailUrl,
+        image_url: thumbnailUrl || formData.image_url, // Keep existing if no new thumbnail
         caption: formData.caption.trim(),
         display_order: editingPost ? editingPost.display_order : 1,
         is_active: true
@@ -163,7 +168,8 @@ export default function InstagramManagement() {
         })
 
         if (!response.ok) {
-          throw new Error('Failed to save post')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to save post')
         }
       } else {
         const response = await fetch('/api/instagram', {
@@ -175,7 +181,8 @@ export default function InstagramManagement() {
         })
 
         if (!response.ok) {
-          throw new Error('Failed to save post')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to save post')
         }
       }
 
@@ -184,7 +191,8 @@ export default function InstagramManagement() {
       resetForm()
     } catch (error) {
       console.error('Error saving Instagram post:', error)
-      alert('Kunne ikke gemme Instagram opslag')
+      const errorMessage = error instanceof Error ? error.message : 'Kunne ikke gemme Instagram opslag'
+      alert(errorMessage)
     } finally {
       setLoading(false)
     }
