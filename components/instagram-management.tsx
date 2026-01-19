@@ -162,6 +162,49 @@ export default function InstagramManagement() {
     resetForm()
   }
 
+  const moveItem = async (id: string, direction: 'up' | 'down') => {
+    const currentIndex = posts.findIndex(post => post.id === id)
+    if (currentIndex === -1) return
+
+    const newPosts = [...posts]
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+
+    if (targetIndex < 0 || targetIndex >= newPosts.length) return
+
+    // Swap items
+    ;[newPosts[currentIndex], newPosts[targetIndex]] = [newPosts[targetIndex], newPosts[currentIndex]]
+    
+    // Update display_order for all items
+    const updatedPosts = newPosts.map((post, index) => ({
+      ...post,
+      display_order: index + 1
+    }))
+
+    setPosts(updatedPosts)
+
+    // Update order in database
+    try {
+      const response = await fetch('/api/instagram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ posts: updatedPosts }),
+      })
+
+      if (!response.ok) {
+        // Revert on error
+        setPosts(posts)
+        alert('Fejl ved opdatering af rækkefølge')
+      }
+    } catch (error) {
+      console.error('Error reordering posts:', error)
+      // Revert on error
+      setPosts(posts)
+      alert('Fejl ved opdatering af rækkefølge')
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -195,6 +238,25 @@ export default function InstagramManagement() {
             key={post.id} 
             className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
           >
+            <div className="flex flex-col gap-1">
+              <button
+                onClick={() => moveItem(post.id, 'up')}
+                disabled={index === 0 || loading}
+                className="text-gray-500 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed w-6 h-6 flex items-center justify-center"
+                title="Flyt op"
+              >
+                ↑
+              </button>
+              <button
+                onClick={() => moveItem(post.id, 'down')}
+                disabled={index === posts.length - 1 || loading}
+                className="text-gray-500 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed w-6 h-6 flex items-center justify-center"
+                title="Flyt ned"
+              >
+                ↓
+              </button>
+            </div>
+
             <div className="flex items-center text-gray-400">
               <GripVertical className="h-5 w-5" />
               <span className="text-xs ml-1">#{post.display_order}</span>
