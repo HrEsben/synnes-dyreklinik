@@ -284,11 +284,7 @@ export default function InstagramManagement() {
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm text-gray-600">
-            {posts.length} {posts.length === 1 ? 'opslag' : 'opslag'} i alt
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            <span className="inline-block w-3 h-3 bg-green-500 rounded mr-1"></span>
-            De første 6 opslag vises på forsiden
+            Administrer Instagram posts på forsiden
           </p>
         </div>
         <Button
@@ -305,7 +301,11 @@ export default function InstagramManagement() {
         {posts.map((post, index) => (
           <div 
             key={post.id} 
-            className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className={`flex items-center gap-4 p-4 rounded-lg hover:bg-opacity-80 transition-colors ${
+              index < 6 
+                ? 'bg-green-50 border border-green-200' 
+                : 'bg-gray-50'
+            }`}
           >
             <div className="flex flex-col gap-1">
               <button
@@ -326,18 +326,9 @@ export default function InstagramManagement() {
               </button>
             </div>
 
-            {/* Position indicator - green badge for first 6 (shown on homepage) */}
-            <div className="flex items-center">
-              {index < 6 ? (
-                <div className="bg-green-500 text-white px-2 py-1 rounded-md text-sm font-semibold min-w-[40px] text-center">
-                  #{index + 1}
-                </div>
-              ) : (
-                <div className="flex items-center text-gray-400">
-                  <GripVertical className="h-5 w-5" />
-                  <span className="text-xs ml-1">#{post.display_order}</span>
-                </div>
-              )}
+            <div className="flex items-center text-gray-400">
+              <GripVertical className="h-5 w-5" />
+              <span className="text-xs ml-1">#{post.display_order}</span>
             </div>
 
             {post.image_url && (
