@@ -20,6 +20,7 @@ export default function InstagramManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingPost, setEditingPost] = useState<InstagramPost | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
   const [formData, setFormData] = useState({
     id: '',
     url: '',
@@ -102,6 +103,50 @@ export default function InstagramManagement() {
   const extractInstagramId = (url: string): string => {
     const match = url.match(/\/p\/([A-Za-z0-9_-]+)/)
     return match ? match[1] : ''
+  }
+
+  const handleFetchFromInstagram = async () => {
+    if (!formData.url.trim()) {
+      alert('Indtast venligst en Instagram URL først')
+      return
+    }
+
+    setIsFetching(true)
+
+    try {
+      const response = await fetch('/api/instagram/fetch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: formData.url }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        alert(error.error || 'Kunne ikke hente post data')
+        return
+      }
+
+      const data = await response.json()
+
+      // Update form with fetched data
+      setFormData(prev => ({
+        ...prev,
+        id: data.id || prev.id,
+        image_url: data.image_url || prev.image_url,
+        caption: data.caption || prev.caption,
+      }))
+
+      if (data.warning) {
+        alert(data.warning)
+      }
+    } catch (error) {
+      console.error('Error fetching from Instagram:', error)
+      alert('Kunne ikke hente data fra Instagram. Prøv igen eller indtast manuelt.')
+    } finally {
+      setIsFetching(false)
+    }
   }
 
   const handleUrlChange = (url: string) => {
@@ -329,15 +374,32 @@ export default function InstagramManagement() {
                   <label htmlFor="url" className="block text-sm font-medium mb-2">
                     Instagram URL *
                   </label>
-                  <input
-                    type="url"
-                    id="url"
-                    value={formData.url}
-                    onChange={(e) => handleUrlChange(e.target.value)}
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
-                    placeholder="https://www.instagram.com/p/ABC123/"
-                    required
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      id="url"
+                      value={formData.url}
+                      onChange={(e) => handleUrlChange(e.target.value)}
+                      className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-[#f97561] focus:border-[#f97561] outline-none"
+                      placeholder="https://www.instagram.com/p/ABC123/"
+                      required
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleFetchFromInstagram}
+                      disabled={isFetching || !formData.url.trim()}
+                      className="bg-[#2c2524] hover:bg-[#3d3634] whitespace-nowrap"
+                    >
+                      {isFetching ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Henter...
+                        </>
+                      ) : (
+                        'Hent fra Instagram'
+                      )}
+                    </Button>
+                  </div>
                   <p className="text-xs text-gray-500 mt-1">
                     Post ID udtrækkes automatisk fra URL&apos;en
                   </p>
