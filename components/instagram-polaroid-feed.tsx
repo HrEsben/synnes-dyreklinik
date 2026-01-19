@@ -145,13 +145,13 @@ export default function InstagramPolaroidFeed({
               </div>
               
               {/* Polaroid caption area */}
-              {post.caption && (
-                <div className="absolute bottom-3 left-3 right-3 text-center">
+              <div className="absolute bottom-3 left-3 right-3 text-center">
+                {post.caption && (
                   <p className="text-sm text-gray-700 font-medium leading-tight">
                     {truncateCaption(post.caption, 45)}
                   </p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             
             {/* Tape effect */}
@@ -193,13 +193,13 @@ export default function InstagramPolaroidFeed({
                   </div>
                   
                   {/* Polaroid caption area */}
-                  {post.caption && (
-                    <div className="absolute bottom-3 left-3 right-3 text-center">
+                  <div className="absolute bottom-3 left-3 right-3 text-center">
+                    {post.caption && (
                       <p className="text-sm text-gray-700 font-medium leading-tight">
                         {truncateCaption(post.caption, 45)}
                       </p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
                 
                 {/* Tape effect */}

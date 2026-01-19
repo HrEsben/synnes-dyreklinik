@@ -104,16 +104,18 @@ export default function InstagramManagement() {
     setLoading(true)
 
     try {
-      // Fetch Instagram thumbnail via oEmbed
+      // Fetch Instagram data via oEmbed
       let thumbnailUrl = ''
+      let instagramCaption = ''
       try {
         const oembedResponse = await fetch(`/api/instagram-oembed?url=${encodeURIComponent(formData.url)}`)
         if (oembedResponse.ok) {
           const oembedData = await oembedResponse.json()
           thumbnailUrl = oembedData.thumbnail_url || ''
+          instagramCaption = oembedData.title || ''
         }
       } catch (err) {
-        console.warn('Could not fetch Instagram thumbnail:', err)
+        console.warn('Could not fetch Instagram data:', err)
       }
 
       // Extract post ID from URL or use existing
@@ -129,7 +131,7 @@ export default function InstagramManagement() {
         id: postId,
         url: formData.url.trim(),
         image_url: thumbnailUrl,
-        caption: formData.caption.trim(),
+        caption: formData.caption.trim() || instagramCaption,
         display_order: editingPost ? editingPost.display_order : 1,
         is_active: true
       }
@@ -298,6 +300,7 @@ export default function InstagramManagement() {
                   alt={post.caption || 'Instagram post'}
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               </div>
             )}
@@ -368,7 +371,7 @@ export default function InstagramManagement() {
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Indsæt linket til Instagram opslaget
+                    Billedet og billedteksten hentes automatisk fra Instagram
                   </p>
                 </div>
 
@@ -386,7 +389,7 @@ export default function InstagramManagement() {
                     style={{ minHeight: '60px' }}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Hjælpetekst til at identificere opslaget i listen
+                    Lad tom for at bruge billedteksten fra Instagram. Eller skriv din egen.
                   </p>
                 </div>
 
