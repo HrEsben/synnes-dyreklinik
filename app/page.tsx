@@ -88,12 +88,11 @@ export default async function Home() {
                 }}
               />
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link
-                  href="/kontakt">
+                <BookingPopover>
                   <Button size={"lg"}>
-                    Kontakt os
+                    Book tid
                   </Button>
-                </Link>
+                </BookingPopover>
                 {user ? (
                   <Link
                     href="/dashboard"
